@@ -1,0 +1,55 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Keboola\Sandboxes\Api;
+
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Psr7\Request;
+
+class Client extends AbstractClient
+{
+    public function __construct(
+        string $apiUrl,
+        string $storageToken,
+        ?array $options = []
+    ) {
+        $options['headers'] = ['X-StorageApi-Token' => $storageToken];
+        parent::__construct($apiUrl, $options);
+    }
+
+    public function create(Sandbox $sandbox): Sandbox
+    {
+        $jobData = \GuzzleHttp\json_encode($sandbox->toArray());
+        $request = new Request('POST', 'sandboxes', [], $jobData);
+        try {
+            return new Sandbox($this->sendRequest($request));
+        } catch (GuzzleException $guzzleException) {
+            throw new Exception('Error registering sandbox', $guzzleException->getCode(), $guzzleException);
+        }
+    }
+
+    public function deactivate(string $id): void
+    {
+        try {
+            $this->sendRequest(new Request('DELETE', "sandboxes/{$id}"));
+        } catch (GuzzleException $guzzleException) {
+            throw new Exception('Error deactivating sandbox', $guzzleException->getCode(), $guzzleException);
+        }
+    }
+
+    public function get(string $id): Sandbox
+    {
+        return new Sandbox(
+            $this->sendRequest(new Request('GET', "sandboxes/{$id}"))
+        );
+    }
+
+    // @TODO pagination
+    public function list(): array
+    {
+        return array_map(function ($s) {
+            return new Sandbox($s);
+        }, $this->sendRequest(new Request('GET', 'sandboxes')));
+    }
+}
