@@ -17,7 +17,7 @@ jobs:
         with:
           php-version: '7.4'
           tools: composer
-          ex
+          extensions: json
 
       - name: Get composer cache directory
         id: composer-cache

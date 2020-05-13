@@ -3,7 +3,7 @@
 
 ## Status
 
-[![Build Status](https://travis-ci.org/keboola/sandboxes-api-php-client.svg)](https://travis-ci.org/keboola/sandboxes-api-php-client)
+![.github/workflows/build.yml](https://github.com/keboola/sandboxes-api-php-client/workflows/.github/workflows/build.yml/badge.svg)
 
 
 ## Installation
@@ -40,13 +40,3 @@ require 'vendor/autoload.php';
 ```
 
 Read more in [Composer documentation](http://getcomposer.org/doc/01-basic-usage.md)
-
-## Usage examples
-
-```php
-require 'vendor/autoload.php';
-
-$client = new \Keboola\Sandboxes\Api\Client(API_URL);
-
-
-```
