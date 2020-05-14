@@ -17,4 +17,10 @@ set_error_handler(function (int $severity, string $message, string $filename, in
     return true;
 });
 
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+if (file_exists(__DIR__ . '/../.env')) {
+    $dotenv->load();
+}
+$dotenv->required(['API_URL', 'KBC_MANAGE_TOKEN', 'KBC_STORAGE_TOKEN', 'KBC_URL']);
+
 require_once __DIR__ . '/../vendor/autoload.php';
