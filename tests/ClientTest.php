@@ -79,10 +79,20 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($response->getActive());
         $this->assertEmpty($response->getDeletedTimestamp());
 
-        // 5. Delete
+        // 5. Find in list of expired sandboxes
+        $foundInList = false;
+        $response = $manageClient->listExpired();
+        foreach ($response as $r) {
+            if ($r->getId() === $sandboxId) {
+                $foundInList = true;
+            }
+        }
+        $this->assertTrue($foundInList);
+
+        // 6. Delete
         $manageClient->delete($projectId, $sandboxId);
 
-        // 6. Get and check if deleted
+        // 7. Get and check if deleted
         $response = $client->get($sandboxId);
         $this->assertNotEmpty($response);
         $this->assertNotEmpty($response->getDeletedTimestamp());

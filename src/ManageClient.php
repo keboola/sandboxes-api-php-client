@@ -18,6 +18,13 @@ class ManageClient extends AbstractClient
         parent::__construct($apiUrl, $options);
     }
 
+    public function listExpired(): array
+    {
+        return array_map(function ($s) {
+            return new Sandbox($s);
+        }, $this->sendRequest(new Request('GET', 'manage/expired')));
+    }
+
     public function delete(string $projectId, string $sandboxId): void
     {
         try {

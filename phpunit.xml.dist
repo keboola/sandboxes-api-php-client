@@ -8,7 +8,6 @@
          processIsolation="false"
          stopOnFailure="true"
          stopOnError="true"
-         syntaxCheck="false"
          bootstrap="tests/bootstrap.php">
 
     <testsuite name="API Test Suite">
@@ -19,9 +18,5 @@
         <whitelist>
             <directory suffix=".php">src</directory>
         </whitelist>
-        <blacklist>
-            <directory>tests</directory>
-            <directory>vendor</directory>
-        </blacklist>
     </filter>
 </phpunit>
