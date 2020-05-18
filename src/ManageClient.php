@@ -22,13 +22,20 @@ class ManageClient extends AbstractClient
     {
         return array_map(function ($s) {
             return new Sandbox($s);
-        }, $this->sendRequest(new Request('GET', 'manage/expired')));
+        }, $this->sendRequest(new Request('GET', 'manage/list/expired')));
     }
 
-    public function delete(string $projectId, string $sandboxId): void
+    public function get(string $id): Sandbox
+    {
+        return new Sandbox(
+            $this->sendRequest(new Request('GET', "manage/{$id}"))
+        );
+    }
+
+    public function delete(string $id): void
     {
         try {
-            $this->sendRequest(new Request('DELETE', "manage/{$projectId}/{$sandboxId}"));
+            $this->sendRequest(new Request('DELETE', "manage/{$id}"));
         } catch (GuzzleException $guzzleException) {
             throw new Exception('Error deleting sandbox', $guzzleException->getCode(), $guzzleException);
         }
