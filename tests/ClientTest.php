@@ -90,10 +90,10 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($foundInList);
 
         // 6. Delete
-        $manageClient->delete($projectId, $sandboxId);
+        $manageClient->delete($sandboxId);
 
-        // 7. Get and check if deleted
-        $response = $client->get($sandboxId);
+        // 7. Manage get and check if deleted
+        $response = $manageClient->get($sandboxId);
         $this->assertNotEmpty($response);
         $this->assertNotEmpty($response->getDeletedTimestamp());
     }

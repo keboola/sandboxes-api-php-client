@@ -19,7 +19,6 @@ class Sandbox
 
     private ?string $password = null;
     private ?string $host = null;
-    private ?int $port = null;
 
     private ?string $physicalId = null;
     private ?string $imageVersion = null;
@@ -57,6 +56,10 @@ class Sandbox
         if (!empty($sandbox['type'])) {
             $this->setType($sandbox['type']);
         }
+        if (!empty($sandbox['size'])) {
+            $this->setSize($sandbox['size']);
+        }
+
         if (!empty($sandbox['user'])) {
             $this->setUser($sandbox['user']);
         }
@@ -65,9 +68,6 @@ class Sandbox
         }
         if (!empty($sandbox['host'])) {
             $this->setHost($sandbox['host']);
-        }
-        if (!empty($sandbox['port'])) {
-            $this->setPort($sandbox['port']);
         }
 
         if (!empty($sandbox['physicalId'])) {
@@ -110,6 +110,9 @@ class Sandbox
         if (!empty($this->type)) {
             $result['type'] = $this->type;
         }
+        if (!empty($this->size)) {
+            $result['size'] = $this->size;
+        }
         if (!empty($this->user)) {
             $result['user'] = $this->user;
         }
@@ -118,9 +121,6 @@ class Sandbox
         }
         if (!empty($this->host)) {
             $result['host'] = $this->host;
-        }
-        if (!empty($this->port)) {
-            $result['port'] = $this->port;
         }
         if (!empty($this->physicalId)) {
             $result['physicalId'] = $this->physicalId;
@@ -207,17 +207,6 @@ class Sandbox
     public function getHost(): ?string
     {
         return $this->host;
-    }
-
-    public function setPort(int $port): self
-    {
-        $this->port = $port;
-        return $this;
-    }
-
-    public function getPort(): ?int
-    {
-        return $this->port;
     }
 
     public function setConfigurationId(string $configurationId): self
@@ -348,6 +337,14 @@ class Sandbox
     public function hasMlflow(): bool
     {
         return $this->mlflow;
+    }
+
+    public function setSize(string $size): self
+    {
+        if (!in_array($size, ['small', 'medium', 'large'])) {
+            throw new Exception('Unsupported size, use small, medium or large');
+        }
+        return $this;
     }
 
     public function getSize(): string
