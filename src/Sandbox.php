@@ -10,30 +10,28 @@ class Sandbox
 
     private string $id;
     private string $projectId;
-    private string $type;
-    private string $user;
-
-    private ?string $configurationId = null;
     private ?string $tokenId = null;
-    private ?string $autosaveTokenId = null;
+    private ?string $configurationId = null;
+    private ?string $physicalId = null;
 
+    private string $type;
+    private string $size = 'small';
+
+    private string $user;
     private ?string $password = null;
     private ?string $host = null;
 
-    private ?string $physicalId = null;
     private ?string $imageVersion = null;
-
-    private ?string $expirationTimestamp = null;
-    private ?int $expirationAfterHours = null;
-
-    private ?string $createdTimestamp = null;
-    private ?string $updatedTimestamp = null;
-    private ?string $deletedTimestamp = null;
+    private bool $mlflow = false;
+    private ?string $autosaveTokenId = null;
 
     private ?bool $active = null;
-
-    private bool $mlflow = false;
-    private string $size = 'small';
+    private ?string $createdTimestamp = null;
+    private ?string $updatedTimestamp = null;
+    private ?string $expirationTimestamp = null;
+    private ?string $lastAutosaveTimestamp = null;
+    private ?int $expirationAfterHours = null;
+    private ?string $deletedTimestamp = null;
 
     public function __construct(?array $sandbox = null)
     {
@@ -43,14 +41,14 @@ class Sandbox
         if (!empty($sandbox['projectId'])) {
             $this->setProjectId((string) $sandbox['projectId']);
         }
-        if (!empty($sandbox['configurationId'])) {
-            $this->setConfigurationId((string) $sandbox['configurationId']);
-        }
         if (!empty($sandbox['tokenId'])) {
             $this->setTokenId((string) $sandbox['tokenId']);
         }
-        if (!empty($sandbox['autosaveTokenId'])) {
-            $this->setAutosaveTokenId((string) $sandbox['autosaveTokenId']);
+        if (!empty($sandbox['configurationId'])) {
+            $this->setConfigurationId((string) $sandbox['configurationId']);
+        }
+        if (!empty($sandbox['physicalId'])) {
+            $this->setPhysicalId($sandbox['physicalId']);
         }
 
         if (!empty($sandbox['type'])) {
@@ -70,13 +68,19 @@ class Sandbox
             $this->setHost($sandbox['host']);
         }
 
-        if (!empty($sandbox['physicalId'])) {
-            $this->setPhysicalId($sandbox['physicalId']);
-        }
         if (!empty($sandbox['imageVersion'])) {
             $this->setImageVersion($sandbox['imageVersion']);
         }
+        if (!empty($sandbox['mlflow'])) {
+            $this->setMlflow($sandbox['mlflow']);
+        }
+        if (!empty($sandbox['autosaveTokenId'])) {
+            $this->setAutosaveTokenId((string) $sandbox['autosaveTokenId']);
+        }
 
+        if (isset($sandbox['active'])) {
+            $this->setActive($sandbox['active'] ?? false);
+        }
         if (!empty($sandbox['createdTimestamp'])) {
             $this->setCreatedTimestamp($sandbox['createdTimestamp']);
         }
@@ -86,12 +90,14 @@ class Sandbox
         if (!empty($sandbox['expirationTimestamp'])) {
             $this->setExpirationTimestamp($sandbox['expirationTimestamp']);
         }
+        if (!empty($sandbox['lastAutosaveTimestamp'])) {
+            $this->setLastAutosaveTimestamp($sandbox['lastAutosaveTimestamp']);
+        }
+        if (!empty($sandbox['expirationAfterHours'])) {
+            $this->setExpirationAfterHours($sandbox['expirationAfterHours']);
+        }
         if (!empty($sandbox['deletedTimestamp'])) {
             $this->setDeletedTimestamp($sandbox['deletedTimestamp']);
-        }
-
-        if (isset($sandbox['active'])) {
-            $this->setActive($sandbox['active'] ?? false);
         }
     }
 
@@ -104,15 +110,17 @@ class Sandbox
         if (!empty($this->configurationId)) {
             $result['configurationId'] = $this->configurationId;
         }
-        if (!empty($this->autosaveTokenId)) {
-            $result['autosaveTokenId'] = $this->autosaveTokenId;
+        if (!empty($this->physicalId)) {
+            $result['physicalId'] = $this->physicalId;
         }
+
         if (!empty($this->type)) {
             $result['type'] = $this->type;
         }
         if (!empty($this->size)) {
             $result['size'] = $this->size;
         }
+
         if (!empty($this->user)) {
             $result['user'] = $this->user;
         }
@@ -122,12 +130,17 @@ class Sandbox
         if (!empty($this->host)) {
             $result['host'] = $this->host;
         }
-        if (!empty($this->physicalId)) {
-            $result['physicalId'] = $this->physicalId;
-        }
+
         if (!empty($this->imageVersion)) {
             $result['imageVersion'] = $this->imageVersion;
         }
+        if (!empty($this->mlflow)) {
+            $result['mlflow'] = $this->mlflow;
+        }
+        if (!empty($this->autosaveTokenId)) {
+            $result['autosaveTokenId'] = $this->autosaveTokenId;
+        }
+
         if (!empty($this->createdTimestamp)) {
             $result['createdTimestamp'] = $this->createdTimestamp;
         }
@@ -301,6 +314,17 @@ class Sandbox
         return $this->deletedTimestamp;
     }
 
+    public function setLastAutosaveTimestamp(string $lastAutosaveTimestamp): self
+    {
+        $this->lastAutosaveTimestamp = $lastAutosaveTimestamp;
+        return $this;
+    }
+
+    public function getLastAutosaveTimestamp(): ?string
+    {
+        return $this->lastAutosaveTimestamp;
+    }
+
     public function setAutosaveTokenId(string $autosaveTokenId): self
     {
         $this->autosaveTokenId = $autosaveTokenId;
@@ -334,7 +358,13 @@ class Sandbox
         return $this->id;
     }
 
-    public function hasMlflow(): bool
+    public function setMlflow(bool $mlflow): self
+    {
+        $this->mlflow = $mlflow;
+        return $this;
+    }
+
+    public function getMlflow(): bool
     {
         return $this->mlflow;
     }
