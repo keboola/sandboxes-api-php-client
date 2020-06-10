@@ -105,10 +105,7 @@ abstract class AbstractClient
         if (isset($options['logger']) && $options['logger'] instanceof LoggerInterface) {
             $handlerStack->push(Middleware::log(
                 $options['logger'],
-                new MessageFormatter(
-                    '{hostname} {req_header_User-Agent} - [{ts}] "{method} {resource} {protocol}/{version}"' .
-                    ' {code} {res_header_Content-Length}'
-                )
+                new MessageFormatter('[sandboxes-api] {method} {uri} : {code} {res_header_Content-Length}')
             ));
         }
         // finally create the instance
