@@ -160,6 +160,8 @@ class Sandbox
     {
         $array = $this->toArray();
         unset($array['id']);
+        unset($array['createdTimestamp']);
+        unset($array['updatedTimestamp']);
         return $array;
     }
 
