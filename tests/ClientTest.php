@@ -39,11 +39,9 @@ class ClientTest extends \PHPUnit\Framework\TestCase
 
         $client = new Client($apiUrl, $storageToken);
         $manageClient = new ManageClient($apiUrl, $manageToken);
-        $sandboxId = (string) rand(1000, 9999);
 
         // 1. Create
         $sandbox = (new Sandbox())
-            ->setId($sandboxId)
             ->setType('python')
             ->setConfigurationId($this->configurationId)
             ->setPhysicalId('physicalId')
@@ -52,14 +50,22 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $response = $client->create($sandbox);
         $this->assertNotEmpty($response->getId());
 
+        $sandboxId = $response->getId();
+        $sandbox->setId($sandboxId);
+
         // 2. Get
         $response = $client->get($sandboxId);
         $this->assertNotEmpty($response);
         $this->assertNotEmpty($response->getId());
         $this->assertTrue($response->getActive());
-        $projectId = $response->getProjectId();
 
-        // 3. List
+        // 3. Update
+        $sandbox->setPassword('new_pass');
+        $client->update($sandbox);
+        $response = $client->get($sandboxId);
+        $this->assertEquals('new_pass', $response->getPassword());
+
+        // 4. List
         $foundInList = false;
         $response = $client->list();
         foreach ($response as $s) {
@@ -70,16 +76,16 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         }
         $this->assertTrue($foundInList);
 
-        // 3. Deactivate
+        // 5. Deactivate
         $client->deactivate($sandboxId);
 
-        // 4. Get and check if deactivated
+        // 6. Get and check if deactivated
         $response = $client->get($sandboxId);
         $this->assertNotEmpty($response);
         $this->assertFalse($response->getActive());
         $this->assertEmpty($response->getDeletedTimestamp());
 
-        // 5. Find in list of expired sandboxes
+        // 7. Find in list of expired sandboxes
         $foundInList = false;
         $response = $manageClient->listExpired();
         foreach ($response as $r) {
@@ -89,10 +95,10 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         }
         $this->assertTrue($foundInList);
 
-        // 6. Delete
+        // 8. Delete
         $manageClient->delete($sandboxId);
 
-        // 7. Manage get and check if deleted
+        // 9. Manage get and check if deleted
         $response = $manageClient->get($sandboxId);
         $this->assertNotEmpty($response);
         $this->assertNotEmpty($response->getDeletedTimestamp());

@@ -156,6 +156,13 @@ class Sandbox
         return $result;
     }
 
+    public function toApiRequest(): array
+    {
+        $array = $this->toArray();
+        unset($array['id']);
+        return $array;
+    }
+
     public function setProjectId(string $projectId): self
     {
         $this->projectId = $projectId;
