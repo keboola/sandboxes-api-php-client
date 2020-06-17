@@ -20,12 +20,23 @@ class Client extends AbstractClient
 
     public function create(Sandbox $sandbox): Sandbox
     {
-        $jobData = \GuzzleHttp\json_encode($sandbox->toArray());
+        $jobData = \GuzzleHttp\json_encode($sandbox->toApiRequest());
         $request = new Request('POST', 'sandboxes', [], $jobData);
         try {
             return new Sandbox($this->sendRequest($request));
         } catch (GuzzleException $guzzleException) {
-            throw new Exception('Error registering sandbox', $guzzleException->getCode(), $guzzleException);
+            throw new Exception('Error creating sandbox', $guzzleException->getCode(), $guzzleException);
+        }
+    }
+
+    public function update(Sandbox $sandbox): Sandbox
+    {
+        $jobData = \GuzzleHttp\json_encode($sandbox->toApiRequest());
+        $request = new Request('PUT', "sandboxes/{$sandbox->getId()}", [], $jobData);
+        try {
+            return new Sandbox($this->sendRequest($request));
+        } catch (GuzzleException $guzzleException) {
+            throw new Exception('Error updating sandbox', $guzzleException->getCode(), $guzzleException);
         }
     }
 
