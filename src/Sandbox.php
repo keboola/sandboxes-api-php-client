@@ -20,6 +20,7 @@ class Sandbox
     private string $user;
     private ?string $password = null;
     private ?string $host = null;
+    private ?string $url = null;
 
     private ?string $imageVersion = null;
     private bool $mlflow = false;
@@ -66,6 +67,9 @@ class Sandbox
         }
         if (!empty($sandbox['host'])) {
             $this->setHost($sandbox['host']);
+        }
+        if (!empty($sandbox['url'])) {
+            $this->setUrl($sandbox['url']);
         }
 
         if (!empty($sandbox['imageVersion'])) {
@@ -129,6 +133,9 @@ class Sandbox
         }
         if (!empty($this->host)) {
             $result['host'] = $this->host;
+        }
+        if (!empty($this->url)) {
+            $result['url'] = $this->url;
         }
 
         if (!empty($this->imageVersion)) {
@@ -229,6 +236,17 @@ class Sandbox
     public function getHost(): ?string
     {
         return $this->host;
+    }
+
+    public function setUrl(string $url): self
+    {
+        $this->url = $url;
+        return $this;
+    }
+
+    public function getUrl(): ?string
+    {
+        return $this->url;
     }
 
     public function setConfigurationId(string $configurationId): self
