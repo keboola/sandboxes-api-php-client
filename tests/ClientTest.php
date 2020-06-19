@@ -46,7 +46,8 @@ class ClientTest extends \PHPUnit\Framework\TestCase
             ->setConfigurationId($this->configurationId)
             ->setPhysicalId('physicalId')
             ->setHost('host')
-            ->setPassword('pass');
+            ->setPassword('pass')
+            ->setActive(false);
         $response = $client->create($sandbox);
         $this->assertNotEmpty($response->getId());
 
@@ -57,13 +58,15 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $response = $client->get($sandboxId);
         $this->assertNotEmpty($response);
         $this->assertNotEmpty($response->getId());
-        $this->assertTrue($response->getActive());
+        $this->assertFalse($response->getActive());
 
         // 3. Update
         $sandbox->setPassword('new_pass');
+        $sandbox->setActive(true);
         $client->update($sandbox);
         $response = $client->get($sandboxId);
         $this->assertEquals('new_pass', $response->getPassword());
+        $this->assertTrue($response->getActive());
 
         // 4. List
         $foundInList = false;

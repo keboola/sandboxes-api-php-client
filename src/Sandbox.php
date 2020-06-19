@@ -160,6 +160,11 @@ class Sandbox
         if (!empty($this->expirationAfterHours)) {
             $result['expirationAfterHours'] = $this->expirationAfterHours;
         }
+
+        if ($this->active !== null) {
+            $result['active'] = $this->active;
+        }
+
         return $result;
     }
 
