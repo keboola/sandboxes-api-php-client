@@ -162,7 +162,7 @@ class Sandbox
         }
 
         if ($this->active !== null) {
-            $result['actrive'] = $this->active;
+            $result['active'] = $this->active;
         }
 
         return $result;
