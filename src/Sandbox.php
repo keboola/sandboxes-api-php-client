@@ -406,6 +406,7 @@ class Sandbox
         if (!in_array($size, ['small', 'medium', 'large'])) {
             throw new Exception('Unsupported size, use small, medium or large');
         }
+        $this->size = $size;
         return $this;
     }
 
