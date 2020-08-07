@@ -24,6 +24,7 @@ class Sandbox
 
     private ?string $imageVersion = null;
     private bool $mlflow = false;
+    private ?string $stagingWorkspaceId = null;
     private ?string $autosaveTokenId = null;
 
     private ?bool $active = null;
@@ -77,6 +78,9 @@ class Sandbox
         }
         if (!empty($sandbox['mlflow'])) {
             $this->setMlflow($sandbox['mlflow']);
+        }
+        if (!empty($sandbox['stagingWorkspaceId'])) {
+            $this->setStagingWorkspaceId((string) $sandbox['stagingWorkspaceId']);
         }
         if (!empty($sandbox['autosaveTokenId'])) {
             $this->setAutosaveTokenId((string) $sandbox['autosaveTokenId']);
@@ -143,6 +147,9 @@ class Sandbox
         }
         if (!empty($this->mlflow)) {
             $result['mlflow'] = $this->mlflow;
+        }
+        if (!empty($this->stagingWorkspaceId)) {
+            $result['stagingWorkspaceId'] = $this->stagingWorkspaceId;
         }
         if (!empty($this->autosaveTokenId)) {
             $result['autosaveTokenId'] = $this->autosaveTokenId;
@@ -349,6 +356,17 @@ class Sandbox
     public function setLastAutosaveTimestamp(string $lastAutosaveTimestamp): self
     {
         $this->lastAutosaveTimestamp = $lastAutosaveTimestamp;
+        return $this;
+    }
+
+    public function getStagingWorkspaceId(): ?string
+    {
+        return $this->stagingWorkspaceId;
+    }
+
+    public function setStagingWorkspaceId(string $stagingWorkspaceId): self
+    {
+        $this->stagingWorkspaceId = $stagingWorkspaceId;
         return $this;
     }
 
