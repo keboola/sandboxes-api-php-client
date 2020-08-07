@@ -63,10 +63,12 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         // 3. Update
         $sandbox->setPassword('new_pass');
         $sandbox->setActive(true);
+        $sandbox->setStagingWorkspaceId('768');
         $client->update($sandbox);
         $response = $client->get($sandboxId);
         $this->assertEquals('new_pass', $response->getPassword());
         $this->assertTrue($response->getActive());
+        $this->assertEquals('768', $response->getStagingWorkspaceId());
 
         // 4. List
         $foundInList = false;
