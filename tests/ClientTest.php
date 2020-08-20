@@ -29,6 +29,55 @@ class ClientTest extends \PHPUnit\Framework\TestCase
                 ->setConfigurationId($this->configurationId)
                 ->setName($this->configurationId)
         );
+
+        $sdk = new \Aws\Sdk([
+            'endpoint'   => getenv('DYNAMO_ENDPOINT'),
+            'region'   => 'local',
+            'version'  => 'latest',
+        ]);
+        $dynamodb = $sdk->createDynamoDb();
+        try {
+            $dynamodb->createTable([
+                'TableName' => getenv('DYNAMO_TABLE_SANDBOXES'),
+                'KeySchema' => [
+                    ['AttributeName' => 'projectId', 'KeyType' => 'HASH'],
+                    ['AttributeName' => 'id', 'KeyType' => 'RANGE'],
+                ],
+                'AttributeDefinitions' => [
+                    ['AttributeName' => 'projectId', 'AttributeType' => 'S'],
+                    ['AttributeName' => 'id', 'AttributeType' => 'S'],
+                ],
+                'ProvisionedThroughput' => [
+                    'ReadCapacityUnits' => 10,
+                    'WriteCapacityUnits' => 10,
+                ],
+            ]);
+        } catch (\Aws\DynamoDb\Exception\DynamoDbException $e) {
+            if ($e->getAwsErrorCode() !== 'ResourceInUseException') {
+                throw $e;
+            }
+        }
+        try {
+            $dynamodb->createTable([
+                'TableName' => getenv('DYNAMO_TABLE_RUNS'),
+                'KeySchema' => [
+                    ['AttributeName' => 'sandboxId', 'KeyType' => 'HASH'],
+                    ['AttributeName' => 'startTimestamp', 'KeyType' => 'RANGE'],
+                ],
+                'AttributeDefinitions' => [
+                    ['AttributeName' => 'sandboxId', 'AttributeType' => 'S'],
+                    ['AttributeName' => 'startTimestamp', 'AttributeType' => 'S'],
+                ],
+                'ProvisionedThroughput' => [
+                    'ReadCapacityUnits' => 10,
+                    'WriteCapacityUnits' => 10,
+                ],
+            ]);
+        } catch (\Aws\DynamoDb\Exception\DynamoDbException $e) {
+            if ($e->getAwsErrorCode() !== 'ResourceInUseException') {
+                throw $e;
+            }
+        }
     }
 
     public function testClient(): void
