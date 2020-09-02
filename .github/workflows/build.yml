@@ -12,34 +12,58 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v1
 
-      - name: Install PHP
-        uses: shivammathur/setup-php@v2
+      - uses: azure/docker-login@v1
         with:
-          php-version: '7.4'
-          tools: composer
-          extensions: json
+          login-server: keboola.azurecr.io
+          username: ${{ secrets.ACR_PULL_USERNAME }}
+          password: ${{ secrets.ACR_PULL_PASSWORD }}
 
-      - name: Get composer cache directory
-        id: composer-cache
-        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+      - run: docker pull localstack/localstack
+      - run: docker pull waisbrot/wait
+      - run: docker pull keboola.azurecr.io/sandboxes-api
+      - run: docker build -t keboola/sandboxes-api-php-client .
 
-      - name: Cache dependencies
-        uses: actions/cache@v1
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: ${{ runner.os }}-composer-
-
-      - name: Install dependencies
-        run: composer install --prefer-dist
-
+      - run: |
+          docker run -d --rm --network host -p4569:4569 \
+          -e SERVICES=dynamodb \
+          -e DEBUG=1 \
+          localstack/localstack
+      - run: |
+          docker run --rm --network host \
+          -e TARGETS=localhost:4569 \
+          -e TIMEOUT=60 \
+          waisbrot/wait
+      - run: |
+          docker run -d --rm --network host -p8080:8080 \
+          -e AWS_ACCESS_KEY_ID=accessKey \
+          -e AWS_SECRET_ACCESS_KEY=secretKey \
+          -e REGION=local \
+          -e DYNAMO_ENDPOINT=http://localhost:4569 \
+          -e DYNAMO_TABLE_RUNS=runs \
+          -e DYNAMO_TABLE_SANDBOXES=sandboxes \
+          -e KBC_URL=https://connection.keboola.com \
+          -e API_URL=http://localhost:8080 \
+          -e STAGE=dev \
+          keboola.azurecr.io/sandboxes-api yarn start
+      - run: |
+          docker run --rm --network host \
+          -e TARGETS=localhost:8080 \
+          -e TIMEOUT=60 \
+          waisbrot/wait
       - name: Lint code
-        run: composer cs
-
+        run: |
+          docker run --rm --network host \
+          keboola/sandboxes-api-php-client composer cs
       - name: Run tests
-        run: composer test
-        env:
-          API_URL: https://rl61yqksc4.execute-api.us-east-1.amazonaws.com/test/
-          KBC_URL: https://connection.keboola.com
-          KBC_STORAGE_TOKEN: ${{ secrets.KBC_STORAGE_TOKEN }}
-          KBC_MANAGE_TOKEN: ${{ secrets.KBC_MANAGE_TOKEN }}
+        run: |
+          docker run --rm --network host \
+          -e API_URL=http://localhost:8080 \
+          -e AWS_ACCESS_KEY_ID=accessKey \
+          -e AWS_SECRET_ACCESS_KEY=secretKey \
+          -e DYNAMO_ENDPOINT=http://localhost:4569 \
+          -e DYNAMO_TABLE_SANDBOXES=sandboxes \
+          -e DYNAMO_TABLE_RUNS=runs \
+          -e KBC_URL=https://connection.keboola.com \
+          -e "KBC_STORAGE_TOKEN=${{ secrets.KBC_STORAGE_TOKEN }}" \
+          -e "KBC_MANAGE_TOKEN=${{ secrets.KBC_MANAGE_TOKEN }}" \
+          keboola/sandboxes-api-php-client composer test
