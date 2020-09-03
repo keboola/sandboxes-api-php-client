@@ -40,12 +40,30 @@ class Client extends AbstractClient
         }
     }
 
-    public function deactivate(string $id): void
+    public function deactivate(string $id): Sandbox
     {
         try {
-            $this->sendRequest(new Request('DELETE', "sandboxes/{$id}"));
+            return new Sandbox($this->sendRequest(new Request('POST', "sandboxes/{$id}/deactivate", [], '{}')));
         } catch (GuzzleException $guzzleException) {
             throw new Exception('Error deactivating sandbox', $guzzleException->getCode(), $guzzleException);
+        }
+    }
+
+    public function activate(string $id): Sandbox
+    {
+        try {
+            return new Sandbox($this->sendRequest(new Request('POST', "sandboxes/{$id}/activate", [], '{}')));
+        } catch (GuzzleException $guzzleException) {
+            throw new Exception('Error activating sandbox', $guzzleException->getCode(), $guzzleException);
+        }
+    }
+
+    public function delete(string $id): Sandbox
+    {
+        try {
+            return new Sandbox($this->sendRequest(new Request('DELETE', "sandboxes/{$id}")));
+        } catch (GuzzleException $guzzleException) {
+            throw new Exception('Error deleting sandbox', $guzzleException->getCode(), $guzzleException);
         }
     }
 

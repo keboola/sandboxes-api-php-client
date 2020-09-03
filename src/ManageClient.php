@@ -32,12 +32,12 @@ class ManageClient extends AbstractClient
         );
     }
 
-    public function delete(string $id): void
+    public function deactivate(string $id): void
     {
         try {
             $this->sendRequest(new Request('DELETE', "manage/{$id}"));
         } catch (GuzzleException $guzzleException) {
-            throw new Exception('Error deleting sandbox', $guzzleException->getCode(), $guzzleException);
+            throw new Exception('Error deactivating sandbox', $guzzleException->getCode(), $guzzleException);
         }
     }
 }
