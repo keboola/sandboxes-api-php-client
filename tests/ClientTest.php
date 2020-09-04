@@ -131,15 +131,21 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($foundInList);
 
         // 5. Deactivate
-        $client->deactivate($sandboxId);
-
-        // 6. Get and check if deactivated
-        $response = $client->get($sandboxId);
+        $response = $client->deactivate($sandboxId);
         $this->assertNotEmpty($response);
         $this->assertFalse($response->getActive());
         $this->assertEmpty($response->getDeletedTimestamp());
 
-        // 7. Find in list of expired sandboxes
+        // 6. Activate
+        $response = $client->activate($sandboxId);
+        $this->assertNotEmpty($response);
+        $this->assertTrue($response->getActive());
+
+        // 7. Set to be expired
+        $sandbox->setExpirationTimestamp(date('c', strtotime('-1 day')));
+        $client->update($sandbox);
+
+        // 8. Find in list of expired sandboxes
         $foundInList = false;
         $response = $manageClient->listExpired();
         foreach ($response as $r) {
@@ -149,12 +155,16 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         }
         $this->assertTrue($foundInList);
 
-        // 8. Delete
-        $manageClient->delete($sandboxId);
+        // 9. Manage deactivate
+        $manageClient->deactivate($sandboxId);
 
-        // 9. Manage get and check if deleted
+        // 10. Manage get and check if deactivated
         $response = $manageClient->get($sandboxId);
         $this->assertNotEmpty($response);
+        $this->assertFalse($response->getActive());
+
+        // 11. Delete
+        $response = $client->delete($sandboxId);
         $this->assertNotEmpty($response->getDeletedTimestamp());
     }
 
