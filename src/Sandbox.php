@@ -26,6 +26,7 @@ class Sandbox
     private bool $mlflow = false;
     private ?string $stagingWorkspaceId = null;
     private ?string $autosaveTokenId = null;
+    private ?array $packages = [];
 
     private ?bool $active = null;
     private ?string $createdTimestamp = null;
@@ -84,6 +85,9 @@ class Sandbox
         }
         if (!empty($sandbox['autosaveTokenId'])) {
             $this->setAutosaveTokenId((string) $sandbox['autosaveTokenId']);
+        }
+        if (!empty($sandbox['packages'])) {
+            $this->setPackages($sandbox['packages']);
         }
 
         if (isset($sandbox['active'])) {
@@ -153,6 +157,9 @@ class Sandbox
         }
         if (!empty($this->autosaveTokenId)) {
             $result['autosaveTokenId'] = $this->autosaveTokenId;
+        }
+        if (!empty($this->packages)) {
+            $result['packages'] = $this->packages;
         }
 
         if (!empty($this->createdTimestamp)) {
@@ -296,6 +303,17 @@ class Sandbox
     public function getImageVersion(): ?string
     {
         return $this->imageVersion;
+    }
+
+    public function setPackages(array $packages): self
+    {
+        $this->packages = $packages;
+        return $this;
+    }
+
+    public function getPackages(): ?array
+    {
+        return $this->packages;
     }
 
     public function setCreatedTimestamp(string $createdTimestamp): self
