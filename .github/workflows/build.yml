@@ -43,7 +43,7 @@ jobs:
           -e DYNAMO_TABLE_SANDBOXES=sandboxes \
           -e KBC_URL=https://connection.keboola.com \
           -e API_URL=http://localhost:8080 \
-          -e PROVDER=aws \
+          -e PROVIDER=aws \
           -e STAGE=dev \
           keboola.azurecr.io/sandboxes-api yarn start
       - run: |
@@ -68,3 +68,6 @@ jobs:
           -e "KBC_STORAGE_TOKEN=${{ secrets.KBC_STORAGE_TOKEN }}" \
           -e "KBC_MANAGE_TOKEN=${{ secrets.KBC_MANAGE_TOKEN }}" \
           keboola/sandboxes-api-php-client composer test
+      - name: Dump docker logs on failure
+        if: failure()
+        uses: jwalton/gh-docker-logs@v1
