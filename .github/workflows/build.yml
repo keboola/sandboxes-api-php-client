@@ -18,7 +18,7 @@ jobs:
           username: ${{ secrets.ACR_PULL_USERNAME }}
           password: ${{ secrets.ACR_PULL_PASSWORD }}
 
-      - run: docker pull localstack/localstack
+      - run: docker pull localstack/localstack:0.11.4
       - run: docker pull waisbrot/wait
       - run: docker pull keboola.azurecr.io/sandboxes-api
       - run: docker build -t keboola/sandboxes-api-php-client .
@@ -27,7 +27,7 @@ jobs:
           docker run -d --rm --network host -p4569:4569 \
           -e SERVICES=dynamodb \
           -e DEBUG=1 \
-          localstack/localstack
+          localstack/localstack:0.11.4
       - run: |
           docker run --rm --network host \
           -e TARGETS=localhost:4569 \
@@ -43,6 +43,7 @@ jobs:
           -e DYNAMO_TABLE_SANDBOXES=sandboxes \
           -e KBC_URL=https://connection.keboola.com \
           -e API_URL=http://localhost:8080 \
+          -e PROVIDER=aws \
           -e STAGE=dev \
           keboola.azurecr.io/sandboxes-api yarn start
       - run: |
@@ -67,3 +68,6 @@ jobs:
           -e "KBC_STORAGE_TOKEN=${{ secrets.KBC_STORAGE_TOKEN }}" \
           -e "KBC_MANAGE_TOKEN=${{ secrets.KBC_MANAGE_TOKEN }}" \
           keboola/sandboxes-api-php-client composer test
+      - name: Dump docker logs on failure
+        if: failure()
+        uses: jwalton/gh-docker-logs@v1

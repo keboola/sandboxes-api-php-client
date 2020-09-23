@@ -36,12 +36,13 @@ services:
       - DYNAMO_TABLE_RUNS=runs
       - KBC_URL=https://connection.keboola.com
       - API_URL=http://sandboxes-api:8080
+      - PROVIDER=aws
       - STAGE=dev
     depends_on:
       - localstack
 
   localstack:
-    image: localstack/localstack
+    image: localstack/localstack:0.11.4
     environment:
       - SERVICES=dynamodb
       - DEBUG=1
