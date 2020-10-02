@@ -14,7 +14,10 @@ class ManageClient extends AbstractClient
         string $token,
         ?array $options = []
     ) {
-        $options['headers'] = ['X-KBC-ManageApiToken' => $token];
+        if (!isset($options['headers'])) {
+            $options['headers'] = [];
+        }
+        $options['headers']['X-KBC-ManageApiToken'] = $token;
         parent::__construct($apiUrl, $options);
     }
 
