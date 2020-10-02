@@ -14,7 +14,10 @@ class Client extends AbstractClient
         string $storageToken,
         ?array $options = []
     ) {
-        $options['headers'] = ['X-StorageApi-Token' => $storageToken];
+        if (!isset($options['headers'])) {
+            $options['headers'] = [];
+        }
+        $options['headers']['X-StorageApi-Token'] = $storageToken;
         parent::__construct($apiUrl, $options);
     }
 
