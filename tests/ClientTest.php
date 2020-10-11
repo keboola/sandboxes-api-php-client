@@ -114,13 +114,20 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $sandbox->setActive(true);
         $sandbox->setStagingWorkspaceId('768');
         $sandbox->setStagingWorkspaceType('synapse');
+        $sandbox->setWorkspaceDetails([
+            'database' => 'test-database',
+            'schema' => 'test-schema',
+        ]);
         $client->update($sandbox);
         $response = $client->get($sandboxId);
         $this->assertEquals('new_pass', $response->getPassword());
         $this->assertTrue($response->getActive());
         $this->assertEquals('768', $response->getStagingWorkspaceId());
         $this->assertEquals('synapse', $response->getStagingWorkspaceType());
-
+        $this->assertEqueals(
+            ['database' => 'test-database', 'schema' => 'test-schema'],
+            $response->getWorkspaceDetails()
+        );
         // 4. List
         $foundInList = false;
         $response = $client->list();
