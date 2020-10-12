@@ -417,7 +417,7 @@ class Sandbox
     {
         return $this->workspaceDetails;
     }
-    
+
     public function setWorkspaceDetails(array $workspaceDetails): self
     {
         $this->workspaceDetails = $workspaceDetails;

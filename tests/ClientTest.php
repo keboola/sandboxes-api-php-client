@@ -97,6 +97,10 @@ class ClientTest extends \PHPUnit\Framework\TestCase
             ->setHost('host')
             ->setPassword('pass')
             ->setActive(false);
+        $sandbox->setWorkspaceDetails(['connection' => [
+            'database' => 'test-database',
+            'schema' => 'test-schema',
+        ]]);
         $response = $client->create($sandbox);
         $this->assertNotEmpty($response->getId());
 
@@ -108,26 +112,23 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $this->assertNotEmpty($response);
         $this->assertNotEmpty($response->getId());
         $this->assertFalse($response->getActive());
+        $this->assertEqueals(
+            ['database' => 'test-database', 'schema' => 'test-schema'],
+            $response->getWorkspaceDetails()
+        );
 
         // 3. Update
         $sandbox->setPassword('new_pass');
         $sandbox->setActive(true);
         $sandbox->setStagingWorkspaceId('768');
         $sandbox->setStagingWorkspaceType('synapse');
-        $sandbox->setWorkspaceDetails([
-            'database' => 'test-database',
-            'schema' => 'test-schema',
-        ]);
         $client->update($sandbox);
         $response = $client->get($sandboxId);
         $this->assertEquals('new_pass', $response->getPassword());
         $this->assertTrue($response->getActive());
         $this->assertEquals('768', $response->getStagingWorkspaceId());
         $this->assertEquals('synapse', $response->getStagingWorkspaceType());
-        $this->assertEqueals(
-            ['database' => 'test-database', 'schema' => 'test-schema'],
-            $response->getWorkspaceDetails()
-        );
+
         // 4. List
         $foundInList = false;
         $response = $client->list();
