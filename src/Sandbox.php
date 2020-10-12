@@ -26,6 +26,7 @@ class Sandbox
     private bool $mlflow = false;
     private ?string $stagingWorkspaceId = null;
     private ?string $stagingWorkspaceType = null;
+    private ?array $workspaceDetails = [];
     private ?string $autosaveTokenId = null;
     private ?array $packages = [];
 
@@ -86,6 +87,9 @@ class Sandbox
         }
         if (!empty($sandbox['stagingWorkspaceType'])) {
             $this->setStagingWorkspaceType($sandbox['stagingWorkspaceType']);
+        }
+        if (!empty($sandbox['workspaceDetails'])) {
+            $this->setWorkspaceDetails($sandbox['workspaceDetails']);
         }
         if (!empty($sandbox['autosaveTokenId'])) {
             $this->setAutosaveTokenId((string) $sandbox['autosaveTokenId']);
@@ -161,6 +165,9 @@ class Sandbox
         }
         if (!empty($this->stagingWorkspaceType)) {
             $result['stagingWorkspaceType'] = $this->stagingWorkspaceType;
+        }
+        if (!empty($this->workspaceDetails)) {
+            $result['workspaceDetails'] = $this->workspaceDetails;
         }
         if (!empty($this->autosaveTokenId)) {
             $result['autosaveTokenId'] = $this->autosaveTokenId;
@@ -403,6 +410,17 @@ class Sandbox
     public function setStagingWorkspaceType(string $stagingWorkspaceType): self
     {
         $this->stagingWorkspaceType = $stagingWorkspaceType;
+        return $this;
+    }
+
+    public function getWorkspaceDetails(): ?array
+    {
+        return $this->workspaceDetails;
+    }
+
+    public function setWorkspaceDetails(array $workspaceDetails): self
+    {
+        $this->workspaceDetails = $workspaceDetails;
         return $this;
     }
 

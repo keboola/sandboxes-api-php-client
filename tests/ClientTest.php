@@ -97,6 +97,10 @@ class ClientTest extends \PHPUnit\Framework\TestCase
             ->setHost('host')
             ->setPassword('pass')
             ->setActive(false);
+        $sandbox->setWorkspaceDetails(['connection' => [
+            'database' => 'test-database',
+            'schema' => 'test-schema',
+        ]]);
         $response = $client->create($sandbox);
         $this->assertNotEmpty($response->getId());
 
@@ -108,6 +112,12 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $this->assertNotEmpty($response);
         $this->assertNotEmpty($response->getId());
         $this->assertFalse($response->getActive());
+        $this->assertEquals(
+            [
+                'connection' => ['database' => 'test-database', 'schema' => 'test-schema'],
+            ],
+            $response->getWorkspaceDetails()
+        );
 
         // 3. Update
         $sandbox->setPassword('new_pass');
