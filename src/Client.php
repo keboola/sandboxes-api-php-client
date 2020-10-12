@@ -24,7 +24,6 @@ class Client extends AbstractClient
     public function create(Sandbox $sandbox): Sandbox
     {
         $jobData = \GuzzleHttp\json_encode($sandbox->toApiRequest());
-        var_dump($jobData);
         $request = new Request('POST', 'sandboxes', [], $jobData);
         try {
             return new Sandbox($this->sendRequest($request));

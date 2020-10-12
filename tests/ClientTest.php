@@ -112,8 +112,10 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $this->assertNotEmpty($response);
         $this->assertNotEmpty($response->getId());
         $this->assertFalse($response->getActive());
-        $this->assertEqueals(
-            ['database' => 'test-database', 'schema' => 'test-schema'],
+        $this->assertEquals(
+            [
+                'connection' => ['database' => 'test-database', 'schema' => 'test-schema'],
+            ],
             $response->getWorkspaceDetails()
         );
 
