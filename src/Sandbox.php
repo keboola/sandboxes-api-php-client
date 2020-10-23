@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Keboola\Sandboxes\Api;
 
+use Keboola\Sandboxes\Api\Exception\InvalidApiResponseException;
+
 class Sandbox
 {
     public const DEFAULT_EXPIRATION_DAYS = 7;
@@ -23,7 +25,6 @@ class Sandbox
     private ?string $url = null;
 
     private ?string $imageVersion = null;
-    private bool $mlflow = false;
     private ?string $stagingWorkspaceId = null;
     private ?string $stagingWorkspaceType = null;
     private ?array $workspaceDetails = [];
@@ -42,85 +43,49 @@ class Sandbox
     public static function fromArray(array $in): self
     {
         $sandbox = new Sandbox();
-        if (!empty($in['id'])) {
-            $sandbox->setId((string) $in['id']);
+        if (!isset($in['id'])) {
+            throw new InvalidApiResponseException('Property id is missing from API response');
         }
-        if (!empty($in['projectId'])) {
-            $sandbox->setProjectId((string) $in['projectId']);
+        $sandbox->setId((string) $in['id']);
+        if (!isset($in['projectId'])) {
+            throw new InvalidApiResponseException('Property projectId is missing from API response');
         }
-        if (!empty($in['tokenId'])) {
-            $sandbox->setTokenId((string) $in['tokenId']);
+        $sandbox->setProjectId((string) $in['projectId']);
+        if (!isset($in['tokenId'])) {
+            throw new InvalidApiResponseException('Property tokenId is missing from API response');
         }
-        if (!empty($in['configurationId'])) {
-            $sandbox->setConfigurationId((string) $in['configurationId']);
+        $sandbox->setTokenId((string) $in['tokenId']);
+        if (!isset($in['configurationId'])) {
+            throw new InvalidApiResponseException('Property configurationId is missing from API response');
         }
-        if (!empty($in['physicalId'])) {
-            $sandbox->setPhysicalId($in['physicalId']);
+        $sandbox->setConfigurationId((string) $in['configurationId']);
+        if (!isset($in['type'])) {
+            throw new InvalidApiResponseException('Property type is missing from API response');
         }
+        $sandbox->setType($in['type']);
+        if (!isset($in['active'])) {
+            throw new InvalidApiResponseException('Property active is missing from API response');
+        }
+        $sandbox->setActive($in['active'] ?? false);
 
-        if (!empty($in['type'])) {
-            $sandbox->setType($in['type']);
-        }
-        if (!empty($in['size'])) {
-            $sandbox->setSize($in['size']);
-        }
-
-        if (!empty($in['user'])) {
-            $sandbox->setUser($in['user']);
-        }
-        if (!empty($in['password'])) {
-            $sandbox->setPassword($in['password']);
-        }
-        if (!empty($in['host'])) {
-            $sandbox->setHost($in['host']);
-        }
-        if (!empty($in['url'])) {
-            $sandbox->setUrl($in['url']);
-        }
-
-        if (!empty($in['imageVersion'])) {
-            $sandbox->setImageVersion($in['imageVersion']);
-        }
-        if (!empty($in['mlflow'])) {
-            $sandbox->setMlflow($in['mlflow']);
-        }
-        if (!empty($in['stagingWorkspaceId'])) {
-            $sandbox->setStagingWorkspaceId((string) $in['stagingWorkspaceId']);
-        }
-        if (!empty($in['stagingWorkspaceType'])) {
-            $sandbox->setStagingWorkspaceType($in['stagingWorkspaceType']);
-        }
-        if (!empty($in['workspaceDetails'])) {
-            $sandbox->setWorkspaceDetails($in['workspaceDetails']);
-        }
-        if (!empty($in['autosaveTokenId'])) {
-            $sandbox->setAutosaveTokenId((string) $in['autosaveTokenId']);
-        }
-        if (!empty($in['packages'])) {
-            $sandbox->setPackages($in['packages']);
-        }
-
-        if (isset($in['active'])) {
-            $sandbox->setActive($in['active'] ?? false);
-        }
-        if (!empty($in['createdTimestamp'])) {
-            $sandbox->setCreatedTimestamp($in['createdTimestamp']);
-        }
-        if (!empty($in['updatedTimestamp'])) {
-            $sandbox->setUpdatedTimestamp($in['updatedTimestamp']);
-        }
-        if (!empty($in['expirationTimestamp'])) {
-            $sandbox->setExpirationTimestamp($in['expirationTimestamp']);
-        }
-        if (!empty($in['lastAutosaveTimestamp'])) {
-            $sandbox->setLastAutosaveTimestamp($in['lastAutosaveTimestamp']);
-        }
-        if (!empty($in['expirationAfterHours'])) {
-            $sandbox->setExpirationAfterHours($in['expirationAfterHours']);
-        }
-        if (!empty($in['deletedTimestamp'])) {
-            $sandbox->setDeletedTimestamp($in['deletedTimestamp']);
-        }
+        $sandbox->setPhysicalId($in['physicalId'] ?? '');
+        $sandbox->setSize($in['size'] ?? '');
+        $sandbox->setUser($in['user'] ?? '');
+        $sandbox->setPassword($in['password'] ?? '');
+        $sandbox->setHost($in['host'] ?? '');
+        $sandbox->setUrl($in['url'] ?? '');
+        $sandbox->setImageVersion($in['imageVersion'] ?? '');
+        $sandbox->setStagingWorkspaceId(isset($in['stagingWorkspaceId']) ? (string) $in['stagingWorkspaceId'] : '');
+        $sandbox->setStagingWorkspaceType($in['stagingWorkspaceType'] ?? '');
+        $sandbox->setWorkspaceDetails($in['workspaceDetails'] ?? []);
+        $sandbox->setAutosaveTokenId(isset($in['autosaveTokenId']) ? (string) $in['autosaveTokenId'] : '');
+        $sandbox->setPackages($in['packages'] ?? []);
+        $sandbox->setCreatedTimestamp($in['createdTimestamp'] ?? '');
+        $sandbox->setUpdatedTimestamp($in['updatedTimestamp'] ?? '');
+        $sandbox->setExpirationTimestamp($in['expirationTimestamp'] ?? '');
+        $sandbox->setLastAutosaveTimestamp($in['lastAutosaveTimestamp'] ?? '');
+        $sandbox->setExpirationAfterHours($in['expirationAfterHours'] ?? '');
+        $sandbox->setDeletedTimestamp($in['deletedTimestamp'] ?? '');
 
         return $sandbox;
     }
@@ -160,9 +125,6 @@ class Sandbox
 
         if (!empty($this->imageVersion)) {
             $result['imageVersion'] = $this->imageVersion;
-        }
-        if (!empty($this->mlflow)) {
-            $result['mlflow'] = $this->mlflow;
         }
         if (!empty($this->stagingWorkspaceId)) {
             $result['stagingWorkspaceId'] = $this->stagingWorkspaceId;
@@ -464,17 +426,6 @@ class Sandbox
     public function getId(): string
     {
         return $this->id;
-    }
-
-    public function setMlflow(bool $mlflow): self
-    {
-        $this->mlflow = $mlflow;
-        return $this;
-    }
-
-    public function getMlflow(): bool
-    {
-        return $this->mlflow;
     }
 
     public function setSize(string $size): self
