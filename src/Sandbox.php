@@ -84,7 +84,7 @@ class Sandbox
         $sandbox->setUpdatedTimestamp($in['updatedTimestamp'] ?? '');
         $sandbox->setExpirationTimestamp($in['expirationTimestamp'] ?? '');
         $sandbox->setLastAutosaveTimestamp($in['lastAutosaveTimestamp'] ?? '');
-        $sandbox->setExpirationAfterHours($in['expirationAfterHours'] ?? '');
+        $sandbox->setExpirationAfterHours($in['expirationAfterHours'] ?? 0);
         $sandbox->setDeletedTimestamp($in['deletedTimestamp'] ?? '');
 
         return $sandbox;
