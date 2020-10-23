@@ -38,87 +38,91 @@ class Sandbox
     private ?int $expirationAfterHours = null;
     private ?string $deletedTimestamp = null;
 
-    public function __construct(?array $sandbox = null)
+
+    public static function fromArray(array $in): self
     {
-        if (!empty($sandbox['id'])) {
-            $this->setId((string) $sandbox['id']);
+        $sandbox = new Sandbox();
+        if (!empty($in['id'])) {
+            $sandbox->setId((string) $in['id']);
         }
-        if (!empty($sandbox['projectId'])) {
-            $this->setProjectId((string) $sandbox['projectId']);
+        if (!empty($in['projectId'])) {
+            $sandbox->setProjectId((string) $in['projectId']);
         }
-        if (!empty($sandbox['tokenId'])) {
-            $this->setTokenId((string) $sandbox['tokenId']);
+        if (!empty($in['tokenId'])) {
+            $sandbox->setTokenId((string) $in['tokenId']);
         }
-        if (!empty($sandbox['configurationId'])) {
-            $this->setConfigurationId((string) $sandbox['configurationId']);
+        if (!empty($in['configurationId'])) {
+            $sandbox->setConfigurationId((string) $in['configurationId']);
         }
-        if (!empty($sandbox['physicalId'])) {
-            $this->setPhysicalId($sandbox['physicalId']);
-        }
-
-        if (!empty($sandbox['type'])) {
-            $this->setType($sandbox['type']);
-        }
-        if (!empty($sandbox['size'])) {
-            $this->setSize($sandbox['size']);
+        if (!empty($in['physicalId'])) {
+            $sandbox->setPhysicalId($in['physicalId']);
         }
 
-        if (!empty($sandbox['user'])) {
-            $this->setUser($sandbox['user']);
+        if (!empty($in['type'])) {
+            $sandbox->setType($in['type']);
         }
-        if (!empty($sandbox['password'])) {
-            $this->setPassword($sandbox['password']);
-        }
-        if (!empty($sandbox['host'])) {
-            $this->setHost($sandbox['host']);
-        }
-        if (!empty($sandbox['url'])) {
-            $this->setUrl($sandbox['url']);
+        if (!empty($in['size'])) {
+            $sandbox->setSize($in['size']);
         }
 
-        if (!empty($sandbox['imageVersion'])) {
-            $this->setImageVersion($sandbox['imageVersion']);
+        if (!empty($in['user'])) {
+            $sandbox->setUser($in['user']);
         }
-        if (!empty($sandbox['mlflow'])) {
-            $this->setMlflow($sandbox['mlflow']);
+        if (!empty($in['password'])) {
+            $sandbox->setPassword($in['password']);
         }
-        if (!empty($sandbox['stagingWorkspaceId'])) {
-            $this->setStagingWorkspaceId((string) $sandbox['stagingWorkspaceId']);
+        if (!empty($in['host'])) {
+            $sandbox->setHost($in['host']);
         }
-        if (!empty($sandbox['stagingWorkspaceType'])) {
-            $this->setStagingWorkspaceType($sandbox['stagingWorkspaceType']);
-        }
-        if (!empty($sandbox['workspaceDetails'])) {
-            $this->setWorkspaceDetails($sandbox['workspaceDetails']);
-        }
-        if (!empty($sandbox['autosaveTokenId'])) {
-            $this->setAutosaveTokenId((string) $sandbox['autosaveTokenId']);
-        }
-        if (!empty($sandbox['packages'])) {
-            $this->setPackages($sandbox['packages']);
+        if (!empty($in['url'])) {
+            $sandbox->setUrl($in['url']);
         }
 
-        if (isset($sandbox['active'])) {
-            $this->setActive($sandbox['active'] ?? false);
+        if (!empty($in['imageVersion'])) {
+            $sandbox->setImageVersion($in['imageVersion']);
         }
-        if (!empty($sandbox['createdTimestamp'])) {
-            $this->setCreatedTimestamp($sandbox['createdTimestamp']);
+        if (!empty($in['mlflow'])) {
+            $sandbox->setMlflow($in['mlflow']);
         }
-        if (!empty($sandbox['updatedTimestamp'])) {
-            $this->setUpdatedTimestamp($sandbox['updatedTimestamp']);
+        if (!empty($in['stagingWorkspaceId'])) {
+            $sandbox->setStagingWorkspaceId((string) $in['stagingWorkspaceId']);
         }
-        if (!empty($sandbox['expirationTimestamp'])) {
-            $this->setExpirationTimestamp($sandbox['expirationTimestamp']);
+        if (!empty($in['stagingWorkspaceType'])) {
+            $sandbox->setStagingWorkspaceType($in['stagingWorkspaceType']);
         }
-        if (!empty($sandbox['lastAutosaveTimestamp'])) {
-            $this->setLastAutosaveTimestamp($sandbox['lastAutosaveTimestamp']);
+        if (!empty($in['workspaceDetails'])) {
+            $sandbox->setWorkspaceDetails($in['workspaceDetails']);
         }
-        if (!empty($sandbox['expirationAfterHours'])) {
-            $this->setExpirationAfterHours($sandbox['expirationAfterHours']);
+        if (!empty($in['autosaveTokenId'])) {
+            $sandbox->setAutosaveTokenId((string) $in['autosaveTokenId']);
         }
-        if (!empty($sandbox['deletedTimestamp'])) {
-            $this->setDeletedTimestamp($sandbox['deletedTimestamp']);
+        if (!empty($in['packages'])) {
+            $sandbox->setPackages($in['packages']);
         }
+
+        if (isset($in['active'])) {
+            $sandbox->setActive($in['active'] ?? false);
+        }
+        if (!empty($in['createdTimestamp'])) {
+            $sandbox->setCreatedTimestamp($in['createdTimestamp']);
+        }
+        if (!empty($in['updatedTimestamp'])) {
+            $sandbox->setUpdatedTimestamp($in['updatedTimestamp']);
+        }
+        if (!empty($in['expirationTimestamp'])) {
+            $sandbox->setExpirationTimestamp($in['expirationTimestamp']);
+        }
+        if (!empty($in['lastAutosaveTimestamp'])) {
+            $sandbox->setLastAutosaveTimestamp($in['lastAutosaveTimestamp']);
+        }
+        if (!empty($in['expirationAfterHours'])) {
+            $sandbox->setExpirationAfterHours($in['expirationAfterHours']);
+        }
+        if (!empty($in['deletedTimestamp'])) {
+            $sandbox->setDeletedTimestamp($in['deletedTimestamp']);
+        }
+
+        return $sandbox;
     }
 
     public function toArray(): array
@@ -485,20 +489,5 @@ class Sandbox
     public function getSize(): string
     {
         return $this->size;
-    }
-
-    public static function createPassword(int $length = 16): string
-    {
-        $chars = array('abcdefghijkmnopqrstuvwxyz', 'ABCDEFGHIJKMNOPQRSTUVWXYZ', '0234567890234567890234567');
-        srand((int) microtime() * 1000000);
-        $i = 0;
-        $pass = '';
-        while ($i <= $length - 1) {
-            $num = rand() % 25;
-            $tmp = substr($chars[$i % 3], $num, 1);
-            $pass = $pass . $tmp;
-            $i++;
-        }
-        return $pass;
     }
 }

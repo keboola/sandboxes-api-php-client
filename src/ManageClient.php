@@ -30,7 +30,7 @@ class ManageClient extends AbstractClient
 
     public function get(string $id): Sandbox
     {
-        return new Sandbox(
+        return Sandbox::fromArray(
             $this->sendRequest(new Request('GET', "manage/{$id}"))
         );
     }
