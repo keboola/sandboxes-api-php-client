@@ -9,65 +9,55 @@ use Keboola\Sandboxes\Api\Exception\InvalidApiResponseException;
 class Sandbox
 {
     public const DEFAULT_EXPIRATION_DAYS = 7;
+    protected const REQUIRED_PROPERTIES = ['id', 'projectId', 'tokenId', 'type', 'active', 'createdTimestamp'];
 
     private string $id;
     private string $projectId;
-    private ?string $tokenId = null;
-    private ?string $configurationId = null;
-    private ?string $physicalId = null;
-
+    private string $tokenId;
     private string $type;
-    private string $size = 'small';
+    private bool $active;
+
+    private string $configurationId;
+    private string $physicalId;
+    private string $size;
 
     private string $user;
-    private ?string $password = null;
-    private ?string $host = null;
-    private ?string $url = null;
+    private string $password;
+    private string $host;
+    private string $url;
 
-    private ?string $imageVersion = null;
-    private ?string $stagingWorkspaceId = null;
-    private ?string $stagingWorkspaceType = null;
-    private ?array $workspaceDetails = [];
-    private ?string $autosaveTokenId = null;
-    private ?array $packages = [];
+    private string $autosaveTokenId;
+    private string $imageVersion;
+    private string $stagingWorkspaceId;
+    private string $stagingWorkspaceType;
+    private array $workspaceDetails;
+    private array $packages;
 
-    private ?bool $active = null;
-    private ?string $createdTimestamp = null;
-    private ?string $updatedTimestamp = null;
-    private ?string $expirationTimestamp = null;
-    private ?string $lastAutosaveTimestamp = null;
-    private ?int $expirationAfterHours = null;
-    private ?string $deletedTimestamp = null;
+    private string $createdTimestamp;
+    private string $updatedTimestamp;
+    private string $expirationTimestamp;
+    private string $lastAutosaveTimestamp;
+    private int $expirationAfterHours;
+    private string $deletedTimestamp;
 
 
     public static function fromArray(array $in): self
     {
-        $sandbox = new Sandbox();
-        if (!isset($in['id'])) {
-            throw new InvalidApiResponseException('Property id is missing from API response');
+        foreach (self::REQUIRED_PROPERTIES as $property) {
+            if (!isset($in[$property])) {
+                throw new InvalidApiResponseException("Property $property is missing from API response");
+            }
         }
-        $sandbox->setId((string) $in['id']);
-        if (!isset($in['projectId'])) {
-            throw new InvalidApiResponseException('Property projectId is missing from API response');
-        }
-        $sandbox->setProjectId((string) $in['projectId']);
-        if (!isset($in['tokenId'])) {
-            throw new InvalidApiResponseException('Property tokenId is missing from API response');
-        }
-        $sandbox->setTokenId((string) $in['tokenId']);
-        if (!isset($in['configurationId'])) {
-            throw new InvalidApiResponseException('Property configurationId is missing from API response');
-        }
-        $sandbox->setConfigurationId((string) $in['configurationId']);
-        if (!isset($in['type'])) {
-            throw new InvalidApiResponseException('Property type is missing from API response');
-        }
-        $sandbox->setType($in['type']);
-        if (!isset($in['active'])) {
-            throw new InvalidApiResponseException('Property active is missing from API response');
-        }
-        $sandbox->setActive($in['active'] ?? false);
 
+        $sandbox = new Sandbox();
+        $sandbox->setId((string) $in['id']);
+        $sandbox->setProjectId((string) $in['projectId']);
+        $sandbox->setTokenId((string) $in['tokenId']);
+        $sandbox->setType($in['type']);
+        $sandbox->setActive($in['active'] ?? false);
+        $sandbox->setCreatedTimestamp($in['createdTimestamp']);
+
+        $sandbox->setConfigurationId(isset($in['configurationId']) ? (string) $in['configurationId'] : '');
         $sandbox->setPhysicalId($in['physicalId'] ?? '');
         $sandbox->setSize($in['size'] ?? '');
         $sandbox->setUser($in['user'] ?? '');
@@ -80,7 +70,6 @@ class Sandbox
         $sandbox->setWorkspaceDetails($in['workspaceDetails'] ?? []);
         $sandbox->setAutosaveTokenId(isset($in['autosaveTokenId']) ? (string) $in['autosaveTokenId'] : '');
         $sandbox->setPackages($in['packages'] ?? []);
-        $sandbox->setCreatedTimestamp($in['createdTimestamp'] ?? '');
         $sandbox->setUpdatedTimestamp($in['updatedTimestamp'] ?? '');
         $sandbox->setExpirationTimestamp($in['expirationTimestamp'] ?? '');
         $sandbox->setLastAutosaveTimestamp($in['lastAutosaveTimestamp'] ?? '');
@@ -430,9 +419,6 @@ class Sandbox
 
     public function setSize(string $size): self
     {
-        if (!in_array($size, ['small', 'medium', 'large'])) {
-            throw new Exception('Unsupported size, use small, medium or large');
-        }
         $this->size = $size;
         return $this;
     }
