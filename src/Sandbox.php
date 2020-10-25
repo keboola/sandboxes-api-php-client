@@ -4,121 +4,79 @@ declare(strict_types=1);
 
 namespace Keboola\Sandboxes\Api;
 
+use Keboola\Sandboxes\Api\Exception\InvalidApiResponseException;
+
 class Sandbox
 {
     public const DEFAULT_EXPIRATION_DAYS = 7;
+    protected const REQUIRED_PROPERTIES = ['id', 'projectId', 'tokenId', 'type', 'active', 'createdTimestamp'];
 
     private string $id;
     private string $projectId;
-    private ?string $tokenId = null;
-    private ?string $configurationId = null;
-    private ?string $physicalId = null;
-
+    private string $tokenId;
     private string $type;
-    private string $size = 'small';
+    private bool $active;
+
+    private string $configurationId;
+    private string $physicalId;
+    private string $size;
 
     private string $user;
-    private ?string $password = null;
-    private ?string $host = null;
-    private ?string $url = null;
+    private string $password;
+    private string $host;
+    private string $url;
 
-    private ?string $imageVersion = null;
-    private bool $mlflow = false;
-    private ?string $stagingWorkspaceId = null;
-    private ?string $stagingWorkspaceType = null;
-    private ?array $workspaceDetails = [];
-    private ?string $autosaveTokenId = null;
-    private ?array $packages = [];
+    private string $autosaveTokenId;
+    private string $imageVersion;
+    private string $stagingWorkspaceId;
+    private string $stagingWorkspaceType;
+    private array $workspaceDetails;
+    private array $packages;
 
-    private ?bool $active = null;
-    private ?string $createdTimestamp = null;
-    private ?string $updatedTimestamp = null;
-    private ?string $expirationTimestamp = null;
-    private ?string $lastAutosaveTimestamp = null;
-    private ?int $expirationAfterHours = null;
-    private ?string $deletedTimestamp = null;
+    private string $createdTimestamp;
+    private string $updatedTimestamp;
+    private string $expirationTimestamp;
+    private string $lastAutosaveTimestamp;
+    private int $expirationAfterHours;
+    private string $deletedTimestamp;
 
-    public function __construct(?array $sandbox = null)
+
+    public static function fromArray(array $in): self
     {
-        if (!empty($sandbox['id'])) {
-            $this->setId((string) $sandbox['id']);
-        }
-        if (!empty($sandbox['projectId'])) {
-            $this->setProjectId((string) $sandbox['projectId']);
-        }
-        if (!empty($sandbox['tokenId'])) {
-            $this->setTokenId((string) $sandbox['tokenId']);
-        }
-        if (!empty($sandbox['configurationId'])) {
-            $this->setConfigurationId((string) $sandbox['configurationId']);
-        }
-        if (!empty($sandbox['physicalId'])) {
-            $this->setPhysicalId($sandbox['physicalId']);
+        foreach (self::REQUIRED_PROPERTIES as $property) {
+            if (!isset($in[$property])) {
+                throw new InvalidApiResponseException("Property $property is missing from API response");
+            }
         }
 
-        if (!empty($sandbox['type'])) {
-            $this->setType($sandbox['type']);
-        }
-        if (!empty($sandbox['size'])) {
-            $this->setSize($sandbox['size']);
-        }
+        $sandbox = new Sandbox();
+        $sandbox->setId((string) $in['id']);
+        $sandbox->setProjectId((string) $in['projectId']);
+        $sandbox->setTokenId((string) $in['tokenId']);
+        $sandbox->setType($in['type']);
+        $sandbox->setActive($in['active'] ?? false);
+        $sandbox->setCreatedTimestamp($in['createdTimestamp']);
 
-        if (!empty($sandbox['user'])) {
-            $this->setUser($sandbox['user']);
-        }
-        if (!empty($sandbox['password'])) {
-            $this->setPassword($sandbox['password']);
-        }
-        if (!empty($sandbox['host'])) {
-            $this->setHost($sandbox['host']);
-        }
-        if (!empty($sandbox['url'])) {
-            $this->setUrl($sandbox['url']);
-        }
+        $sandbox->setConfigurationId(isset($in['configurationId']) ? (string) $in['configurationId'] : '');
+        $sandbox->setPhysicalId($in['physicalId'] ?? '');
+        $sandbox->setSize($in['size'] ?? '');
+        $sandbox->setUser($in['user'] ?? '');
+        $sandbox->setPassword($in['password'] ?? '');
+        $sandbox->setHost($in['host'] ?? '');
+        $sandbox->setUrl($in['url'] ?? '');
+        $sandbox->setImageVersion($in['imageVersion'] ?? '');
+        $sandbox->setStagingWorkspaceId(isset($in['stagingWorkspaceId']) ? (string) $in['stagingWorkspaceId'] : '');
+        $sandbox->setStagingWorkspaceType($in['stagingWorkspaceType'] ?? '');
+        $sandbox->setWorkspaceDetails($in['workspaceDetails'] ?? []);
+        $sandbox->setAutosaveTokenId(isset($in['autosaveTokenId']) ? (string) $in['autosaveTokenId'] : '');
+        $sandbox->setPackages($in['packages'] ?? []);
+        $sandbox->setUpdatedTimestamp($in['updatedTimestamp'] ?? '');
+        $sandbox->setExpirationTimestamp($in['expirationTimestamp'] ?? '');
+        $sandbox->setLastAutosaveTimestamp($in['lastAutosaveTimestamp'] ?? '');
+        $sandbox->setExpirationAfterHours($in['expirationAfterHours'] ?? 0);
+        $sandbox->setDeletedTimestamp($in['deletedTimestamp'] ?? '');
 
-        if (!empty($sandbox['imageVersion'])) {
-            $this->setImageVersion($sandbox['imageVersion']);
-        }
-        if (!empty($sandbox['mlflow'])) {
-            $this->setMlflow($sandbox['mlflow']);
-        }
-        if (!empty($sandbox['stagingWorkspaceId'])) {
-            $this->setStagingWorkspaceId((string) $sandbox['stagingWorkspaceId']);
-        }
-        if (!empty($sandbox['stagingWorkspaceType'])) {
-            $this->setStagingWorkspaceType($sandbox['stagingWorkspaceType']);
-        }
-        if (!empty($sandbox['workspaceDetails'])) {
-            $this->setWorkspaceDetails($sandbox['workspaceDetails']);
-        }
-        if (!empty($sandbox['autosaveTokenId'])) {
-            $this->setAutosaveTokenId((string) $sandbox['autosaveTokenId']);
-        }
-        if (!empty($sandbox['packages'])) {
-            $this->setPackages($sandbox['packages']);
-        }
-
-        if (isset($sandbox['active'])) {
-            $this->setActive($sandbox['active'] ?? false);
-        }
-        if (!empty($sandbox['createdTimestamp'])) {
-            $this->setCreatedTimestamp($sandbox['createdTimestamp']);
-        }
-        if (!empty($sandbox['updatedTimestamp'])) {
-            $this->setUpdatedTimestamp($sandbox['updatedTimestamp']);
-        }
-        if (!empty($sandbox['expirationTimestamp'])) {
-            $this->setExpirationTimestamp($sandbox['expirationTimestamp']);
-        }
-        if (!empty($sandbox['lastAutosaveTimestamp'])) {
-            $this->setLastAutosaveTimestamp($sandbox['lastAutosaveTimestamp']);
-        }
-        if (!empty($sandbox['expirationAfterHours'])) {
-            $this->setExpirationAfterHours($sandbox['expirationAfterHours']);
-        }
-        if (!empty($sandbox['deletedTimestamp'])) {
-            $this->setDeletedTimestamp($sandbox['deletedTimestamp']);
-        }
+        return $sandbox;
     }
 
     public function toArray(): array
@@ -156,9 +114,6 @@ class Sandbox
 
         if (!empty($this->imageVersion)) {
             $result['imageVersion'] = $this->imageVersion;
-        }
-        if (!empty($this->mlflow)) {
-            $result['mlflow'] = $this->mlflow;
         }
         if (!empty($this->stagingWorkspaceId)) {
             $result['stagingWorkspaceId'] = $this->stagingWorkspaceId;
@@ -462,22 +417,8 @@ class Sandbox
         return $this->id;
     }
 
-    public function setMlflow(bool $mlflow): self
-    {
-        $this->mlflow = $mlflow;
-        return $this;
-    }
-
-    public function getMlflow(): bool
-    {
-        return $this->mlflow;
-    }
-
     public function setSize(string $size): self
     {
-        if (!in_array($size, ['small', 'medium', 'large'])) {
-            throw new Exception('Unsupported size, use small, medium or large');
-        }
         $this->size = $size;
         return $this;
     }
@@ -485,20 +426,5 @@ class Sandbox
     public function getSize(): string
     {
         return $this->size;
-    }
-
-    public static function createPassword(int $length = 16): string
-    {
-        $chars = array('abcdefghijkmnopqrstuvwxyz', 'ABCDEFGHIJKMNOPQRSTUVWXYZ', '0234567890234567890234567');
-        srand((int) microtime() * 1000000);
-        $i = 0;
-        $pass = '';
-        while ($i <= $length - 1) {
-            $num = rand() % 25;
-            $tmp = substr($chars[$i % 3], $num, 1);
-            $pass = $pass . $tmp;
-            $i++;
-        }
-        return $pass;
     }
 }

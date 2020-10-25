@@ -26,7 +26,7 @@ class Client extends AbstractClient
         $jobData = \GuzzleHttp\json_encode($sandbox->toApiRequest());
         $request = new Request('POST', 'sandboxes', [], $jobData);
         try {
-            return new Sandbox($this->sendRequest($request));
+            return Sandbox::fromArray($this->sendRequest($request));
         } catch (GuzzleException $guzzleException) {
             throw new Exception('Error creating sandbox', $guzzleException->getCode(), $guzzleException);
         }
@@ -37,7 +37,7 @@ class Client extends AbstractClient
         $jobData = \GuzzleHttp\json_encode($sandbox->toApiRequest());
         $request = new Request('PUT', "sandboxes/{$sandbox->getId()}", [], $jobData);
         try {
-            return new Sandbox($this->sendRequest($request));
+            return Sandbox::fromArray($this->sendRequest($request));
         } catch (GuzzleException $guzzleException) {
             throw new Exception('Error updating sandbox', $guzzleException->getCode(), $guzzleException);
         }
@@ -46,7 +46,7 @@ class Client extends AbstractClient
     public function deactivate(string $id): Sandbox
     {
         try {
-            return new Sandbox($this->sendRequest(new Request('POST', "sandboxes/{$id}/deactivate", [], '{}')));
+            return Sandbox::fromArray($this->sendRequest(new Request('POST', "sandboxes/{$id}/deactivate", [], '{}')));
         } catch (GuzzleException $guzzleException) {
             throw new Exception('Error deactivating sandbox', $guzzleException->getCode(), $guzzleException);
         }
@@ -55,7 +55,7 @@ class Client extends AbstractClient
     public function activate(string $id): Sandbox
     {
         try {
-            return new Sandbox($this->sendRequest(new Request('POST', "sandboxes/{$id}/activate", [], '{}')));
+            return Sandbox::fromArray($this->sendRequest(new Request('POST', "sandboxes/{$id}/activate", [], '{}')));
         } catch (GuzzleException $guzzleException) {
             throw new Exception('Error activating sandbox', $guzzleException->getCode(), $guzzleException);
         }
@@ -64,7 +64,7 @@ class Client extends AbstractClient
     public function delete(string $id): Sandbox
     {
         try {
-            return new Sandbox($this->sendRequest(new Request('DELETE', "sandboxes/{$id}")));
+            return Sandbox::fromArray($this->sendRequest(new Request('DELETE', "sandboxes/{$id}")));
         } catch (GuzzleException $guzzleException) {
             throw new Exception('Error deleting sandbox', $guzzleException->getCode(), $guzzleException);
         }
@@ -72,7 +72,7 @@ class Client extends AbstractClient
 
     public function get(string $id): Sandbox
     {
-        return new Sandbox(
+        return Sandbox::fromArray(
             $this->sendRequest(new Request('GET', "sandboxes/{$id}"))
         );
     }
@@ -81,7 +81,7 @@ class Client extends AbstractClient
     public function list(): array
     {
         return array_map(function ($s) {
-            return new Sandbox($s);
+            return Sandbox::fromArray($s);
         }, $this->sendRequest(new Request('GET', 'sandboxes')));
     }
 }

@@ -24,13 +24,13 @@ class ManageClient extends AbstractClient
     public function listExpired(): array
     {
         return array_map(function ($s) {
-            return new Sandbox($s);
+            return Sandbox::fromArray($s);
         }, $this->sendRequest(new Request('GET', 'manage/list/expired')));
     }
 
     public function get(string $id): Sandbox
     {
-        return new Sandbox(
+        return Sandbox::fromArray(
             $this->sendRequest(new Request('GET', "manage/{$id}"))
         );
     }
