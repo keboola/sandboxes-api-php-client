@@ -11,6 +11,57 @@ class Sandbox
     public const DEFAULT_EXPIRATION_DAYS = 7;
     protected const REQUIRED_PROPERTIES = ['id', 'projectId', 'tokenId', 'type', 'active', 'createdTimestamp'];
 
+    public const TYPE_JULIA = 'julia';
+    public const TYPE_PYTHON = 'python';
+    public const TYPE_PYTHON_SPARK = 'python-spark';
+    public const TYPE_R = 'r';
+    public const TYPE_REDSHIFT = 'redshift';
+    public const TYPE_SNOWFLAKE = 'snowflake';
+    public const TYPE_SYNAPSE = 'synapse';
+    public const TYPE_TEST = 'test';
+
+    public const CONTAINER_SIZE_SMALL = 'small';
+    public const CONTAINER_SIZE_MEDIUM = 'medium';
+    public const CONTAINER_SIZE_LARGE = 'large';
+
+    public const TYPES = [
+        self::TYPE_JULIA,
+        self::TYPE_PYTHON,
+        self::TYPE_PYTHON_SPARK,
+        self::TYPE_R,
+        self::TYPE_REDSHIFT,
+        self::TYPE_SNOWFLAKE,
+        self::TYPE_SYNAPSE,
+        self::TYPE_TEST,
+    ];
+
+    public const CONTAINER_TYPES = [
+        self::TYPE_JULIA,
+        self::TYPE_PYTHON,
+        self::TYPE_PYTHON_SPARK,
+        self::TYPE_R,
+        self::TYPE_TEST,
+    ];
+
+    public const WORKSPACE_TYPES = [
+        self::TYPE_REDSHIFT,
+        self::TYPE_SNOWFLAKE,
+        self::TYPE_SYNAPSE,
+    ];
+
+    public const TYPES_ACCEPTING_SIZE = [
+        self::TYPE_JULIA,
+        self::TYPE_PYTHON,
+        self::TYPE_R,
+        self::TYPE_TEST,
+    ];
+
+    public const CONTAINER_SIZES = [
+        self::CONTAINER_SIZE_SMALL,
+        self::CONTAINER_SIZE_MEDIUM,
+        self::CONTAINER_SIZE_LARGE,
+    ];
+
     private string $id;
     private string $projectId;
     private string $tokenId;
