@@ -13,6 +13,7 @@ class Sandbox
 
     public const TYPE_JULIA = 'julia';
     public const TYPE_PYTHON = 'python';
+    public const TYPE_PYTHON_MLFLOW = 'python-mlflow';
     public const TYPE_PYTHON_SPARK = 'python-spark';
     public const TYPE_R = 'r';
     public const TYPE_REDSHIFT = 'redshift';
@@ -27,6 +28,7 @@ class Sandbox
     public const TYPES = [
         self::TYPE_JULIA,
         self::TYPE_PYTHON,
+        self::TYPE_PYTHON_MLFLOW,
         self::TYPE_PYTHON_SPARK,
         self::TYPE_R,
         self::TYPE_REDSHIFT,
@@ -38,6 +40,7 @@ class Sandbox
     public const CONTAINER_TYPES = [
         self::TYPE_JULIA,
         self::TYPE_PYTHON,
+        self::TYPE_PYTHON_MLFLOW,
         self::TYPE_PYTHON_SPARK,
         self::TYPE_R,
         self::TYPE_TEST,
