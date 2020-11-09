@@ -55,6 +55,7 @@ class Sandbox
     public const TYPES_ACCEPTING_SIZE = [
         self::TYPE_JULIA,
         self::TYPE_PYTHON,
+        self::TYPE_PYTHON_MLFLOW,
         self::TYPE_R,
         self::TYPE_TEST,
     ];
