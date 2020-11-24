@@ -238,7 +238,7 @@ class Sandbox
         return $this;
     }
 
-    public function getActive(): ?bool
+    public function getActive(): bool
     {
         return $this->active;
     }
@@ -249,7 +249,7 @@ class Sandbox
         return $this;
     }
 
-    public function getShared(): ?bool
+    public function getShared(): bool
     {
         return $this->shared;
     }
