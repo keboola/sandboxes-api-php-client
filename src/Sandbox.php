@@ -71,6 +71,7 @@ class Sandbox
     private string $tokenId;
     private string $type;
     private bool $active;
+    private bool $shared;
 
     private string $configurationId;
     private string $physicalId;
@@ -111,6 +112,7 @@ class Sandbox
         $sandbox->setType($in['type']);
         $sandbox->setActive($in['active'] ?? false);
         $sandbox->setCreatedTimestamp($in['createdTimestamp']);
+        $sandbox->setShared($in['isShared'] ?? false);
 
         $sandbox->setConfigurationId(isset($in['configurationId']) ? (string) $in['configurationId'] : '');
         $sandbox->setPhysicalId($in['physicalId'] ?? '');
@@ -203,6 +205,10 @@ class Sandbox
             $result['active'] = $this->active;
         }
 
+        if ($this->shared !== null) {
+            $result['shared'] = $this->shared;
+        }
+
         return $result;
     }
 
@@ -235,6 +241,17 @@ class Sandbox
     public function getActive(): ?bool
     {
         return $this->active;
+    }
+
+    public function setShared(bool $shared): self
+    {
+        $this->shared = $shared;
+        return $this;
+    }
+
+    public function getShared(): ?bool
+    {
+        return $this->shared;
     }
 
     public function setType(string $type): self
