@@ -17,6 +17,7 @@ services:
       - DYNAMO_TABLE_SANDBOXES=sandboxes
       - DYNAMO_TABLE_RUNS=runs
       - KBC_URL=https://connection.keboola.com
+      - KMS_ENDPOINT=http://localstack:4566
       - KBC_STORAGE_TOKEN
       - KBC_MANAGE_TOKEN
     depends_on:

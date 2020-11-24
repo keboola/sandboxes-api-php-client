@@ -33,6 +33,11 @@ jobs:
           -e TARGETS=localhost:4566 \
           -e TIMEOUT=60 \
           waisbrot/wait
+      - run: export KMS_KEY_ID=`aws kms create-key --endpoint-url=http://localstack:4566 --query 'KeyMetadata.KeyId' --output text`
+        env:
+          AWS_ACCESS_KEY_ID: accessKey
+          AWS_SECRET_ACCESS_KEY: secretKey
+          REGION: local
       - run: |
           docker run -d --rm --network host -p8080:8080 \
           -e AWS_ACCESS_KEY_ID=accessKey \
@@ -44,6 +49,7 @@ jobs:
           -e KBC_URL=https://connection.keboola.com \
           -e API_URL=http://localhost:8080 \
           -e KMS_ENDPOINT=http://localstack:4566 \
+          -e KMS_KEY_ID \
           -e PROVIDER=aws \
           -e STAGE=dev \
           keboola.azurecr.io/sandboxes-api yarn start
