@@ -111,8 +111,8 @@ class Sandbox
         $sandbox->setTokenId((string) $in['tokenId']);
         $sandbox->setType($in['type']);
         $sandbox->setActive($in['active'] ?? false);
-        $sandbox->setCreatedTimestamp($in['createdTimestamp']);
         $sandbox->setShared($in['isShared'] ?? false);
+        $sandbox->setCreatedTimestamp($in['createdTimestamp']);
 
         $sandbox->setConfigurationId(isset($in['configurationId']) ? (string) $in['configurationId'] : '');
         $sandbox->setPhysicalId($in['physicalId'] ?? '');

@@ -18,19 +18,19 @@ jobs:
           username: ${{ secrets.ACR_PULL_USERNAME }}
           password: ${{ secrets.ACR_PULL_PASSWORD }}
 
-      - run: docker pull localstack/localstack:0.11.4
+      - run: docker pull localstack/localstack
       - run: docker pull waisbrot/wait
       - run: docker pull keboola.azurecr.io/sandboxes-api
       - run: docker build -t keboola/sandboxes-api-php-client .
 
       - run: |
-          docker run -d --rm --network host -p4569:4569 \
-          -e SERVICES=dynamodb \
+          docker run -d --rm --network host -p4566:4566 \
+          -e SERVICES=dynamodb,kms \
           -e DEBUG=1 \
-          localstack/localstack:0.11.4
+          localstack/localstack
       - run: |
           docker run --rm --network host \
-          -e TARGETS=localhost:4569 \
+          -e TARGETS=localhost:4566 \
           -e TIMEOUT=60 \
           waisbrot/wait
       - run: |
@@ -38,11 +38,12 @@ jobs:
           -e AWS_ACCESS_KEY_ID=accessKey \
           -e AWS_SECRET_ACCESS_KEY=secretKey \
           -e REGION=local \
-          -e DYNAMO_ENDPOINT=http://localhost:4569 \
+          -e DYNAMO_ENDPOINT=http://localhost:4566 \
           -e DYNAMO_TABLE_RUNS=runs \
           -e DYNAMO_TABLE_SANDBOXES=sandboxes \
           -e KBC_URL=https://connection.keboola.com \
           -e API_URL=http://localhost:8080 \
+          -e KMS_ENDPOINT=http://localstack:4566 \
           -e PROVIDER=aws \
           -e STAGE=dev \
           keboola.azurecr.io/sandboxes-api yarn start
@@ -61,7 +62,7 @@ jobs:
           -e API_URL=http://localhost:8080 \
           -e AWS_ACCESS_KEY_ID=accessKey \
           -e AWS_SECRET_ACCESS_KEY=secretKey \
-          -e DYNAMO_ENDPOINT=http://localhost:4569 \
+          -e DYNAMO_ENDPOINT=http://localhost:4566 \
           -e DYNAMO_TABLE_SANDBOXES=sandboxes \
           -e DYNAMO_TABLE_RUNS=runs \
           -e KBC_URL=https://connection.keboola.com \
