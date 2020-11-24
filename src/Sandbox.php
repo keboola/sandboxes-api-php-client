@@ -71,7 +71,7 @@ class Sandbox
     private string $tokenId;
     private string $type;
     private bool $active;
-    private bool $shared;
+    private bool $shared = false;
 
     private string $configurationId;
     private string $physicalId;
