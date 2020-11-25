@@ -11,11 +11,6 @@ services:
       - ./data:/data
     environment:
       - API_URL=http://sandboxes-api:8080
-      - AWS_ACCESS_KEY_ID=accessKey
-      - AWS_SECRET_ACCESS_KEY=secretKey
-      - DYNAMO_ENDPOINT=http://localstack:4566
-      - DYNAMO_TABLE_SANDBOXES=sandboxes
-      - DYNAMO_TABLE_RUNS=runs
       - KBC_URL=https://connection.keboola.com
       - KMS_ENDPOINT=http://localstack:4566
       - KBC_STORAGE_TOKEN
@@ -29,23 +24,16 @@ services:
     ports:
       - 8080:8080
     environment:
-      - AWS_ACCESS_KEY_ID=accessKey
-      - AWS_SECRET_ACCESS_KEY=secretKey
-      - REGION=local
-      - DYNAMO_ENDPOINT=http://localstack:4566
-      - DYNAMO_TABLE_SANDBOXES=sandboxes
-      - DYNAMO_TABLE_RUNS=runs
-      - KBC_URL=https://connection.keboola.com
-      - KMS_ENDPOINT=http://localstack:4566
       - API_URL=http://sandboxes-api:8080
-      - PROVIDER=aws
+      - AZURE_CLIENT_ID
+      - AZURE_CLIENT_SECRET
+      - AZURE_TENANT_ID
+      - COSMOS_DB_ID=sandboxes-api
+      - COSMOS_ENDPOINT
+      - COSMOS_KEY
+      - KBC_URL=https://connection.keboola.com
+      - KEYVAULT_KEY_NAME=sandboxes-api-key
+      - KEYVAULT_VAULT_NAME
+      - PROVIDER=azure
       - STAGE=dev
-    depends_on:
-      - localstack
-
-  localstack:
-    image: localstack/localstack
-    environment:
-      - SERVICES=dynamodb,kms
-      - DEBUG=1
 

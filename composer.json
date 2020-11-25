@@ -2,7 +2,10 @@
     "name": "keboola/sandboxes-api-php-client",
     "type": "library",
     "description": "PHP Client for Keboola Sandboxes API",
-    "keywords": ["keboola", "sandboxes"],
+    "keywords": [
+        "keboola",
+        "sandboxes"
+    ],
     "license": "MIT",
     "authors": [
         {
@@ -18,7 +21,6 @@
         "symfony/validator": "^4.2"
     },
     "require-dev": {
-        "aws/aws-sdk-php": "^3.151",
         "keboola/coding-standard": "^8.0",
         "keboola/storage-api-client": "^10.6.0",
         "php-parallel-lint/php-parallel-lint": "^1.2",
@@ -29,10 +31,14 @@
     },
     "minimum-stability": "stable",
     "autoload": {
-        "psr-4": { "Keboola\\Sandboxes\\Api\\": "src/" }
+        "psr-4": {
+            "Keboola\\Sandboxes\\Api\\": "src/"
+        }
     },
     "autoload-dev": {
-        "psr-4": { "Keboola\\Sandboxes\\Api\\Tests\\": "tests/" }
+        "psr-4": {
+            "Keboola\\Sandboxes\\Api\\Tests\\": "tests/"
+        }
     },
     "scripts": {
         "test": "phpunit --bootstrap tests/bootstrap.php --fail-on-warning --stop-on-failure tests",
