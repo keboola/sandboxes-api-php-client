@@ -6,6 +6,7 @@ namespace Keboola\Sandboxes\Api\Tests;
 
 use Keboola\Sandboxes\Api\Client;
 use Keboola\Sandboxes\Api\ManageClient;
+use Keboola\Sandboxes\Api\Project;
 use Keboola\Sandboxes\Api\Sandbox;
 use Keboola\StorageApi\Components;
 use Keboola\StorageApi\Options\Components\Configuration;
@@ -14,6 +15,8 @@ class ClientTest extends \PHPUnit\Framework\TestCase
 {
     protected string $configurationId;
     protected Components $componentsClient;
+    protected Client $client;
+    protected ManageClient $manageClient;
 
     protected function setUp(): void
     {
@@ -29,17 +32,16 @@ class ClientTest extends \PHPUnit\Framework\TestCase
                 ->setConfigurationId($this->configurationId)
                 ->setName($this->configurationId)
         );
+
+        $apiUrl = (string) getenv('API_URL');
+        $storageToken = (string) getenv('KBC_STORAGE_TOKEN');
+        $manageToken = (string) getenv('KBC_MANAGE_TOKEN');
+        $this->client = new Client($apiUrl, $storageToken);
+        $this->manageClient = new ManageClient($apiUrl, $manageToken);
     }
 
     public function testClient(): void
     {
-        $apiUrl = (string) getenv('API_URL');
-        $storageToken = (string) getenv('KBC_STORAGE_TOKEN');
-        $manageToken = (string) getenv('KBC_MANAGE_TOKEN');
-
-        $client = new Client($apiUrl, $storageToken);
-        $manageClient = new ManageClient($apiUrl, $manageToken);
-
         // 1. Create
         $sandbox = (new Sandbox())
             ->setType('python')
@@ -52,14 +54,14 @@ class ClientTest extends \PHPUnit\Framework\TestCase
             'database' => 'test-database',
             'schema' => 'test-schema',
         ]]);
-        $response = $client->create($sandbox);
+        $response = $this->client->create($sandbox);
         $this->assertNotEmpty($response->getId());
 
         $sandboxId = $response->getId();
         $sandbox->setId($sandboxId);
 
         // 2. Get
-        $response = $client->get($sandboxId);
+        $response = $this->client->get($sandboxId);
         $this->assertNotEmpty($response);
         $this->assertNotEmpty($response->getId());
         $this->assertFalse($response->getActive());
@@ -75,8 +77,8 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $sandbox->setActive(true);
         $sandbox->setStagingWorkspaceId('768');
         $sandbox->setStagingWorkspaceType('synapse');
-        $client->update($sandbox);
-        $response = $client->get($sandboxId);
+        $this->client->update($sandbox);
+        $response = $this->client->get($sandboxId);
         $this->assertEquals('new_pass', $response->getPassword());
         $this->assertTrue($response->getActive());
         $this->assertEquals('768', $response->getStagingWorkspaceId());
@@ -84,7 +86,7 @@ class ClientTest extends \PHPUnit\Framework\TestCase
 
         // 4. List
         $foundInList = false;
-        $response = $client->list();
+        $response = $this->client->list();
         foreach ($response as $s) {
             if ($sandboxId === $s->getId()) {
                 $foundInList = true;
@@ -94,23 +96,23 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($foundInList);
 
         // 5. Deactivate
-        $response = $client->deactivate($sandboxId);
+        $response = $this->client->deactivate($sandboxId);
         $this->assertNotEmpty($response);
         $this->assertFalse($response->getActive());
         $this->assertEmpty($response->getDeletedTimestamp());
 
         // 6. Activate
-        $response = $client->activate($sandboxId);
+        $response = $this->client->activate($sandboxId);
         $this->assertNotEmpty($response);
         $this->assertTrue($response->getActive());
 
         // 7. Set to be expired
         $sandbox->setExpirationTimestamp(date('c', strtotime('-1 day')));
-        $client->update($sandbox);
+        $this->client->update($sandbox);
 
         // 8. Find in list of expired sandboxes
         $foundInList = false;
-        $response = $manageClient->listExpired();
+        $response = $this->manageClient->listExpired();
         foreach ($response as $r) {
             if ($r->getId() === $sandboxId) {
                 $foundInList = true;
@@ -119,16 +121,29 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($foundInList);
 
         // 9. Manage deactivate
-        $manageClient->deactivate($sandboxId);
+        $this->manageClient->deactivate($sandboxId);
 
         // 10. Manage get and check if deactivated
-        $response = $manageClient->get($sandboxId);
+        $response = $this->manageClient->get($sandboxId);
         $this->assertNotEmpty($response);
         $this->assertFalse($response->getActive());
 
         // 11. Delete
-        $response = $client->delete($sandboxId);
+        $response = $this->client->delete($sandboxId);
         $this->assertNotEmpty($response->getDeletedTimestamp());
+    }
+
+    public function testProject(): void
+    {
+        $projectId = explode('-', (string) getenv('KBC_STORAGE_TOKEN'))[0];
+        $project = (new Project())
+            ->setId($projectId)
+            ->setMLflowUri('/mlflow');
+        $result = $this->manageClient->updateProject($project);
+        $this->assertEquals('/mlflow', $result->getMlflowUri());
+
+        $result = $this->client->getProject();
+        $this->assertEquals('/mlflow', $result->getMlflowUri());
     }
 
     protected function tearDown(): void

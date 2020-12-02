@@ -43,4 +43,15 @@ class ManageClient extends AbstractClient
             throw new Exception('Error deactivating sandbox', $guzzleException->getCode(), $guzzleException);
         }
     }
+
+    public function updateProject(Project $project): Project
+    {
+        $jobData = \GuzzleHttp\json_encode($project->toApiRequest());
+        $request = new Request('PUT', "manage/projects/{$project->getId()}", [], $jobData);
+        try {
+            return Project::fromArray($this->sendRequest($request));
+        } catch (GuzzleException $guzzleException) {
+            throw new Exception('Error updating project', $guzzleException->getCode(), $guzzleException);
+        }
+    }
 }
