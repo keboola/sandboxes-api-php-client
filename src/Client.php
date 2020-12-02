@@ -84,4 +84,11 @@ class Client extends AbstractClient
             return Sandbox::fromArray($s);
         }, $this->sendRequest(new Request('GET', 'sandboxes')));
     }
+
+    public function getProject(): Project
+    {
+        return Project::fromArray(
+            $this->sendRequest(new Request('GET', 'projects/current'))
+        );
+    }
 }
