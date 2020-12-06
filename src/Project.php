@@ -8,6 +8,7 @@ class Project
 {
     private string $id;
     private string $mlflowUri;
+    private string $mlflowAbsConnectionString;
 
     private string $createdTimestamp;
     private string $updatedTimestamp;
@@ -17,6 +18,7 @@ class Project
         $project = new Project();
         $project->setId((string) $in['id']);
         $project->setMLflowUri($in['mlflowUri'] ?? '');
+        $project->setMLflowAbsConnectionString($in['mlflowAbsConnectionString'] ?? '');
         $project->setCreatedTimestamp($in['createdTimestamp']);
         $project->setUpdatedTimestamp($in['updatedTimestamp'] ?? '');
 
@@ -31,6 +33,9 @@ class Project
         }
         if (!empty($this->mlflowUri)) {
             $result['mlflowUri'] = $this->mlflowUri;
+        }
+        if (!empty($this->mlflowAbsConnectionString)) {
+            $result['mlflowAbsConnectionString'] = $this->mlflowAbsConnectionString;
         }
 
         if (!empty($this->createdTimestamp)) {
@@ -72,6 +77,17 @@ class Project
     public function getMlflowUri(): string
     {
         return $this->mlflowUri;
+    }
+
+    public function setMLflowAbsConnectionString(string $mlflowAbsConnectionString): self
+    {
+        $this->mlflowAbsConnectionString = $mlflowAbsConnectionString;
+        return $this;
+    }
+
+    public function getMlflowAbsConnectionString(): string
+    {
+        return $this->mlflowAbsConnectionString;
     }
 
     public function setCreatedTimestamp(string $createdTimestamp): self

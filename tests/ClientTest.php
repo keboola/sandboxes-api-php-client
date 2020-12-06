@@ -138,12 +138,15 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $projectId = explode('-', (string) getenv('KBC_STORAGE_TOKEN'))[0];
         $project = (new Project())
             ->setId($projectId)
-            ->setMLflowUri('/mlflow');
+            ->setMLflowUri('/mlflow')
+            ->setMLflowAbsConnectionString('/abs');
         $result = $this->manageClient->updateProject($project);
         $this->assertEquals('/mlflow', $result->getMlflowUri());
+        $this->assertEquals('/abs', $result->getMlflowAbsConnectionString());
 
         $result = $this->client->getProject();
         $this->assertEquals('/mlflow', $result->getMlflowUri());
+        $this->assertEquals('/abs', $result->getMlflowAbsConnectionString());
     }
 
     protected function tearDown(): void
