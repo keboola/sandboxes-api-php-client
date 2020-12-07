@@ -139,14 +139,14 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $project = (new Project())
             ->setId($projectId)
             ->setMLflowUri('/mlflow')
-            ->setMLflowAbsConnectionString('/abs');
+            ->setMLflowAbsSas('/abs');
         $result = $this->manageClient->updateProject($project);
         $this->assertEquals('/mlflow', $result->getMlflowUri());
-        $this->assertEquals('/abs', $result->getMlflowAbsConnectionString());
+        $this->assertEquals('/abs', $result->getMlflowAbsSas());
 
         $result = $this->client->getProject();
         $this->assertEquals('/mlflow', $result->getMlflowUri());
-        $this->assertEquals('/abs', $result->getMlflowAbsConnectionString());
+        $this->assertEquals('/abs', $result->getMlflowAbsSas());
     }
 
     protected function tearDown(): void
