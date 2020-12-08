@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Keboola\Sandboxes\Api\Tests;
 
 use Keboola\Sandboxes\Api\Client;
+use Keboola\Sandboxes\Api\Deployment;
 use Keboola\Sandboxes\Api\ManageClient;
 use Keboola\Sandboxes\Api\Project;
 use Keboola\Sandboxes\Api\Sandbox;
@@ -147,6 +148,28 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $result = $this->client->getProject();
         $this->assertEquals('/mlflow', $result->getMlflowUri());
         $this->assertEquals('/abs', $result->getMlflowAbsSas());
+    }
+
+    public function testDeployment(): void
+    {
+        $tokenParts = explode('-', (string) getenv('KBC_STORAGE_TOKEN'))[0];
+        $projectId = $tokenParts[0];
+        $tokenId = $tokenParts[1];
+        $deployment = (new Deployment())
+            ->setModelName('mlflow-model')
+            ->setModelVersion('4');
+        $createdDeployment = $this->client->createDeployment($deployment);
+        $this->assertNotEmpty($createdDeployment->getId());
+        $this->assertNotEmpty($createdDeployment->getCreatedTimestamp());
+        $this->assertEquals('mlflow-model', $createdDeployment->getModelName());
+        $this->assertEquals('4', $createdDeployment->getModelVersion());
+        $this->assertEquals($projectId, $createdDeployment->getProjectId());
+        $this->assertEquals($tokenId, $createdDeployment->getTokenId());
+        $this->assertEmpty($createdDeployment->getDeploymentUrl());
+
+        $createdDeployment->setDeploymentUrl('/path/to/model');
+        $updatedDeployment = $this->client->createDeployment($createdDeployment);
+        var_dump($updatedDeployment);
     }
 
     protected function tearDown(): void
