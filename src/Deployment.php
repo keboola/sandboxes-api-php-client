@@ -27,42 +27,6 @@ class Deployment
         return $deployment;
     }
 
-    public function setModelName(string $modelName): self
-    {
-        $this->modelName = $modelName;
-        return $this;
-    }
-
-    public function setModelVersion(string $modelVersion): self
-    {
-        $this->modelVersion = $modelVersion;
-        return $this;
-    }
-
-    public function setId(string $id): self
-    {
-        $this->id = $id;
-        return $this;
-    }
-
-    public function setDeploymentUrl(string $deploymentUrl): self
-    {
-        $this->deploymentUrl = $deploymentUrl;
-        return $this;
-    }
-
-    public function setProjectId(string $projectId): self
-    {
-        $this->projectId = $projectId;
-        return $this;
-    }
-
-    public function setTokenId(string $tokenId): self
-    {
-        $this->tokenId = $tokenId;
-        return $this;
-    }
-
     public function toArray(): array
     {
         $result = [];
@@ -100,5 +64,76 @@ class Deployment
         unset($array['createdTimestamp']);
         unset($array['updatedTimestamp']);
         return $array;
+    }
+
+    public function setModelName(string $modelName): self
+    {
+        $this->modelName = $modelName;
+        return $this;
+    }
+
+    public function setModelVersion(string $modelVersion): self
+    {
+        $this->modelVersion = $modelVersion;
+        return $this;
+    }
+
+    public function setId(string $id): self
+    {
+        $this->id = $id;
+        return $this;
+    }
+
+    public function setDeploymentUrl(string $deploymentUrl): self
+    {
+        $this->deploymentUrl = $deploymentUrl;
+        return $this;
+    }
+
+    public function setProjectId(string $projectId): self
+    {
+        $this->projectId = $projectId;
+        return $this;
+    }
+
+    public function setTokenId(string $tokenId): self
+    {
+        $this->tokenId = $tokenId;
+        return $this;
+    }
+
+    public function getModelName(): string
+    {
+        return $this->modelName;
+    }
+
+    public function getModelVersion(): string
+    {
+        return $this->modelVersion;
+    }
+
+    public function getDeploymentUrl(): string
+    {
+        return $this->deploymentUrl;
+    }
+
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
+    public function getCreatedTimestamp(): string
+    {
+        return $this->createdTimestamp;
+    }
+
+    public function getProjectId(): string
+    {
+        return $this->projectId;
+    }
+
+    public function getTokenId(): string
+    {
+        return $this->tokenId;
     }
 }
