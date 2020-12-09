@@ -91,4 +91,25 @@ class Client extends AbstractClient
             $this->sendRequest(new Request('GET', 'projects/current'))
         );
     }
+
+    public function createMLflowDeployment(MLflowDeployment $deployment): MLflowDeployment
+    {
+        $jobData = \GuzzleHttp\json_encode($deployment->toApiRequest());
+        $request = new Request('POST', 'mlflow/deployments', [], $jobData);
+        return MLflowDeployment::fromArray($this->sendRequest($request));
+    }
+
+    public function updateMLflowDeployment(MLflowDeployment $deployment): MLflowDeployment
+    {
+        $jobData = \GuzzleHttp\json_encode($deployment->toApiRequest());
+        $request = new Request('PUT', "mlflow/deployments/{$deployment->getId()}", [], $jobData);
+        return MLflowDeployment::fromArray($this->sendRequest($request));
+    }
+
+    public function getMLflowDeployment(string $id): MLflowDeployment
+    {
+        return MLflowDeployment::fromArray(
+            $this->sendRequest(new Request('GET', "mlflow/deployments/{$id}"))
+        );
+    }
 }
