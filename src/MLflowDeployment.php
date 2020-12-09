@@ -4,27 +4,30 @@ declare(strict_types=1);
 
 namespace Keboola\Sandboxes\Api;
 
-class Deployment
+class MLflowDeployment
 {
     private string $id;
     private string $projectId;
     private string $tokenId;
     private string $modelName;
     private string $modelVersion;
-    private string $deploymentUrl;
+    private string $url;
+    private string $error;
     private string $createdTimestamp;
     private string $updatedTimestamp;
 
     public static function fromArray(array $in): self
     {
-        $deployment = (new Deployment())
+        return (new MLflowDeployment())
             ->setId((string) $in['id'])
-            ->setProjectId($in['projectId'])
-            ->setTokenId($in['tokenId'])
+            ->setProjectId((string) $in['projectId'])
+            ->setTokenId((string) $in['tokenId'])
             ->setModelName($in['modelName'] ?? '')
             ->setModelVersion($in['modelVersion'] ?? '')
-            ->setDeploymentUrl($in['deploymentUrl'] ?? '');
-        return $deployment;
+            ->setUrl($in['url'] ?? '')
+            ->setError($in['error'] ?? '')
+            ->setCreatedTimestamp($in['createdTimestamp'] ?? '')
+            ->setUpdatedTimestamp($in['updatedTimestamp'] ?? '');
     }
 
     public function toArray(): array
@@ -33,20 +36,17 @@ class Deployment
         if (!empty($this->id)) {
             $result['id'] = $this->id;
         }
-        if (!empty($this->projectId)) {
-            $result['projectId'] = $this->projectId;
-        }
-        if (!empty($this->tokenId)) {
-            $result['tokenId'] = $this->tokenId;
-        }
         if (!empty($this->modelName)) {
             $result['modelName'] = $this->modelName;
         }
         if (!empty($this->modelVersion)) {
             $result['modelVersion'] = $this->modelVersion;
         }
-        if (!empty($this->deploymentUrl)) {
-            $result['deploymentUrl'] = $this->deploymentUrl;
+        if (!empty($this->url)) {
+            $result['url'] = $this->url;
+        }
+        if (!empty($this->error)) {
+            $result['error'] = $this->error;
         }
         if (!empty($this->createdTimestamp)) {
             $result['createdTimestamp'] = $this->createdTimestamp;
@@ -84,9 +84,15 @@ class Deployment
         return $this;
     }
 
-    public function setDeploymentUrl(string $deploymentUrl): self
+    public function setUrl(string $url): self
     {
-        $this->deploymentUrl = $deploymentUrl;
+        $this->url = $url;
+        return $this;
+    }
+
+    public function setError(string $error): self
+    {
+        $this->error = $error;
         return $this;
     }
 
@@ -102,6 +108,18 @@ class Deployment
         return $this;
     }
 
+    public function setCreatedTimestamp(string $createdTimestamp): self
+    {
+        $this->createdTimestamp = $createdTimestamp;
+        return $this;
+    }
+
+    public function setUpdatedTimestamp(string $updatedTimestamp): self
+    {
+        $this->updatedTimestamp = $updatedTimestamp;
+        return $this;
+    }
+
     public function getModelName(): string
     {
         return $this->modelName;
@@ -112,9 +130,14 @@ class Deployment
         return $this->modelVersion;
     }
 
-    public function getDeploymentUrl(): string
+    public function getUrl(): string
     {
-        return $this->deploymentUrl;
+        return $this->url;
+    }
+
+    public function getError(): string
+    {
+        return $this->error;
     }
 
     public function getId(): string

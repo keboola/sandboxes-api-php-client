@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Keboola\Sandboxes\Api\Tests;
 
 use Keboola\Sandboxes\Api\Client;
-use Keboola\Sandboxes\Api\Deployment;
+use Keboola\Sandboxes\Api\MLflowDeployment;
 use Keboola\Sandboxes\Api\ManageClient;
 use Keboola\Sandboxes\Api\Project;
 use Keboola\Sandboxes\Api\Sandbox;
@@ -150,26 +150,42 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('/abs', $result->getMlflowAbsSas());
     }
 
-    public function testDeployment(): void
+    public function testMLflowDeployment(): void
     {
-        $tokenParts = explode('-', (string) getenv('KBC_STORAGE_TOKEN'))[0];
+        $tokenParts = explode('-', (string) getenv('KBC_STORAGE_TOKEN'));
         $projectId = $tokenParts[0];
         $tokenId = $tokenParts[1];
-        $deployment = (new Deployment())
+        $deployment = (new MLflowDeployment())
             ->setModelName('mlflow-model')
             ->setModelVersion('4');
-        $createdDeployment = $this->client->createDeployment($deployment);
+        $createdDeployment = $this->client->createMLflowDeployment($deployment);
         $this->assertNotEmpty($createdDeployment->getId());
         $this->assertNotEmpty($createdDeployment->getCreatedTimestamp());
         $this->assertEquals('mlflow-model', $createdDeployment->getModelName());
         $this->assertEquals('4', $createdDeployment->getModelVersion());
         $this->assertEquals($projectId, $createdDeployment->getProjectId());
         $this->assertEquals($tokenId, $createdDeployment->getTokenId());
-        $this->assertEmpty($createdDeployment->getDeploymentUrl());
+        $this->assertEmpty($createdDeployment->getUrl());
+        $this->assertEmpty($createdDeployment->getError());
 
-        $createdDeployment->setDeploymentUrl('/path/to/model');
-        $updatedDeployment = $this->client->createDeployment($createdDeployment);
-        var_dump($updatedDeployment);
+        $getDeployment = $this->client->getMLflowDeployment($createdDeployment->getId());
+        $this->assertEquals('mlflow-model', $getDeployment->getModelName());
+        $this->assertEquals('4', $getDeployment->getModelVersion());
+        $this->assertEmpty($getDeployment->getUrl());
+        $this->assertEmpty($getDeployment->getError());
+
+        $createdDeployment->setUrl('/path/to/model');
+        $createdDeployment->setError('App Error');
+        $createdDeployment->setModelVersion('5');
+        $updatedDeployment = $this->client->updateMLflowDeployment($createdDeployment);
+        $this->assertEquals('/path/to/model', $updatedDeployment->getUrl());
+        $this->assertEquals('App Error', $updatedDeployment->getError());
+        $this->assertEquals('5', $updatedDeployment->getModelVersion());
+
+        $getDeployment = $this->client->updateMLflowDeployment($createdDeployment);
+        $this->assertEquals('/path/to/model', $getDeployment->getUrl());
+        $this->assertEquals('App Error', $getDeployment->getError());
+        $this->assertEquals('5', $getDeployment->getModelVersion());
     }
 
     protected function tearDown(): void
