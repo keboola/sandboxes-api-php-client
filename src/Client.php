@@ -112,4 +112,11 @@ class Client extends AbstractClient
             $this->sendRequest(new Request('GET', "mlflow/deployments/{$id}"))
         );
     }
+
+    public function listMLflowDeployments(): array
+    {
+        return array_map(function ($s) {
+            return MLflowDeployment::fromArray($s);
+        }, $this->sendRequest(new Request('GET', 'mlflow/deployments')));
+    }
 }
