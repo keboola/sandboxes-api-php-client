@@ -112,4 +112,9 @@ class Client extends AbstractClient
             $this->sendRequest(new Request('GET', "mlflow/deployments/{$id}"))
         );
     }
+
+    public function deleteMLflowDeployment(string $id): void
+    {
+        $this->sendRequest(new Request('DELETE', "mlflow/deployments/{$id}"));
+    }
 }
