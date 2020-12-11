@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Keboola\Sandboxes\Api;
 
-use Keboola\Sandboxes\Api\Exception\InvalidApiResponseException;
+use Keboola\Sandboxes\Api\Exception\ClientException;
 
 class Sandbox
 {
@@ -101,7 +101,7 @@ class Sandbox
     {
         foreach (self::REQUIRED_PROPERTIES as $property) {
             if (!isset($in[$property])) {
-                throw new InvalidApiResponseException("Property $property is missing from API response");
+                throw new ClientException("Property $property is missing from API response");
             }
         }
 

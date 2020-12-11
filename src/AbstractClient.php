@@ -12,6 +12,8 @@ use GuzzleHttp\MessageFormatter;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request;
 use JsonException;
+use Keboola\Sandboxes\Api\Exception\ClientException;
+use Keboola\Sandboxes\Api\Exception\ServerException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
@@ -54,7 +56,7 @@ abstract class AbstractClient
             foreach ($errors as $error) {
                 $messages .= 'Value "' . $error->getInvalidValue() . '" is invalid: ' . $error->getMessage() . "\n";
             }
-            throw new Exception('Invalid parameters when creating internal client: ' . $messages);
+            throw new \Exception('Invalid parameters when creating internal client: ' . $messages);
         }
         return $options;
     }
@@ -117,7 +119,10 @@ abstract class AbstractClient
         try {
             $response = $this->client->send($request);
         } catch (GuzzleException $e) {
-            throw new Exception($e->getMessage(), $e->getCode(), $e);
+            if ($e->getCode() < 500) {
+                throw new ClientException($e->getMessage(), $e->getCode(), $e);
+            }
+            throw new ServerException($e->getMessage(), $e->getCode(), $e);
         }
 
         $body = $response->getBody()->getContents();
@@ -129,7 +134,11 @@ abstract class AbstractClient
             $data = json_decode($body, true, self::JSON_DEPTH, JSON_THROW_ON_ERROR);
             return $data ?: [];
         } catch (JsonException $e) {
-            throw new Exception('Unable to parse response body into JSON: ' . $e->getMessage());
+            throw new ServerException(
+                'Unable to parse response body into JSON: ' . $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
         }
     }
 }

@@ -25,56 +25,38 @@ class Client extends AbstractClient
     {
         $jobData = \GuzzleHttp\json_encode($sandbox->toApiRequest());
         $request = new Request('POST', 'sandboxes', [], $jobData);
-        try {
-            return Sandbox::fromArray($this->sendRequest($request));
-        } catch (GuzzleException $guzzleException) {
-            throw new Exception('Error creating sandbox', $guzzleException->getCode(), $guzzleException);
-        }
+        return Sandbox::fromArray($this->sendRequest($request));
     }
 
     public function update(Sandbox $sandbox): Sandbox
     {
         $jobData = \GuzzleHttp\json_encode($sandbox->toApiRequest());
         $request = new Request('PUT', "sandboxes/{$sandbox->getId()}", [], $jobData);
-        try {
-            return Sandbox::fromArray($this->sendRequest($request));
-        } catch (GuzzleException $guzzleException) {
-            throw new Exception('Error updating sandbox', $guzzleException->getCode(), $guzzleException);
-        }
+        return Sandbox::fromArray($this->sendRequest($request));
     }
 
     public function deactivate(string $id): Sandbox
     {
-        try {
-            return Sandbox::fromArray($this->sendRequest(new Request('POST', "sandboxes/{$id}/deactivate", [], '{}')));
-        } catch (GuzzleException $guzzleException) {
-            throw new Exception('Error deactivating sandbox', $guzzleException->getCode(), $guzzleException);
-        }
+        $request = new Request('POST', "sandboxes/{$id}/deactivate", [], '{}');
+        return Sandbox::fromArray($this->sendRequest($request));
     }
 
     public function activate(string $id): Sandbox
     {
-        try {
-            return Sandbox::fromArray($this->sendRequest(new Request('POST', "sandboxes/{$id}/activate", [], '{}')));
-        } catch (GuzzleException $guzzleException) {
-            throw new Exception('Error activating sandbox', $guzzleException->getCode(), $guzzleException);
-        }
+        $request = new Request('POST', "sandboxes/{$id}/activate", [], '{}');
+        return Sandbox::fromArray($this->sendRequest($request));
     }
 
     public function delete(string $id): Sandbox
     {
-        try {
-            return Sandbox::fromArray($this->sendRequest(new Request('DELETE', "sandboxes/{$id}")));
-        } catch (GuzzleException $guzzleException) {
-            throw new Exception('Error deleting sandbox', $guzzleException->getCode(), $guzzleException);
-        }
+        $request = new Request('DELETE', "sandboxes/{$id}");
+        return Sandbox::fromArray($this->sendRequest($request));
     }
 
     public function get(string $id): Sandbox
     {
-        return Sandbox::fromArray(
-            $this->sendRequest(new Request('GET', "sandboxes/{$id}"))
-        );
+        $request = new Request('GET', "sandboxes/{$id}");
+        return Sandbox::fromArray($this->sendRequest($request));
     }
 
     // @TODO pagination
