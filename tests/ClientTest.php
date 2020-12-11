@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Keboola\Sandboxes\Api\Tests;
 
 use Keboola\Sandboxes\Api\Client;
+use Keboola\Sandboxes\Api\Exception;
 use Keboola\Sandboxes\Api\MLflowDeployment;
 use Keboola\Sandboxes\Api\ManageClient;
 use Keboola\Sandboxes\Api\Project;
@@ -186,6 +187,14 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('/path/to/model', $getDeployment->getUrl());
         $this->assertEquals('App Error', $getDeployment->getError());
         $this->assertEquals('5', $getDeployment->getModelVersion());
+
+        $this->client->deleteMLflowDeployment($createdDeployment->getId());
+        try {
+            $this->client->getMLflowDeployment($createdDeployment->getId());
+            $this->fail();
+        } catch (Exception $e) {
+            // Good
+        }
     }
 
     protected function tearDown(): void

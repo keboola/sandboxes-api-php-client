@@ -116,10 +116,18 @@ abstract class AbstractClient
     {
         try {
             $response = $this->client->send($request);
-            $data = json_decode($response->getBody()->getContents(), true, self::JSON_DEPTH, JSON_THROW_ON_ERROR);
-            return $data ?: [];
         } catch (GuzzleException $e) {
             throw new Exception($e->getMessage(), $e->getCode(), $e);
+        }
+
+        $body = $response->getBody()->getContents();
+        if (!strlen($body)) {
+            return [];
+        }
+
+        try {
+            $data = json_decode($body, true, self::JSON_DEPTH, JSON_THROW_ON_ERROR);
+            return $data ?: [];
         } catch (JsonException $e) {
             throw new Exception('Unable to parse response body into JSON: ' . $e->getMessage());
         }
