@@ -11,6 +11,7 @@ class MLflowDeployment
     private string $tokenId;
     private string $modelName;
     private string $modelVersion;
+    private string $modelStage;
     private string $url;
     private string $error;
     private string $createdTimestamp;
@@ -24,6 +25,7 @@ class MLflowDeployment
             ->setTokenId((string) $in['tokenId'])
             ->setModelName($in['modelName'] ?? '')
             ->setModelVersion($in['modelVersion'] ?? '')
+            ->setModelStage($in['modelStage'] ?? '')
             ->setUrl($in['url'] ?? '')
             ->setError($in['error'] ?? '')
             ->setCreatedTimestamp($in['createdTimestamp'] ?? '')
@@ -41,6 +43,9 @@ class MLflowDeployment
         }
         if (!empty($this->modelVersion)) {
             $result['modelVersion'] = $this->modelVersion;
+        }
+        if (!empty($this->modelStage)) {
+            $result['modelStage'] = $this->modelStage;
         }
         if (!empty($this->url)) {
             $result['url'] = $this->url;
@@ -75,6 +80,17 @@ class MLflowDeployment
     public function setModelVersion(string $modelVersion): self
     {
         $this->modelVersion = $modelVersion;
+        return $this;
+    }
+
+    public function getModelStage(): string
+    {
+        return $this->modelStage;
+    }
+
+    public function setModelStage(string $modelStage): MLflowDeployment
+    {
+        $this->modelStage = $modelStage;
         return $this;
     }
 
