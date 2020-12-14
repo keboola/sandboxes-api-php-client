@@ -74,6 +74,13 @@ class Client extends AbstractClient
         );
     }
 
+    public function listMLflowDeployments(): array
+    {
+        return array_map(function ($d) {
+            return MLflowDeployment::fromArray($d);
+        }, $this->sendRequest(new Request('GET', 'mlflow/deployments')));
+    }
+
     public function createMLflowDeployment(MLflowDeployment $deployment): MLflowDeployment
     {
         $jobData = \GuzzleHttp\json_encode($deployment->toApiRequest());
