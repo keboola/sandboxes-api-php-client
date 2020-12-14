@@ -158,12 +158,14 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $tokenId = $tokenParts[1];
         $deployment = (new MLflowDeployment())
             ->setModelName('mlflow-model')
-            ->setModelVersion('4');
+            ->setModelVersion('4')
+            ->setModelStage('Production');
         $createdDeployment = $this->client->createMLflowDeployment($deployment);
         $this->assertNotEmpty($createdDeployment->getId());
         $this->assertNotEmpty($createdDeployment->getCreatedTimestamp());
         $this->assertEquals('mlflow-model', $createdDeployment->getModelName());
         $this->assertEquals('4', $createdDeployment->getModelVersion());
+        $this->assertEquals('Production', $createdDeployment->getModelStage());
         $this->assertEquals($projectId, $createdDeployment->getProjectId());
         $this->assertEquals($tokenId, $createdDeployment->getTokenId());
         $this->assertEmpty($createdDeployment->getUrl());
@@ -172,6 +174,7 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $getDeployment = $this->client->getMLflowDeployment($createdDeployment->getId());
         $this->assertEquals('mlflow-model', $getDeployment->getModelName());
         $this->assertEquals('4', $getDeployment->getModelVersion());
+        $this->assertEquals('Production', $getDeployment->getModelStage());
         $this->assertEmpty($getDeployment->getUrl());
         $this->assertEmpty($getDeployment->getError());
 
@@ -182,15 +185,18 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $createdDeployment->setUrl('/path/to/model');
         $createdDeployment->setError('App Error');
         $createdDeployment->setModelVersion('5');
+        $createdDeployment->setModelStage('Staging');
         $updatedDeployment = $this->client->updateMLflowDeployment($createdDeployment);
         $this->assertEquals('/path/to/model', $updatedDeployment->getUrl());
         $this->assertEquals('App Error', $updatedDeployment->getError());
         $this->assertEquals('5', $updatedDeployment->getModelVersion());
+        $this->assertEquals('Staging', $updatedDeployment->getModelStage());
 
         $getDeployment = $this->client->updateMLflowDeployment($createdDeployment);
         $this->assertEquals('/path/to/model', $getDeployment->getUrl());
         $this->assertEquals('App Error', $getDeployment->getError());
         $this->assertEquals('5', $getDeployment->getModelVersion());
+        $this->assertEquals('Staging', $getDeployment->getModelStage());
 
         $this->client->deleteMLflowDeployment($createdDeployment->getId());
         try {
