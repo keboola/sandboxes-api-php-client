@@ -175,6 +175,10 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $this->assertEmpty($getDeployment->getUrl());
         $this->assertEmpty($getDeployment->getError());
 
+        $listDeployments = $this->client->listMLflowDeployments();
+        $this->assertGreaterThan(0, $listDeployments);
+        $this->assertInstanceOf(MLflowDeployment::class, $listDeployments[0]);
+
         $createdDeployment->setUrl('/path/to/model');
         $createdDeployment->setError('App Error');
         $createdDeployment->setModelVersion('5');
