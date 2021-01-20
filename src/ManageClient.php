@@ -40,6 +40,13 @@ class ManageClient extends AbstractClient
         $this->sendRequest(new Request('DELETE', "manage/{$id}"));
     }
 
+    public function getProject(string $id): Project
+    {
+        return Project::fromArray(
+            $this->sendRequest(new Request('GET', "manage/projects/{$id}"))
+        );
+    }
+
     public function updateProject(Project $project): Project
     {
         $jobData = \GuzzleHttp\json_encode($project->toApiRequest());
