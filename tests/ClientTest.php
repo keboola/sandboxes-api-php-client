@@ -153,6 +153,11 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $result = $this->client->getProject();
         $this->assertEquals('/mlflow', $result->getMlflowUri());
         $this->assertEquals('/abs', $result->getMlflowAbsSas());
+
+        $project->setMLflowUri(null);
+        $result = $this->manageClient->updateProject($project);
+        $this->assertEquals(null, $result->getMlflowUri());
+        $this->assertEquals('/abs', $result->getMlflowAbsSas());
     }
 
     public function testMLflowDeployment(): void

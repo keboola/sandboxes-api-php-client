@@ -7,8 +7,8 @@ namespace Keboola\Sandboxes\Api;
 class Project
 {
     private string $id;
-    private string $mlflowUri;
-    private string $mlflowAbsSas;
+    private ?string $mlflowUri = '';
+    private ?string $mlflowAbsSas = '';
 
     private string $createdTimestamp;
     private string $updatedTimestamp;
@@ -31,10 +31,10 @@ class Project
         if (!empty($this->id)) {
             $result['id'] = $this->id;
         }
-        if (!empty($this->mlflowUri)) {
+        if ($this->mlflowUri !== '') {
             $result['mlflowUri'] = $this->mlflowUri;
         }
-        if (!empty($this->mlflowAbsSas)) {
+        if ($this->mlflowAbsSas !== '') {
             $result['mlflowAbsSas'] = $this->mlflowAbsSas;
         }
 
@@ -68,24 +68,24 @@ class Project
         return $this->id;
     }
 
-    public function setMLflowUri(string $mlflowUri): self
+    public function setMLflowUri(?string $mlflowUri): self
     {
         $this->mlflowUri = $mlflowUri;
         return $this;
     }
 
-    public function getMlflowUri(): string
+    public function getMlflowUri(): ?string
     {
         return $this->mlflowUri;
     }
 
-    public function setMLflowAbsSas(string $mlflowAbsSas): self
+    public function setMLflowAbsSas(?string $mlflowAbsSas): self
     {
         $this->mlflowAbsSas = $mlflowAbsSas;
         return $this;
     }
 
-    public function getMlflowAbsSas(): string
+    public function getMlflowAbsSas(): ?string
     {
         return $this->mlflowAbsSas;
     }
