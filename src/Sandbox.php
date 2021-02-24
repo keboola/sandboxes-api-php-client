@@ -200,6 +200,9 @@ class Sandbox
         if (!empty($this->expirationAfterHours)) {
             $result['expirationAfterHours'] = $this->expirationAfterHours;
         }
+        if (!empty($this->lastAutosaveTimestamp)) {
+            $result['lastAutosaveTimestamp'] = $this->lastAutosaveTimestamp;
+        }
 
         if ($this->active !== null) {
             $result['active'] = $this->active;
