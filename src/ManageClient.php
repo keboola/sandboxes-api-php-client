@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Keboola\Sandboxes\Api;
 
-use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
 
 class ManageClient extends AbstractClient
@@ -50,7 +49,7 @@ class ManageClient extends AbstractClient
     public function updateProject(Project $project): Project
     {
         $jobData = \GuzzleHttp\json_encode($project->toApiRequest());
-        $request = new Request('PUT', "manage/projects/{$project->getId()}", [], $jobData);
+        $request = new Request('PATCH', "manage/projects/{$project->getId()}", [], $jobData);
         return Project::fromArray($this->sendRequest($request));
     }
 }

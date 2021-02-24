@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Keboola\Sandboxes\Api;
 
-class MLflowDeployment
+class MLDeployment
 {
     private string $id;
     private string $projectId;
@@ -19,7 +19,7 @@ class MLflowDeployment
 
     public static function fromArray(array $in): self
     {
-        return (new MLflowDeployment())
+        return (new MLDeployment())
             ->setId((string) $in['id'])
             ->setProjectId((string) $in['projectId'])
             ->setTokenId((string) $in['tokenId'])
@@ -88,7 +88,7 @@ class MLflowDeployment
         return $this->modelStage;
     }
 
-    public function setModelStage(string $modelStage): MLflowDeployment
+    public function setModelStage(string $modelStage): MLDeployment
     {
         $this->modelStage = $modelStage;
         return $this;

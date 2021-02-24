@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Keboola\Sandboxes\Api;
 
-use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
 
 class Client extends AbstractClient
@@ -31,7 +30,7 @@ class Client extends AbstractClient
     public function update(Sandbox $sandbox): Sandbox
     {
         $jobData = \GuzzleHttp\json_encode($sandbox->toApiRequest());
-        $request = new Request('PUT', "sandboxes/{$sandbox->getId()}", [], $jobData);
+        $request = new Request('PATCH', "sandboxes/{$sandbox->getId()}", [], $jobData);
         return Sandbox::fromArray($this->sendRequest($request));
     }
 
@@ -74,36 +73,36 @@ class Client extends AbstractClient
         );
     }
 
-    public function listMLflowDeployments(): array
+    public function listMLDeployments(): array
     {
         return array_map(function ($d) {
-            return MLflowDeployment::fromArray($d);
-        }, $this->sendRequest(new Request('GET', 'mlflow/deployments')));
+            return MLDeployment::fromArray($d);
+        }, $this->sendRequest(new Request('GET', 'ml/deployments')));
     }
 
-    public function createMLflowDeployment(MLflowDeployment $deployment): MLflowDeployment
+    public function createMLDeployment(MLDeployment $deployment): MLDeployment
     {
         $jobData = \GuzzleHttp\json_encode($deployment->toApiRequest());
-        $request = new Request('POST', 'mlflow/deployments', [], $jobData);
-        return MLflowDeployment::fromArray($this->sendRequest($request));
+        $request = new Request('POST', 'ml/deployments', [], $jobData);
+        return MLDeployment::fromArray($this->sendRequest($request));
     }
 
-    public function updateMLflowDeployment(MLflowDeployment $deployment): MLflowDeployment
+    public function updateMLDeployment(MLDeployment $deployment): MLDeployment
     {
         $jobData = \GuzzleHttp\json_encode($deployment->toApiRequest());
-        $request = new Request('PUT', "mlflow/deployments/{$deployment->getId()}", [], $jobData);
-        return MLflowDeployment::fromArray($this->sendRequest($request));
+        $request = new Request('PATCH', "ml/deployments/{$deployment->getId()}", [], $jobData);
+        return MLDeployment::fromArray($this->sendRequest($request));
     }
 
-    public function getMLflowDeployment(string $id): MLflowDeployment
+    public function getMLDeployment(string $id): MLDeployment
     {
-        return MLflowDeployment::fromArray(
-            $this->sendRequest(new Request('GET', "mlflow/deployments/{$id}"))
+        return MLDeployment::fromArray(
+            $this->sendRequest(new Request('GET', "ml/deployments/{$id}"))
         );
     }
 
-    public function deleteMLflowDeployment(string $id): void
+    public function deleteMLDeployment(string $id): void
     {
-        $this->sendRequest(new Request('DELETE', "mlflow/deployments/{$id}"));
+        $this->sendRequest(new Request('DELETE', "ml/deployments/{$id}"));
     }
 }

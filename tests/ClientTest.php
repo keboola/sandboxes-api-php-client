@@ -6,7 +6,7 @@ namespace Keboola\Sandboxes\Api\Tests;
 
 use Keboola\Sandboxes\Api\Client;
 use Keboola\Sandboxes\Api\Exception\ClientException;
-use Keboola\Sandboxes\Api\MLflowDeployment;
+use Keboola\Sandboxes\Api\MLDeployment;
 use Keboola\Sandboxes\Api\ManageClient;
 use Keboola\Sandboxes\Api\Project;
 use Keboola\Sandboxes\Api\Sandbox;
@@ -160,16 +160,16 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('/abs', $result->getMlflowAbsSas());
     }
 
-    public function testMLflowDeployment(): void
+    public function testMLDeployment(): void
     {
         $tokenParts = explode('-', (string) getenv('KBC_STORAGE_TOKEN'));
         $projectId = $tokenParts[0];
         $tokenId = $tokenParts[1];
-        $deployment = (new MLflowDeployment())
+        $deployment = (new MLDeployment())
             ->setModelName('mlflow-model')
             ->setModelVersion('4')
             ->setModelStage('Production');
-        $createdDeployment = $this->client->createMLflowDeployment($deployment);
+        $createdDeployment = $this->client->createMLDeployment($deployment);
         $this->assertNotEmpty($createdDeployment->getId());
         $this->assertNotEmpty($createdDeployment->getCreatedTimestamp());
         $this->assertEquals('mlflow-model', $createdDeployment->getModelName());
@@ -180,36 +180,36 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $this->assertEmpty($createdDeployment->getUrl());
         $this->assertEmpty($createdDeployment->getError());
 
-        $getDeployment = $this->client->getMLflowDeployment($createdDeployment->getId());
+        $getDeployment = $this->client->getMLDeployment($createdDeployment->getId());
         $this->assertEquals('mlflow-model', $getDeployment->getModelName());
         $this->assertEquals('4', $getDeployment->getModelVersion());
         $this->assertEquals('Production', $getDeployment->getModelStage());
         $this->assertEmpty($getDeployment->getUrl());
         $this->assertEmpty($getDeployment->getError());
 
-        $listDeployments = $this->client->listMLflowDeployments();
+        $listDeployments = $this->client->listMLDeployments();
         $this->assertGreaterThan(0, $listDeployments);
-        $this->assertInstanceOf(MLflowDeployment::class, $listDeployments[0]);
+        $this->assertInstanceOf(MLDeployment::class, $listDeployments[0]);
 
         $createdDeployment->setUrl('/path/to/model');
         $createdDeployment->setError('App Error');
         $createdDeployment->setModelVersion('5');
         $createdDeployment->setModelStage('Staging');
-        $updatedDeployment = $this->client->updateMLflowDeployment($createdDeployment);
+        $updatedDeployment = $this->client->updateMLDeployment($createdDeployment);
         $this->assertEquals('/path/to/model', $updatedDeployment->getUrl());
         $this->assertEquals('App Error', $updatedDeployment->getError());
         $this->assertEquals('5', $updatedDeployment->getModelVersion());
         $this->assertEquals('Staging', $updatedDeployment->getModelStage());
 
-        $getDeployment = $this->client->updateMLflowDeployment($createdDeployment);
+        $getDeployment = $this->client->updateMLDeployment($createdDeployment);
         $this->assertEquals('/path/to/model', $getDeployment->getUrl());
         $this->assertEquals('App Error', $getDeployment->getError());
         $this->assertEquals('5', $getDeployment->getModelVersion());
         $this->assertEquals('Staging', $getDeployment->getModelStage());
 
-        $this->client->deleteMLflowDeployment($createdDeployment->getId());
+        $this->client->deleteMLDeployment($createdDeployment->getId());
         try {
-            $this->client->getMLflowDeployment($createdDeployment->getId());
+            $this->client->getMLDeployment($createdDeployment->getId());
             $this->fail();
         } catch (ClientException $e) {
             // Good
