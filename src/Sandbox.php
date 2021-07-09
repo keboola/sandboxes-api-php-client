@@ -97,6 +97,10 @@ class Sandbox
     private int $expirationAfterHours;
     private string $deletedTimestamp;
 
+    private string $databricksSparkVersion;
+    private string $databricksNodeType;
+    private int $databricksNumberOfNodes;
+
 
     public static function fromArray(array $in): self
     {
@@ -133,6 +137,10 @@ class Sandbox
         $sandbox->setLastAutosaveTimestamp($in['lastAutosaveTimestamp'] ?? '');
         $sandbox->setExpirationAfterHours($in['expirationAfterHours'] ?? 0);
         $sandbox->setDeletedTimestamp($in['deletedTimestamp'] ?? '');
+
+        $sandbox->setDatabricksSparkVersion($in['databricks']['sparkVersion'] ?? '');
+        $sandbox->setDatabricksNodeType($in['databricks']['nodeType'] ?? '');
+        $sandbox->setDatabricksNumberOfNodes($in['databricks']['numberOfNodes'] ?? 0);
 
         return $sandbox;
     }
@@ -211,6 +219,18 @@ class Sandbox
 
         if ($this->shared !== null) {
             $result['shared'] = $this->shared;
+        }
+
+        if ($this->databricksSparkVersion !== null) {
+            $result['databricks']['sparkVersion'] = $this->databricksSparkVersion;
+        }
+
+        if ($this->databricksNodeType !== null) {
+            $result['databricks']['nodeType'] = $this->databricksNodeType;
+        }
+
+        if ($this->databricksNumberOfNodes !== 0) {
+            $result['databricks']['numberOfNodes'] = $this->databricksNumberOfNodes;
         }
 
         return $result;
@@ -502,5 +522,38 @@ class Sandbox
     public function getSize(): string
     {
         return $this->size;
+    }
+
+    public function getDatabricksSparkVersion(): string
+    {
+        return $this->databricksSparkVersion;
+    }
+
+    public function setDatabricksSparkVersion(string $databricksSparkVersion): Sandbox
+    {
+        $this->databricksSparkVersion = $databricksSparkVersion;
+        return $this;
+    }
+
+    public function getDatabricksNodeType(): string
+    {
+        return $this->databricksNodeType;
+    }
+
+    public function setDatabricksNodeType(string $databricksNodeType): Sandbox
+    {
+        $this->databricksNodeType = $databricksNodeType;
+        return $this;
+    }
+
+    public function getDatabricksNumberOfNodes(): int
+    {
+        return $this->databricksNumberOfNodes;
+    }
+
+    public function setDatabricksNumberOfNodes(int $databricksNumberOfNodes): Sandbox
+    {
+        $this->databricksNumberOfNodes = $databricksNumberOfNodes;
+        return $this;
     }
 }
