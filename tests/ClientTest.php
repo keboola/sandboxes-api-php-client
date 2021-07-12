@@ -51,11 +51,14 @@ class ClientTest extends \PHPUnit\Framework\TestCase
             ->setPhysicalId('physicalId')
             ->setHost('host')
             ->setPassword('pass')
-            ->setActive(false);
-        $sandbox->setWorkspaceDetails(['connection' => [
-            'database' => 'test-database',
-            'schema' => 'test-schema',
-        ]]);
+            ->setActive(false)
+            ->setWorkspaceDetails(['connection' => [
+                'database' => 'test-database',
+                'schema' => 'test-schema',
+            ]])
+            ->setDatabricksSparkVersion('Spark-1')
+            ->setDatabricksNodeType('Node-2')
+            ->setDatabricksNumberOfNodes(3);
         $response = $this->client->create($sandbox);
         $this->assertNotEmpty($response->getId());
 
@@ -73,6 +76,9 @@ class ClientTest extends \PHPUnit\Framework\TestCase
             ],
             $response->getWorkspaceDetails()
         );
+        $this->assertEquals('Spark-1', $response->getDatabricksSparkVersion());
+        $this->assertEquals('Node-2', $response->getDatabricksNodeType());
+        $this->assertEquals(3, $response->getDatabricksNumberOfNodes());
 
         // 3. Update
         $sandbox->setPassword('new_pass');
