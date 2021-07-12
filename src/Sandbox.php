@@ -221,15 +221,15 @@ class Sandbox
             $result['shared'] = $this->shared;
         }
 
-        if ($this->databricksSparkVersion !== null) {
+        if (!empty($this->databricksSparkVersion)) {
             $result['databricks']['sparkVersion'] = $this->databricksSparkVersion;
         }
 
-        if ($this->databricksNodeType !== null) {
+        if (!empty($this->databricksNodeType)) {
             $result['databricks']['nodeType'] = $this->databricksNodeType;
         }
 
-        if ($this->databricksNumberOfNodes !== 0) {
+        if (!empty($this->databricksNumberOfNodes)) {
             $result['databricks']['numberOfNodes'] = $this->databricksNumberOfNodes;
         }
 
