@@ -92,6 +92,13 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('768', $response->getStagingWorkspaceId());
         $this->assertEquals('synapse', $response->getStagingWorkspaceType());
 
+        // 3b. Manage Update
+        $sandbox->setStagingWorkspaceId('890');
+        $this->manageClient->updateSandbox($sandbox);
+        $response = $this->client->get($sandboxId);
+        $this->assertEquals('890', $response->getStagingWorkspaceId());
+        $this->assertEquals('synapse', $response->getStagingWorkspaceType());
+
         // 4. List
         $foundInList = false;
         $response = $this->client->list();

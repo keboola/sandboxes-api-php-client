@@ -34,6 +34,13 @@ class ManageClient extends AbstractClient
         );
     }
 
+    public function updateSandbox(Sandbox $sandbox): Sandbox
+    {
+        $body = \GuzzleHttp\json_encode($sandbox->toApiRequest());
+        $request = new Request('PATCH', "manage/{$sandbox->getId()}", [], $body);
+        return Sandbox::fromArray($this->sendRequest($request));
+    }
+
     public function deactivate(string $id): void
     {
         $this->sendRequest(new Request('DELETE', "manage/{$id}"));
@@ -48,8 +55,8 @@ class ManageClient extends AbstractClient
 
     public function updateProject(Project $project): Project
     {
-        $jobData = \GuzzleHttp\json_encode($project->toApiRequest());
-        $request = new Request('PATCH', "manage/projects/{$project->getId()}", [], $jobData);
+        $body = \GuzzleHttp\json_encode($project->toApiRequest());
+        $request = new Request('PATCH', "manage/projects/{$project->getId()}", [], $body);
         return Project::fromArray($this->sendRequest($request));
     }
 }
