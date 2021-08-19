@@ -11,6 +11,7 @@ class Sandbox
     public const DEFAULT_EXPIRATION_DAYS = 7;
     protected const REQUIRED_PROPERTIES = ['id', 'projectId', 'tokenId', 'type', 'active', 'createdTimestamp'];
 
+    public const TYPE_EXASOL = 'exasol';
     public const TYPE_JULIA = 'julia';
     public const TYPE_PYTHON = 'python';
     public const TYPE_PYTHON_DATABRICKS = 'python-databricks';
@@ -26,6 +27,7 @@ class Sandbox
     public const CONTAINER_SIZE_LARGE = 'large';
 
     public const TYPES = [
+        self::TYPE_EXASOL,
         self::TYPE_JULIA,
         self::TYPE_PYTHON,
         self::TYPE_PYTHON_DATABRICKS,
@@ -47,6 +49,7 @@ class Sandbox
     ];
 
     public const WORKSPACE_TYPES = [
+        self::TYPE_EXASOL,
         self::TYPE_REDSHIFT,
         self::TYPE_SNOWFLAKE,
         self::TYPE_SYNAPSE,
