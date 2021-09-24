@@ -43,7 +43,7 @@ class ManageClient extends AbstractClient
 
     public function deactivate(string $id): void
     {
-        $this->sendRequest(new Request('DELETE', "manage/{$id}"));
+        $this->sendRequest(new Request('POST', "manage/{$id}/deactivate", [], '{}'));
     }
 
     public function getProject(string $id): Project
