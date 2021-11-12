@@ -104,6 +104,8 @@ class Sandbox
     private string $databricksNodeType;
     private int $databricksNumberOfNodes;
 
+    private ?string $persistentStoragePvcName = null;
+
 
     public static function fromArray(array $in): self
     {
@@ -144,6 +146,8 @@ class Sandbox
         $sandbox->setDatabricksSparkVersion($in['databricks']['sparkVersion'] ?? '');
         $sandbox->setDatabricksNodeType($in['databricks']['nodeType'] ?? '');
         $sandbox->setDatabricksNumberOfNodes($in['databricks']['numberOfNodes'] ?? 0);
+
+        $sandbox->persistentStoragePvcName = $in['persistentStorage']['pvcName'] ?? null;
 
         return $sandbox;
     }
@@ -235,6 +239,8 @@ class Sandbox
         if (!empty($this->databricksNumberOfNodes)) {
             $result['databricks']['numberOfNodes'] = $this->databricksNumberOfNodes;
         }
+
+        $result['persistentStorage']['pvcName'] = $this->persistentStoragePvcName;
 
         return $result;
     }
@@ -557,6 +563,23 @@ class Sandbox
     public function setDatabricksNumberOfNodes(int $databricksNumberOfNodes): Sandbox
     {
         $this->databricksNumberOfNodes = $databricksNumberOfNodes;
+        return $this;
+    }
+
+    public function getPersistentStoragePvcName(): ?string
+    {
+        return $this->persistentStoragePvcName;
+    }
+
+    public function setPersistentStoragePvcName(string $persistentStoragePvcName): Sandbox
+    {
+        $this->persistentStoragePvcName = $persistentStoragePvcName;
+        return $this;
+    }
+
+    public function removePersistentStoragePvcName(): Sandbox
+    {
+        $this->persistentStoragePvcName = null;
         return $this;
     }
 }
