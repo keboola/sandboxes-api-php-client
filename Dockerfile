@@ -19,6 +19,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	&& chmod +x /tmp/composer-install.sh \
 	&& /tmp/composer-install.sh
 
+RUN pecl channel-update pecl.php.net \
+    && pecl config-set php_ini /usr/local/etc/php.ini \
+    && yes | pecl install xdebug-2.9.8 \
+    && docker-php-ext-enable xdebug
+
 ENV LANGUAGE=en_US.UTF-8
 ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
