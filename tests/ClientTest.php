@@ -148,6 +148,56 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $this->assertNotEmpty($response->getDeletedTimestamp());
     }
 
+    public function testCreateMinimalSandbox(): void
+    {
+        $sandbox = (new Sandbox())
+            ->setActive(true)
+            ->setType('python')
+        ;
+
+        $response = $this->client->create($sandbox);
+        self::assertTrue($response->getActive());
+        self::assertSame('python', $response->getType());
+        self::assertNotEmpty($response->getId());
+        self::assertNotEmpty($response->getProjectId());
+        self::assertNotEmpty($response->getTokenId());
+        self::assertNotEmpty($response->getCreatedTimestamp());
+        self::assertNotEmpty($response->getUpdatedTimestamp());
+    }
+
+    public function testAddPersistentStorageToExistingSandbox(): void
+    {
+        $sandbox = (new Sandbox())
+            ->setActive(true)
+            ->setType('python')
+        ;
+
+        $response = $this->client->create($sandbox);
+        self::assertNull($response->getPersistentStoragePvcName());
+
+        $response->setPersistentStoragePvcName('foo-pvc');
+        $response = $this->client->update($response);
+
+        self::assertSame('foo-pvc', $response->getPersistentStoragePvcName());
+    }
+
+    public function testRemovePersistentStorageFromExistingSandbox(): void
+    {
+        $sandbox = (new Sandbox())
+            ->setActive(true)
+            ->setType('python')
+            ->setPersistentStoragePvcName('foo-pvc')
+        ;
+
+        $response = $this->client->create($sandbox);
+        self::assertSame('foo-pvc', $response->getPersistentStoragePvcName());
+
+        $response->removePersistentStoragePvcName();
+        $response = $this->client->update($response);
+
+        self::assertNull($response->getPersistentStoragePvcName());
+    }
+
     public function testProject(): void
     {
         $projectId = explode('-', (string) getenv('KBC_STORAGE_TOKEN'))[0];
