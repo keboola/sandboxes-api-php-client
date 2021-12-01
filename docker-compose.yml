@@ -36,4 +36,4 @@ services:
       - KEYVAULT_VAULT_NAME
       - PROVIDER=azure
       - STAGE=dev
-
+      - MLFLOW_STORAGE_ACCOUNT_NAME=abs-account

@@ -36,6 +36,7 @@ jobs:
           -e KBC_URL=https://connection.keboola.com \
           -e PROVIDER=azure \
           -e STAGE=dev \
+          -e MLFLOW_STORAGE_ACCOUNT_NAME=abs-account \
           keboola.azurecr.io/sandboxes-api yarn start
       - run: |
           docker run --rm --network host \
