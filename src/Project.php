@@ -9,18 +9,20 @@ class Project
     private string $id;
     private ?string $mlflowUri = '';
     private ?string $mlflowAbsSas = '';
+    private ?string $mlflowAbsConnectionString = '';
 
     private string $createdTimestamp;
     private string $updatedTimestamp;
 
     public static function fromArray(array $in): self
     {
-        $project = new Project();
-        $project->setId((string) $in['id']);
-        $project->setMLflowUri($in['mlflowUri'] ?? '');
-        $project->setMLflowAbsSas($in['mlflowAbsSas'] ?? '');
-        $project->setCreatedTimestamp($in['createdTimestamp']);
-        $project->setUpdatedTimestamp($in['updatedTimestamp'] ?? '');
+        $project = new self();
+        $project->id = (string) $in['id'];
+        $project->mlflowUri = $in['mlflowUri'] ?? '';
+        $project->mlflowAbsSas = $in['mlflowAbsSas'] ?? '';
+        $project->mlflowAbsConnectionString = $in['mlflowAbsConnectionString'] ?? '';
+        $project->createdTimestamp = $in['createdTimestamp'];
+        $project->updatedTimestamp = $in['updatedTimestamp'] ?? '';
 
         return $project;
     }
@@ -36,6 +38,9 @@ class Project
         }
         if ($this->mlflowAbsSas !== '') {
             $result['mlflowAbsSas'] = $this->mlflowAbsSas;
+        }
+        if ($this->mlflowAbsSas !== '') {
+            $result['mlflowAbsConnectionString'] = $this->mlflowAbsConnectionString;
         }
 
         if (!empty($this->createdTimestamp)) {
@@ -54,6 +59,7 @@ class Project
         unset($array['id']);
         unset($array['createdTimestamp']);
         unset($array['updatedTimestamp']);
+        unset($array['mlflowAbsConnectionString']);
         return $array;
     }
 
@@ -88,6 +94,11 @@ class Project
     public function getMlflowAbsSas(): ?string
     {
         return $this->mlflowAbsSas;
+    }
+
+    public function getMlflowAbsConnectionString(): ?string
+    {
+        return $this->mlflowAbsConnectionString;
     }
 
     public function setCreatedTimestamp(string $createdTimestamp): self

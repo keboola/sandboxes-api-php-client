@@ -206,21 +206,43 @@ class ClientTest extends \PHPUnit\Framework\TestCase
             ->setMLflowUri('/mlflow')
             ->setMLflowAbsSas('/abs');
         $result = $this->manageClient->updateProject($project);
-        $this->assertEquals('/mlflow', $result->getMlflowUri());
-        $this->assertEquals('/abs', $result->getMlflowAbsSas());
+        self::assertSame('/mlflow', $result->getMlflowUri());
+        self::assertSame('/abs', $result->getMlflowAbsSas());
+        self::assertSame(
+            'BlobEndpoint=https://abs-account.blob.core.windows.net/;SharedAccessSignature=/abs',
+            $result->getMlflowAbsConnectionString()
+        );
 
         $result = $this->manageClient->getProject($projectId);
-        $this->assertEquals('/mlflow', $result->getMlflowUri());
-        $this->assertEquals('/abs', $result->getMlflowAbsSas());
+        self::assertSame('/mlflow', $result->getMlflowUri());
+        self::assertSame('/abs', $result->getMlflowAbsSas());
+        self::assertSame(
+            'BlobEndpoint=https://abs-account.blob.core.windows.net/;SharedAccessSignature=/abs',
+            $result->getMlflowAbsConnectionString()
+        );
 
         $result = $this->client->getProject();
-        $this->assertEquals('/mlflow', $result->getMlflowUri());
-        $this->assertEquals('/abs', $result->getMlflowAbsSas());
+        self::assertSame('/mlflow', $result->getMlflowUri());
+        self::assertSame('/abs', $result->getMlflowAbsSas());
+        self::assertSame(
+            'BlobEndpoint=https://abs-account.blob.core.windows.net/;SharedAccessSignature=/abs',
+            $result->getMlflowAbsConnectionString()
+        );
 
         $project->setMLflowUri(null);
         $result = $this->manageClient->updateProject($project);
-        $this->assertEquals(null, $result->getMlflowUri());
-        $this->assertEquals('/abs', $result->getMlflowAbsSas());
+        self::assertSame('', $result->getMlflowUri());
+        self::assertSame('/abs', $result->getMlflowAbsSas());
+        self::assertSame(
+            'BlobEndpoint=https://abs-account.blob.core.windows.net/;SharedAccessSignature=/abs',
+            $result->getMlflowAbsConnectionString()
+        );
+
+        $project->setMLflowAbsSas(null);
+        $result = $this->manageClient->updateProject($project);
+        self::assertSame('', $result->getMlflowUri());
+        self::assertSame('', $result->getMlflowAbsSas());
+        self::assertSame('', $result->getMlflowAbsConnectionString());
     }
 
     public function testMLDeployment(): void
