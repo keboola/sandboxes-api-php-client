@@ -20,6 +20,21 @@ class ManageClient extends AbstractClient
         parent::__construct($apiUrl, $options);
     }
 
+    /**
+     * @return Sandbox[]
+     *
+     * @TODO pagination
+     */
+    public function listProjectSandboxes(string $projectId): array
+    {
+        $response = $this->sendRequest(new Request(
+            'GET',
+            sprintf('manage/projects/%s/sandboxes', urlencode($projectId))
+        ));
+
+        return array_map(fn (array $s) => Sandbox::fromArray($s), $response);
+    }
+
     public function listExpired(): array
     {
         return array_map(function ($s) {
