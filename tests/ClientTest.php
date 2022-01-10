@@ -174,11 +174,14 @@ class ClientTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->client->create($sandbox);
         self::assertNull($response->getPersistentStoragePvcName());
+        self::assertNull($response->getPersistentStorageK8sManifest());
 
         $response->setPersistentStoragePvcName('foo-pvc');
+        $response->setPersistentStorageK8sManifest('k8s-manifest');
         $response = $this->client->update($response);
 
         self::assertSame('foo-pvc', $response->getPersistentStoragePvcName());
+        self::assertSame('k8s-manifest', $response->getPersistentStorageK8sManifest());
     }
 
     public function testRemovePersistentStorageFromExistingSandbox(): void
@@ -187,15 +190,19 @@ class ClientTest extends \PHPUnit\Framework\TestCase
             ->setActive(true)
             ->setType('python')
             ->setPersistentStoragePvcName('foo-pvc')
+            ->setPersistentStorageK8sManifest('k8s-manifest')
         ;
 
         $response = $this->client->create($sandbox);
         self::assertSame('foo-pvc', $response->getPersistentStoragePvcName());
+        self::assertSame('k8s-manifest', $response->getPersistentStorageK8sManifest());
 
         $response->removePersistentStoragePvcName();
+        $response->removePersistentStorageK8sManifest();
         $response = $this->client->update($response);
 
         self::assertNull($response->getPersistentStoragePvcName());
+        self::assertNull($response->getPersistentStorageK8sManifest());
     }
 
     public function testProject(): void
