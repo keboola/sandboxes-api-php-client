@@ -105,7 +105,7 @@ class Sandbox
     private int $databricksNumberOfNodes;
 
     private ?string $persistentStoragePvcName = null;
-
+    private ?string $persistentStorageK8sManifest = null;
 
     public static function fromArray(array $in): self
     {
@@ -148,6 +148,7 @@ class Sandbox
         $sandbox->setDatabricksNumberOfNodes($in['databricks']['numberOfNodes'] ?? 0);
 
         $sandbox->persistentStoragePvcName = $in['persistentStorage']['pvcName'] ?? null;
+        $sandbox->persistentStorageK8sManifest = $in['persistentStorage']['k8sManifest'] ?? null;
 
         return $sandbox;
     }
@@ -241,6 +242,7 @@ class Sandbox
         }
 
         $result['persistentStorage']['pvcName'] = $this->persistentStoragePvcName;
+        $result['persistentStorage']['k8sManifest'] = $this->persistentStorageK8sManifest;
 
         return $result;
     }
@@ -580,6 +582,23 @@ class Sandbox
     public function removePersistentStoragePvcName(): Sandbox
     {
         $this->persistentStoragePvcName = null;
+        return $this;
+    }
+
+    public function getPersistentStorageK8sManifest(): ?string
+    {
+        return $this->persistentStorageK8sManifest;
+    }
+
+    public function setPersistentStorageK8sManifest(string $persistentStorageK8sManifest): Sandbox
+    {
+        $this->persistentStorageK8sManifest = $persistentStorageK8sManifest;
+        return $this;
+    }
+
+    public function removePersistentStorageK8sManifest(): Sandbox
+    {
+        $this->persistentStorageK8sManifest = null;
         return $this;
     }
 }
