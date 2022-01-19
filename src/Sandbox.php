@@ -147,7 +147,7 @@ class Sandbox
         $sandbox->setDatabricksSparkVersion($in['databricks']['sparkVersion'] ?? '');
         $sandbox->setDatabricksNodeType($in['databricks']['nodeType'] ?? '');
         $sandbox->setDatabricksNumberOfNodes($in['databricks']['numberOfNodes'] ?? 0);
-        $sandbox->setDatabricksNumberOfNodes($in['databricks']['clusterId'] ?? '');
+        $sandbox->setDatabricksClusterId($in['databricks']['clusterId'] ?? '');
 
         $sandbox->persistentStoragePvcName = $in['persistentStorage']['pvcName'] ?? null;
         $sandbox->persistentStorageK8sManifest = $in['persistentStorage']['k8sManifest'] ?? null;
