@@ -27,7 +27,7 @@ class ClientTest extends \PHPUnit\Framework\TestCase
             'token' => getenv('KBC_STORAGE_TOKEN'),
         ]);
         $this->componentsClient = new Components($storageClient);
-        $this->configurationId = (string) rand(1000, 9999);
+        $this->configurationId = (string) rand(1000, 9999999);
         $this->componentsClient->addConfiguration(
             (new Configuration())
                 ->setComponentId('transformation')
