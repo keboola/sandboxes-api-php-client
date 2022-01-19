@@ -27,7 +27,7 @@ class ClientTest extends \PHPUnit\Framework\TestCase
             'token' => getenv('KBC_STORAGE_TOKEN'),
         ]);
         $this->componentsClient = new Components($storageClient);
-        $this->configurationId = (string) rand(1000, 9999);
+        $this->configurationId = (string) rand(1000, 9999999);
         $this->componentsClient->addConfiguration(
             (new Configuration())
                 ->setComponentId('transformation')
@@ -58,7 +58,8 @@ class ClientTest extends \PHPUnit\Framework\TestCase
             ]])
             ->setDatabricksSparkVersion('Spark-1')
             ->setDatabricksNodeType('Node-2')
-            ->setDatabricksNumberOfNodes(3);
+            ->setDatabricksNumberOfNodes(3)
+            ->setDatabricksClusterId('12345');
         $response = $this->client->create($sandbox);
         $this->assertNotEmpty($response->getId());
 
@@ -79,6 +80,7 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('Spark-1', $response->getDatabricksSparkVersion());
         $this->assertEquals('Node-2', $response->getDatabricksNodeType());
         $this->assertEquals(3, $response->getDatabricksNumberOfNodes());
+        $this->assertEquals('12345', $response->getDatabricksClusterId());
 
         // 3. Update
         $sandbox->setPassword('new_pass');
