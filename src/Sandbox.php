@@ -103,6 +103,7 @@ class Sandbox
     private string $databricksSparkVersion;
     private string $databricksNodeType;
     private int $databricksNumberOfNodes;
+    private string $databricksClusterId;
 
     private ?string $persistentStoragePvcName = null;
     private ?string $persistentStorageK8sManifest = null;
@@ -146,6 +147,7 @@ class Sandbox
         $sandbox->setDatabricksSparkVersion($in['databricks']['sparkVersion'] ?? '');
         $sandbox->setDatabricksNodeType($in['databricks']['nodeType'] ?? '');
         $sandbox->setDatabricksNumberOfNodes($in['databricks']['numberOfNodes'] ?? 0);
+        $sandbox->setDatabricksNumberOfNodes($in['databricks']['clusterId'] ?? '');
 
         $sandbox->persistentStoragePvcName = $in['persistentStorage']['pvcName'] ?? null;
         $sandbox->persistentStorageK8sManifest = $in['persistentStorage']['k8sManifest'] ?? null;
@@ -239,6 +241,10 @@ class Sandbox
 
         if (!empty($this->databricksNumberOfNodes)) {
             $result['databricks']['numberOfNodes'] = $this->databricksNumberOfNodes;
+        }
+
+        if (!empty($this->databricksClusterId)) {
+            $result['databricks']['clusterId'] = $this->databricksClusterId;
         }
 
         $result['persistentStorage']['pvcName'] = $this->persistentStoragePvcName;
@@ -565,6 +571,17 @@ class Sandbox
     public function setDatabricksNumberOfNodes(int $databricksNumberOfNodes): Sandbox
     {
         $this->databricksNumberOfNodes = $databricksNumberOfNodes;
+        return $this;
+    }
+
+    public function getDatabricksClusterId(): string
+    {
+        return $this->databricksClusterId;
+    }
+
+    public function setDatabricksClusterId(string $databricksClusterId): Sandbox
+    {
+        $this->databricksClusterId = $databricksClusterId;
         return $this;
     }
 
