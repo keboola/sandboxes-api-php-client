@@ -160,6 +160,26 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $response = $this->client->create($sandbox);
         self::assertTrue($response->getActive());
         self::assertSame('python', $response->getType());
+        self::assertNull($response->getBranchId());
+        self::assertNotEmpty($response->getId());
+        self::assertNotEmpty($response->getProjectId());
+        self::assertNotEmpty($response->getTokenId());
+        self::assertNotEmpty($response->getCreatedTimestamp());
+        self::assertNotEmpty($response->getUpdatedTimestamp());
+    }
+
+    public function testCreateSandboxWithBranch(): void
+    {
+        $sandbox = (new Sandbox())
+            ->setActive(true)
+            ->setType('python')
+            ->setBranchId('1234')
+        ;
+
+        $response = $this->client->create($sandbox);
+        self::assertTrue($response->getActive());
+        self::assertSame('python', $response->getType());
+        self::assertSame('1234', $response->getBranchId());
         self::assertNotEmpty($response->getId());
         self::assertNotEmpty($response->getProjectId());
         self::assertNotEmpty($response->getTokenId());
