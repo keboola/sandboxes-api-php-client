@@ -59,11 +59,17 @@ class Client extends AbstractClient
     }
 
     // @TODO pagination
-    public function list(): array
+    public function list(?ListOptions $options = null): array
     {
+        if ($options === null) {
+            $options = ListOptions::create();
+        }
+
+        $url = 'sandboxes?' . http_build_query($options->export());
+
         return array_map(function ($s) {
             return Sandbox::fromArray($s);
-        }, $this->sendRequest(new Request('GET', 'sandboxes')));
+        }, $this->sendRequest(new Request('GET', $url)));
     }
 
     public function getProject(): Project

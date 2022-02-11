@@ -77,7 +77,7 @@ class Sandbox
     private bool $active;
     private bool $shared = false;
 
-    private ?string $branchId;
+    private ?string $branchId = null;
     private string $configurationId;
     private string $physicalId;
     private string $size;
