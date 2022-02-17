@@ -64,6 +64,15 @@ class Sandbox
         self::TYPE_TEST,
     ];
 
+    /**
+     * Sandboxes containing Python
+     */
+    public const PYTHON_TYPES = [
+        self::TYPE_PYTHON,
+        self::TYPE_PYTHON_DATABRICKS,
+        self::TYPE_PYTHON_MLFLOW,
+    ];
+
     public const CONTAINER_SIZES = [
         self::CONTAINER_SIZE_SMALL,
         self::CONTAINER_SIZE_MEDIUM,
