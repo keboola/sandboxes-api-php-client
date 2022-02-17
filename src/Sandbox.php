@@ -77,6 +77,7 @@ class Sandbox
     private bool $active;
     private bool $shared = false;
 
+    private ?string $branchId = null;
     private string $configurationId;
     private string $physicalId;
     private string $size;
@@ -125,6 +126,7 @@ class Sandbox
         $sandbox->setShared($in['shared'] ?? false);
         $sandbox->setCreatedTimestamp($in['createdTimestamp']);
 
+        $sandbox->setBranchId(isset($in['branchId']) ? (string) $in['branchId'] : null);
         $sandbox->setConfigurationId(isset($in['configurationId']) ? (string) $in['configurationId'] : '');
         $sandbox->setPhysicalId($in['physicalId'] ?? '');
         $sandbox->setSize($in['size'] ?? '');
@@ -157,7 +159,10 @@ class Sandbox
 
     public function toArray(): array
     {
-        $result = [];
+        $result = [
+            'branchId' => $this->branchId,
+        ];
+
         if (!empty($this->id)) {
             $result['id'] = $this->id;
         }
@@ -348,6 +353,21 @@ class Sandbox
     public function getUrl(): ?string
     {
         return $this->url;
+    }
+
+    public function setBranchId(?string $branchId): self
+    {
+        if ($branchId === '') {
+            $branchId = null;
+        }
+
+        $this->branchId = $branchId;
+        return $this;
+    }
+
+    public function getBranchId(): ?string
+    {
+        return $this->branchId;
     }
 
     public function setConfigurationId(string $configurationId): self

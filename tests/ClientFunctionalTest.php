@@ -6,6 +6,7 @@ namespace Keboola\Sandboxes\Api\Tests;
 
 use Keboola\Sandboxes\Api\Client;
 use Keboola\Sandboxes\Api\Exception\ClientException;
+use Keboola\Sandboxes\Api\ListOptions;
 use Keboola\Sandboxes\Api\MLDeployment;
 use Keboola\Sandboxes\Api\ManageClient;
 use Keboola\Sandboxes\Api\Project;
@@ -13,7 +14,7 @@ use Keboola\Sandboxes\Api\Sandbox;
 use Keboola\StorageApi\Components;
 use Keboola\StorageApi\Options\Components\Configuration;
 
-class ClientTest extends \PHPUnit\Framework\TestCase
+class ClientFunctionalTest extends \PHPUnit\Framework\TestCase
 {
     protected string $configurationId;
     protected Components $componentsClient;
@@ -160,11 +161,53 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $response = $this->client->create($sandbox);
         self::assertTrue($response->getActive());
         self::assertSame('python', $response->getType());
+        self::assertNull($response->getBranchId());
         self::assertNotEmpty($response->getId());
         self::assertNotEmpty($response->getProjectId());
         self::assertNotEmpty($response->getTokenId());
         self::assertNotEmpty($response->getCreatedTimestamp());
         self::assertNotEmpty($response->getUpdatedTimestamp());
+    }
+
+    public function testCreateSandboxWithBranch(): void
+    {
+        $sandbox = (new Sandbox())
+            ->setActive(true)
+            ->setType('python')
+            ->setBranchId('1234')
+        ;
+
+        $response = $this->client->create($sandbox);
+        self::assertTrue($response->getActive());
+        self::assertSame('python', $response->getType());
+        self::assertSame('1234', $response->getBranchId());
+        self::assertNotEmpty($response->getId());
+        self::assertNotEmpty($response->getProjectId());
+        self::assertNotEmpty($response->getTokenId());
+        self::assertNotEmpty($response->getCreatedTimestamp());
+        self::assertNotEmpty($response->getUpdatedTimestamp());
+    }
+
+    public function testListSandboxesFromBranch(): void
+    {
+        $createdSandbox = $this->client->create(
+            (new Sandbox())
+                ->setActive(true)
+                ->setType('python')
+                ->setBranchId('1234')
+        );
+
+        $noBranchResponse = $this->client->list();
+        self::assertNotContains(
+            $createdSandbox->getId(),
+            array_map(fn(Sandbox $s) => $s->getId(), $noBranchResponse)
+        );
+
+        $branchResponse = $this->client->list(ListOptions::create()->setBranchId('1234'));
+        self::assertContains(
+            $createdSandbox->getId(),
+            array_map(fn(Sandbox $s) => $s->getId(), $branchResponse)
+        );
     }
 
     public function testAddPersistentStorageToExistingSandbox(): void
