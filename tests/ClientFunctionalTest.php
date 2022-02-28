@@ -214,6 +214,7 @@ class ClientFunctionalTest extends \PHPUnit\Framework\TestCase
             (string) getenv('KBC_MANAGE_NOTIFY_TOKEN')
         );
         $notifyClient->notifyBranchDeleted('1234');
+        // sleeping here because this request is asyncronous so we wait for the records to be deleted
         sleep(3);
         $branchResponse = $this->client->list(ListOptions::create()->setBranchId('1234'));
         self::assertNotContains(
