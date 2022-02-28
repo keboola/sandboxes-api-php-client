@@ -208,6 +208,18 @@ class ClientFunctionalTest extends \PHPUnit\Framework\TestCase
             $createdSandbox->getId(),
             array_map(fn(Sandbox $s) => $s->getId(), $branchResponse)
         );
+
+        $notifyClient = new ManageClient(
+            (string) getenv('API_URL'),
+            (string) getenv('KBC_MANAGE_NOTIFY_TOKEN')
+        );
+        $notifyClient->notifyBranchDeleted('1234');
+        sleep(3);
+        $branchResponse = $this->client->list(ListOptions::create()->setBranchId('1234'));
+        self::assertNotContains(
+            $createdSandbox->getId(),
+            array_map(fn(Sandbox $s) => $s->getId(), $branchResponse)
+        );
     }
 
     public function testAddPersistentStorageToExistingSandbox(): void
