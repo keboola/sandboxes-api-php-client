@@ -54,6 +54,7 @@ jobs:
           -e KBC_URL=https://connection.keboola.com \
           -e "KBC_STORAGE_TOKEN=${{ secrets.KBC_STORAGE_TOKEN }}" \
           -e "KBC_MANAGE_TOKEN=${{ secrets.KBC_MANAGE_TOKEN }}" \
+          -e "KBC_MANAGE_NOTIFY_TOKEN=${{ secrets.KBC_MANAGE_NOTIFY_TOKEN }}" \
           keboola/sandboxes-api-php-client composer test
       - name: Dump docker logs on failure
         if: failure()
