@@ -188,7 +188,7 @@ class ClientFunctionalTest extends \PHPUnit\Framework\TestCase
         self::assertNotEmpty($response->getUpdatedTimestamp());
     }
 
-    public function testListSandboxesFromBranch(): void
+    public function testSandboxesOnBranch(): void
     {
         $createdSandbox = $this->client->create(
             (new Sandbox())
