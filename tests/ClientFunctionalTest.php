@@ -233,7 +233,7 @@ class ClientFunctionalTest extends TestCase
             ->setActive(true)
             ->setType('python')
             ->setSize(Sandbox::CONTAINER_SIZE_SMALL)
-            ->setSizeParameters(new SandboxSizeParameters(128))
+            ->setSizeParameters(SandboxSizeParameters::create()->setStorageSizeGB(128))
         ;
 
         $response = $this->client->create($sandbox);

@@ -6,18 +6,19 @@ namespace Keboola\Sandboxes\Api;
 
 class SandboxSizeParameters
 {
-    private ?int $storageSize_GB;
+    private ?int $storageSize_GB = null;
 
-    public function __construct(?int $storageSize_GB = null)
+    public static function create(): self
     {
-        $this->storageSize_GB = $storageSize_GB;
+        return new self();
     }
 
     public static function fromArray(array $data): self
     {
-        return new self(
-            $data['storageSize_GB'] ?? null,
-        );
+        $instance = new self();
+        $instance->setStorageSizeGB($data['storageSize_GB'] ?? null);
+
+        return $instance;
     }
 
     public function toArray(): array
@@ -36,8 +37,9 @@ class SandboxSizeParameters
         return $this->storageSize_GB;
     }
 
-    public function setStorageSizeGB(?int $storageSize_GB): void
+    public function setStorageSizeGB(?int $storageSize_GB): self
     {
         $this->storageSize_GB = $storageSize_GB;
+        return $this;
     }
 }

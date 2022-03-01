@@ -11,14 +11,14 @@ class SandboxSizeParametersTest extends TestCase
 {
     public function testCreate(): void
     {
-        $parameters = new SandboxSizeParameters();
+        $parameters = SandboxSizeParameters::create();
 
         self::assertNull($parameters->getStorageSizeGB());
     }
 
     public function testSetStorageSize(): void
     {
-        $parameters = new SandboxSizeParameters();
+        $parameters = SandboxSizeParameters::create();
         self::assertNull($parameters->getStorageSizeGB());
 
         $parameters->setStorageSizeGB(256);
@@ -42,21 +42,21 @@ class SandboxSizeParametersTest extends TestCase
     {
         yield 'no parameters' => [
             'data' => [],
-            'result' => new SandboxSizeParameters(),
+            'result' => SandboxSizeParameters::create(),
         ];
 
         yield 'empty storage size' => [
             'data' => [
                 'storageSize_GB' => null,
             ],
-            'result' => new SandboxSizeParameters(null),
+            'result' => SandboxSizeParameters::create()->setStorageSizeGB(null),
         ];
 
         yield 'with storage size' => [
             'data' => [
                 'storageSize_GB' => 128,
             ],
-            'result' => new SandboxSizeParameters(128),
+            'result' => SandboxSizeParameters::create()->setStorageSizeGB(128),
         ];
     }
 
@@ -73,19 +73,19 @@ class SandboxSizeParametersTest extends TestCase
     public function provideExportToArrayTestData(): iterable
     {
         yield 'empty storage size' => [
-            'result' => new SandboxSizeParameters(null),
+            'result' => SandboxSizeParameters::create()->setStorageSizeGB(null),
             'data' => [],
         ];
 
         yield 'with zero storage size' => [
-            'result' => new SandboxSizeParameters(0),
+            'result' => SandboxSizeParameters::create()->setStorageSizeGB(0),
             'data' => [
                 'storageSize_GB' => 0,
             ],
         ];
 
         yield 'with storage size' => [
-            'result' => new SandboxSizeParameters(128),
+            'result' => SandboxSizeParameters::create()->setStorageSizeGB(128),
             'data' => [
                 'storageSize_GB' => 128,
             ],
