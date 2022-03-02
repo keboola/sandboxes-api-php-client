@@ -90,6 +90,7 @@ class Sandbox
     private string $configurationId;
     private string $physicalId;
     private string $size;
+    private ?SandboxSizeParameters $sizeParameters = null;
 
     private string $user;
     private string $password;
@@ -139,6 +140,11 @@ class Sandbox
         $sandbox->setConfigurationId(isset($in['configurationId']) ? (string) $in['configurationId'] : '');
         $sandbox->setPhysicalId($in['physicalId'] ?? '');
         $sandbox->setSize($in['size'] ?? '');
+        $sandbox->setSizeParameters(
+            isset($in['sizeParameters']) ?
+                SandboxSizeParameters::fromArray($in['sizeParameters']) :
+                null
+        );
         $sandbox->setUser($in['user'] ?? '');
         $sandbox->setPassword($in['password'] ?? '');
         $sandbox->setHost($in['host'] ?? '');
@@ -187,6 +193,9 @@ class Sandbox
         }
         if (!empty($this->size)) {
             $result['size'] = $this->size;
+        }
+        if ($this->sizeParameters !== null) {
+            $result['sizeParameters'] = $this->sizeParameters->toArray();
         }
 
         if (!empty($this->user)) {
@@ -568,6 +577,17 @@ class Sandbox
     public function getSize(): string
     {
         return $this->size;
+    }
+
+    public function setSizeParameters(?SandboxSizeParameters $sizeParameters): self
+    {
+        $this->sizeParameters = $sizeParameters;
+        return $this;
+    }
+
+    public function getSizeParameters(): ?SandboxSizeParameters
+    {
+        return $this->sizeParameters;
     }
 
     public function getDatabricksSparkVersion(): string

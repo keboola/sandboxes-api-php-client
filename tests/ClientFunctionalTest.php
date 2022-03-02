@@ -11,10 +11,12 @@ use Keboola\Sandboxes\Api\MLDeployment;
 use Keboola\Sandboxes\Api\ManageClient;
 use Keboola\Sandboxes\Api\Project;
 use Keboola\Sandboxes\Api\Sandbox;
+use Keboola\Sandboxes\Api\SandboxSizeParameters;
 use Keboola\StorageApi\Components;
 use Keboola\StorageApi\Options\Components\Configuration;
+use PHPUnit\Framework\TestCase;
 
-class ClientFunctionalTest extends \PHPUnit\Framework\TestCase
+class ClientFunctionalTest extends TestCase
 {
     protected string $configurationId;
     protected Components $componentsClient;
@@ -162,6 +164,8 @@ class ClientFunctionalTest extends \PHPUnit\Framework\TestCase
         self::assertTrue($response->getActive());
         self::assertSame('python', $response->getType());
         self::assertNull($response->getBranchId());
+        self::assertEmpty($response->getSize());
+        self::assertNull($response->getSizeParameters());
         self::assertNotEmpty($response->getId());
         self::assertNotEmpty($response->getProjectId());
         self::assertNotEmpty($response->getTokenId());
@@ -221,6 +225,28 @@ class ClientFunctionalTest extends \PHPUnit\Framework\TestCase
             $createdSandbox->getId(),
             array_map(fn(Sandbox $s) => $s->getId(), $branchResponse)
         );
+    }
+
+    public function testCreateSandboxWithSize(): void
+    {
+        $sandbox = (new Sandbox())
+            ->setActive(true)
+            ->setType('python')
+            ->setSize(Sandbox::CONTAINER_SIZE_SMALL)
+            ->setSizeParameters(SandboxSizeParameters::create()->setStorageSizeGB(128))
+        ;
+
+        $response = $this->client->create($sandbox);
+        self::assertTrue($response->getActive());
+        self::assertSame('python', $response->getType());
+        self::assertSame(Sandbox::CONTAINER_SIZE_SMALL, $response->getSize());
+        self::assertNotNull($response->getSizeParameters());
+        self::assertSame(128, $response->getSizeParameters()->getStorageSizeGB());
+        self::assertNotEmpty($response->getId());
+        self::assertNotEmpty($response->getProjectId());
+        self::assertNotEmpty($response->getTokenId());
+        self::assertNotEmpty($response->getCreatedTimestamp());
+        self::assertNotEmpty($response->getUpdatedTimestamp());
     }
 
     public function testAddPersistentStorageToExistingSandbox(): void
