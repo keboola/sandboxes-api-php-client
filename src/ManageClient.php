@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Keboola\Sandboxes\Api;
 
 use GuzzleHttp\Psr7\Request;
+use function GuzzleHttp\json_encode;
 
 class ManageClient extends AbstractClient
 {
@@ -51,7 +52,7 @@ class ManageClient extends AbstractClient
 
     public function updateSandbox(Sandbox $sandbox): Sandbox
     {
-        $body = \GuzzleHttp\json_encode($sandbox->toApiRequest());
+        $body = json_encode($sandbox->toApiRequest());
         $request = new Request('PATCH', "manage/{$sandbox->getId()}", [], $body);
         return Sandbox::fromArray($this->sendRequest($request));
     }
@@ -70,7 +71,7 @@ class ManageClient extends AbstractClient
 
     public function updateProject(Project $project): Project
     {
-        $body = \GuzzleHttp\json_encode($project->toApiRequest());
+        $body = json_encode($project->toApiRequest());
         $request = new Request('PATCH', "manage/projects/{$project->getId()}", [], $body);
         return Project::fromArray($this->sendRequest($request));
     }

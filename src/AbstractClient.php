@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Keboola\Sandboxes\Api;
 
 use Closure;
+use Exception;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\HandlerStack;
@@ -56,7 +57,7 @@ abstract class AbstractClient
             foreach ($errors as $error) {
                 $messages .= 'Value "' . $error->getInvalidValue() . '" is invalid: ' . $error->getMessage() . "\n";
             }
-            throw new \Exception('Invalid parameters when creating internal client: ' . $messages);
+            throw new Exception('Invalid parameters when creating internal client: ' . $messages);
         }
         return $options;
     }
@@ -110,7 +111,7 @@ abstract class AbstractClient
                 new MessageFormatter('[sandboxes-api] {method} {uri} : {code} {res_header_Content-Length}')
             ));
         }
-        // finally create the instance
+        // finally, create the instance
         return new GuzzleClient(['base_uri' => $options['apiUrl'], 'handler' => $handlerStack]);
     }
 
@@ -131,7 +132,7 @@ abstract class AbstractClient
         }
 
         try {
-            $data = json_decode($body, true, self::JSON_DEPTH, JSON_THROW_ON_ERROR);
+            $data = (array) json_decode($body, true, self::JSON_DEPTH, JSON_THROW_ON_ERROR);
             return $data ?: [];
         } catch (JsonException $e) {
             throw new ServerException(

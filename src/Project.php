@@ -13,6 +13,8 @@ class Project
 
     private string $createdTimestamp;
     private string $updatedTimestamp;
+    private string $mlflowServerVersion = '';
+    private string $mlflowServerVersionLatest = '';
 
     public static function fromArray(array $in): self
     {
@@ -23,6 +25,8 @@ class Project
         $project->mlflowAbsConnectionString = $in['mlflowAbsConnectionString'] ?? '';
         $project->createdTimestamp = $in['createdTimestamp'];
         $project->updatedTimestamp = $in['updatedTimestamp'] ?? '';
+        $project->mlflowServerVersion = $in['mlflowServerVersion'] ?? '';
+        $project->mlflowServerVersionLatest = $in['mlflowServerVersionLatest'] ?? '';
 
         return $project;
     }
@@ -43,6 +47,12 @@ class Project
             $result['mlflowAbsConnectionString'] = $this->mlflowAbsConnectionString;
         }
 
+        if ($this->mlflowServerVersion !== '') {
+            $result['mlflowServerVersion'] = $this->mlflowServerVersion;
+        }
+
+        $result['mlflowServerVersionLatest'] = $this->mlflowServerVersionLatest;
+
         if (!empty($this->createdTimestamp)) {
             $result['createdTimestamp'] = $this->createdTimestamp;
         }
@@ -60,6 +70,7 @@ class Project
         unset($array['createdTimestamp']);
         unset($array['updatedTimestamp']);
         unset($array['mlflowAbsConnectionString']);
+        unset($array['mlflowServerVersionLatest']);
         return $array;
     }
 
@@ -74,7 +85,7 @@ class Project
         return $this->id;
     }
 
-    public function setMLflowUri(?string $mlflowUri): self
+    public function setMlflowUri(?string $mlflowUri): self
     {
         $this->mlflowUri = $mlflowUri;
         return $this;
@@ -85,7 +96,7 @@ class Project
         return $this->mlflowUri;
     }
 
-    public function setMLflowAbsSas(?string $mlflowAbsSas): self
+    public function setMlflowAbsSas(?string $mlflowAbsSas): self
     {
         $this->mlflowAbsSas = $mlflowAbsSas;
         return $this;
@@ -121,5 +132,21 @@ class Project
     public function getUpdatedTimestamp(): ?string
     {
         return $this->updatedTimestamp;
+    }
+
+    public function setMlflowServerVersion(string $serverVersion): self
+    {
+        $this->mlflowServerVersion = $serverVersion;
+        return $this;
+    }
+
+    public function getMlflowServerVersion(): string
+    {
+        return $this->mlflowServerVersion;
+    }
+
+    public function getMlflowServerVersionLatest(): string
+    {
+        return $this->mlflowServerVersionLatest;
     }
 }
