@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Keboola\Sandboxes\Api;
 
 use GuzzleHttp\Psr7\Request;
+use function GuzzleHttp\json_encode;
 
 class Client extends AbstractClient
 {
@@ -22,14 +23,14 @@ class Client extends AbstractClient
 
     public function create(Sandbox $sandbox): Sandbox
     {
-        $jobData = \GuzzleHttp\json_encode($sandbox->toApiRequest());
+        $jobData = json_encode($sandbox->toApiRequest());
         $request = new Request('POST', 'sandboxes', [], $jobData);
         return Sandbox::fromArray($this->sendRequest($request));
     }
 
     public function update(Sandbox $sandbox): Sandbox
     {
-        $jobData = \GuzzleHttp\json_encode($sandbox->toApiRequest());
+        $jobData = json_encode($sandbox->toApiRequest());
         $request = new Request('PATCH', "sandboxes/{$sandbox->getId()}", [], $jobData);
         return Sandbox::fromArray($this->sendRequest($request));
     }
@@ -79,6 +80,22 @@ class Client extends AbstractClient
         );
     }
 
+    public function updateProjectServerVersion(string $projectId, string $serverVersion): Project
+    {
+        return Project::fromArray(
+            $this->sendRequest(
+                new Request(
+                    'PATCH',
+                    sprintf('projects/%s/serverVersion', $projectId),
+                    [],
+                    json_encode([
+                        'mlflowServerVersion' => $serverVersion,
+                    ])
+                )
+            )
+        );
+    }
+
     public function listMLDeployments(): array
     {
         return array_map(function ($d) {
@@ -88,14 +105,14 @@ class Client extends AbstractClient
 
     public function createMLDeployment(MLDeployment $deployment): MLDeployment
     {
-        $jobData = \GuzzleHttp\json_encode($deployment->toApiRequest());
+        $jobData = json_encode($deployment->toApiRequest());
         $request = new Request('POST', 'ml/deployments', [], $jobData);
         return MLDeployment::fromArray($this->sendRequest($request));
     }
 
     public function updateMLDeployment(MLDeployment $deployment): MLDeployment
     {
-        $jobData = \GuzzleHttp\json_encode($deployment->toApiRequest());
+        $jobData = json_encode($deployment->toApiRequest());
         $request = new Request('PATCH', "ml/deployments/{$deployment->getId()}", [], $jobData);
         return MLDeployment::fromArray($this->sendRequest($request));
     }

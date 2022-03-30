@@ -12,9 +12,9 @@ services:
     environment:
       - API_URL=http://sandboxes-api:8080
       - KBC_URL=https://connection.keboola.com
-      - KMS_ENDPOINT=http://localstack:4566
       - KBC_STORAGE_TOKEN
       - KBC_MANAGE_TOKEN
+      - KBC_MANAGE_NOTIFY_TOKEN
     depends_on:
       - sandboxes-api
 

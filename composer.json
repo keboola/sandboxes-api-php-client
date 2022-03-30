@@ -21,11 +21,11 @@
         "symfony/validator": "^4.2 !=4.4.33"
     },
     "require-dev": {
-        "keboola/coding-standard": "^8.0",
+        "keboola/coding-standard": "^13.0.0",
         "keboola/storage-api-client": "^10.6.0",
         "php-parallel-lint/php-parallel-lint": "^1.2",
-        "phpstan/phpstan": "^0.12.25",
-        "phpstan/phpstan-phpunit": "^0.12",
+        "phpstan/phpstan": "^1.5.0",
+        "phpstan/phpstan-phpunit": "^1.0.0",
         "phpunit/phpunit": "^9.0",
         "squizlabs/php_codesniffer": "^3.0",
         "vlucas/phpdotenv": "^4.1"
@@ -55,6 +55,9 @@
     },
     "config": {
         "sort-packages": true,
-        "optimize-autoloader": true
+        "optimize-autoloader": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
     }
 }

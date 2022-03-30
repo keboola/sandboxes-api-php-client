@@ -7,11 +7,12 @@ namespace Keboola\Sandboxes\Api\Tests;
 use Keboola\Sandboxes\Api\Client;
 use Keboola\Sandboxes\Api\Exception\ClientException;
 use Keboola\Sandboxes\Api\ListOptions;
-use Keboola\Sandboxes\Api\MLDeployment;
 use Keboola\Sandboxes\Api\ManageClient;
+use Keboola\Sandboxes\Api\MLDeployment;
 use Keboola\Sandboxes\Api\Project;
 use Keboola\Sandboxes\Api\Sandbox;
 use Keboola\Sandboxes\Api\SandboxSizeParameters;
+use Keboola\StorageApi\Client as StorageClient;
 use Keboola\StorageApi\Components;
 use Keboola\StorageApi\Options\Components\Configuration;
 use PHPUnit\Framework\TestCase;
@@ -25,7 +26,7 @@ class ClientFunctionalTest extends TestCase
 
     protected function setUp(): void
     {
-        $storageClient = new \Keboola\StorageApi\Client([
+        $storageClient = new StorageClient([
             'url' => getenv('KBC_URL'),
             'token' => getenv('KBC_STORAGE_TOKEN'),
         ]);
@@ -294,8 +295,9 @@ class ClientFunctionalTest extends TestCase
         $projectId = explode('-', (string) getenv('KBC_STORAGE_TOKEN'))[0];
         $project = (new Project())
             ->setId($projectId)
-            ->setMLflowUri('/mlflow')
-            ->setMLflowAbsSas('/abs');
+            ->setMlflowUri('/mlflow')
+            ->setMlflowAbsSas('/abs')
+            ->setMlflowServerVersion('1.2.3');
         $result = $this->manageClient->updateProject($project);
         self::assertSame('/mlflow', $result->getMlflowUri());
         self::assertSame('/abs', $result->getMlflowAbsSas());
@@ -303,6 +305,8 @@ class ClientFunctionalTest extends TestCase
             'BlobEndpoint=https://abs-account.blob.core.windows.net/;SharedAccessSignature=/abs',
             $result->getMlflowAbsConnectionString()
         );
+        self::assertSame('1.2.3', $result->getMlflowServerVersion());
+        self::assertNotEmpty($result->getMlflowServerVersionLatest());
 
         $result = $this->manageClient->getProject($projectId);
         self::assertSame('/mlflow', $result->getMlflowUri());
@@ -311,6 +315,8 @@ class ClientFunctionalTest extends TestCase
             'BlobEndpoint=https://abs-account.blob.core.windows.net/;SharedAccessSignature=/abs',
             $result->getMlflowAbsConnectionString()
         );
+        self::assertSame('1.2.3', $result->getMlflowServerVersion());
+        self::assertNotEmpty($result->getMlflowServerVersionLatest());
 
         $result = $this->client->getProject();
         self::assertSame('/mlflow', $result->getMlflowUri());
@@ -319,8 +325,10 @@ class ClientFunctionalTest extends TestCase
             'BlobEndpoint=https://abs-account.blob.core.windows.net/;SharedAccessSignature=/abs',
             $result->getMlflowAbsConnectionString()
         );
+        self::assertSame('1.2.3', $result->getMlflowServerVersion());
+        self::assertNotEmpty($result->getMlflowServerVersionLatest());
 
-        $project->setMLflowUri(null);
+        $project->setMlflowUri(null);
         $result = $this->manageClient->updateProject($project);
         self::assertSame('', $result->getMlflowUri());
         self::assertSame('/abs', $result->getMlflowAbsSas());
@@ -329,11 +337,15 @@ class ClientFunctionalTest extends TestCase
             $result->getMlflowAbsConnectionString()
         );
 
-        $project->setMLflowAbsSas(null);
+        $project->setMlflowAbsSas(null);
         $result = $this->manageClient->updateProject($project);
         self::assertSame('', $result->getMlflowUri());
         self::assertSame('', $result->getMlflowAbsSas());
         self::assertSame('', $result->getMlflowAbsConnectionString());
+
+        $result = $this->client->updateProjectServerVersion($projectId, '1.2.4');
+        self::assertSame('1.2.4', $result->getMlflowServerVersion());
+        self::assertNotEmpty($result->getMlflowServerVersionLatest());
     }
 
     public function testMLDeployment(): void
