@@ -11,7 +11,7 @@ class Project
     private ?string $mlflowAbsSas = '';
     private ?string $mlflowAbsConnectionString = '';
     private ?string $mlflowServerVersion = '';
-    private ?string $mlflowServerVersionLatest = '';
+    private string $mlflowServerVersionLatest = '';
 
     private string $createdTimestamp;
     private string $updatedTimestamp;
