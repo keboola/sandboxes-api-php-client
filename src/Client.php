@@ -80,7 +80,7 @@ class Client extends AbstractClient
         );
     }
 
-    public function updateProjectServerVersion(string $projectId, string $serverVersion): Project
+    public function updateProjectServerVersion(string $projectId, ?string $serverVersion): Project
     {
         return Project::fromArray(
             $this->sendRequest(

@@ -10,11 +10,11 @@ class Project
     private ?string $mlflowUri = '';
     private ?string $mlflowAbsSas = '';
     private ?string $mlflowAbsConnectionString = '';
+    private ?string $mlflowServerVersion = '';
+    private ?string $mlflowServerVersionLatest = '';
 
     private string $createdTimestamp;
     private string $updatedTimestamp;
-    private ?string $mlflowServerVersion = '';
-    private string $mlflowServerVersionLatest = '';
 
     public static function fromArray(array $in): self
     {
