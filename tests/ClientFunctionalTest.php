@@ -343,6 +343,10 @@ class ClientFunctionalTest extends TestCase
         self::assertSame('', $result->getMlflowAbsSas());
         self::assertSame('', $result->getMlflowAbsConnectionString());
 
+        $project->setMlflowServerVersion(null);
+        $result = $this->manageClient->updateProject($project);
+        self::assertSame('', $result->getMlflowServerVersion());
+
         $result = $this->client->updateProjectServerVersion($projectId, '1.2.4');
         self::assertSame('1.2.4', $result->getMlflowServerVersion());
         self::assertNotEmpty($result->getMlflowServerVersionLatest());
