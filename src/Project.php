@@ -12,6 +12,7 @@ class Project
     private ?string $mlflowAbsConnectionString = '';
     private ?string $mlflowServerVersion = '';
     private string $mlflowServerVersionLatest = '';
+    private ?bool $persistentStorageReady = null;
 
     private string $createdTimestamp;
     private string $updatedTimestamp;
@@ -27,6 +28,7 @@ class Project
         $project->updatedTimestamp = $in['updatedTimestamp'] ?? '';
         $project->mlflowServerVersion = $in['mlflowServerVersion'] ?? '';
         $project->mlflowServerVersionLatest = $in['mlflowServerVersionLatest'] ?? '';
+        $project->persistentStorageReady = $in['persistentStorageReady'] ?? null;
 
         return $project;
     }
@@ -52,6 +54,7 @@ class Project
         }
 
         $result['mlflowServerVersionLatest'] = $this->mlflowServerVersionLatest;
+        $result['persistentStorageReady'] = $this->persistentStorageReady;
 
         if (!empty($this->createdTimestamp)) {
             $result['createdTimestamp'] = $this->createdTimestamp;
@@ -145,8 +148,19 @@ class Project
         return $this->mlflowServerVersion;
     }
 
-    public function getMlflowServerVersionLatest(): string
+    public function getMlflowServerVersionLatest(): ?string
     {
         return $this->mlflowServerVersionLatest;
+    }
+
+    public function setPersistentStorageReady(?bool $value): self
+    {
+        $this->persistentStorageReady = $value;
+        return $this;
+    }
+
+    public function getPersistentStorageReady(): ?bool
+    {
+        return $this->persistentStorageReady;
     }
 }

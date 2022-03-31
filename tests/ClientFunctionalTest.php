@@ -346,6 +346,7 @@ class ClientFunctionalTest extends TestCase
         $project->setMlflowServerVersion(null);
         $result = $this->manageClient->updateProject($project);
         self::assertSame('', $result->getMlflowServerVersion());
+        self::assertNotEmpty($result->getMlflowServerVersionLatest());
 
         $result = $this->client->updateProjectServerVersion($projectId, '1.2.4');
         self::assertSame('1.2.4', $result->getMlflowServerVersion());
@@ -354,6 +355,16 @@ class ClientFunctionalTest extends TestCase
         $result = $this->client->updateProjectServerVersion($projectId, null);
         self::assertSame('', $result->getMlflowServerVersion());
         self::assertNotEmpty($result->getMlflowServerVersionLatest());
+
+        $result = $this->client->getProject();
+        self::assertNull($result->getPersistentStorageReady());
+        $project->setPersistentStorageReady(true);
+        $result = $this->manageClient->updateProject($project);
+        self::assertTrue($result->getPersistentStorageReady());
+
+        $project->setPersistentStorageReady(null);
+        $result = $this->manageClient->updateProject($project);
+        self::assertNull($result->getPersistentStorageReady());
     }
 
     public function testMLDeployment(): void
