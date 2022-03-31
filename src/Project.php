@@ -13,7 +13,7 @@ class Project
 
     private string $createdTimestamp;
     private string $updatedTimestamp;
-    private string $mlflowServerVersion = '';
+    private ?string $mlflowServerVersion = '';
     private string $mlflowServerVersionLatest = '';
 
     public static function fromArray(array $in): self
@@ -134,13 +134,13 @@ class Project
         return $this->updatedTimestamp;
     }
 
-    public function setMlflowServerVersion(string $serverVersion): self
+    public function setMlflowServerVersion(?string $serverVersion): self
     {
         $this->mlflowServerVersion = $serverVersion;
         return $this;
     }
 
-    public function getMlflowServerVersion(): string
+    public function getMlflowServerVersion(): ?string
     {
         return $this->mlflowServerVersion;
     }
