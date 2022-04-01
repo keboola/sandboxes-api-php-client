@@ -361,10 +361,14 @@ class ClientFunctionalTest extends TestCase
         $project->setPersistentStorageReady(true);
         $result = $this->manageClient->updateProject($project);
         self::assertTrue($result->getPersistentStorageReady());
+        $isPersistentStorageReady = $this->client->getPersistentStorageReady();
+        self::assertTrue($isPersistentStorageReady);
 
         $project->setPersistentStorageReady(null);
         $result = $this->manageClient->updateProject($project);
         self::assertNull($result->getPersistentStorageReady());
+        $isPersistentStorageReady = $this->client->getPersistentStorageReady();
+        self::assertNull($isPersistentStorageReady);
     }
 
     public function testMLDeployment(): void

@@ -129,10 +129,10 @@ class Client extends AbstractClient
         $this->sendRequest(new Request('DELETE', "ml/deployments/{$id}"));
     }
 
-    public function getPersistentStorageReady(): bool
+    public function getPersistentStorageReady(): ?bool
     {
         $result = $this->sendRequest(new Request('GET', 'projects/current/persistentStorage'));
 
-        return (bool) $result['persistentStorageReady'];
+        return $result['persistentStorageReady'];
     }
 }
