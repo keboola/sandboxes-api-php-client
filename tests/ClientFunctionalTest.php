@@ -350,6 +350,10 @@ class ClientFunctionalTest extends TestCase
         $result = $this->client->updateProjectServerVersion($projectId, '1.2.4');
         self::assertSame('1.2.4', $result->getMlflowServerVersion());
         self::assertNotEmpty($result->getMlflowServerVersionLatest());
+
+        $result = $this->client->updateProjectServerVersion($projectId, null);
+        self::assertSame('', $result->getMlflowServerVersion());
+        self::assertNotEmpty($result->getMlflowServerVersionLatest());
     }
 
     public function testMLDeployment(): void
