@@ -9,6 +9,7 @@ use Keboola\Sandboxes\Api\Exception\ClientException;
 use Keboola\Sandboxes\Api\ListOptions;
 use Keboola\Sandboxes\Api\ManageClient;
 use Keboola\Sandboxes\Api\MLDeployment;
+use Keboola\Sandboxes\Api\PersistentStorageReady;
 use Keboola\Sandboxes\Api\Project;
 use Keboola\Sandboxes\Api\Sandbox;
 use Keboola\Sandboxes\Api\SandboxSizeParameters;
@@ -355,18 +356,50 @@ class ClientFunctionalTest extends TestCase
         $result = $this->client->updateProjectServerVersion($projectId, null);
         self::assertSame('', $result->getMlflowServerVersion());
         self::assertNotEmpty($result->getMlflowServerVersionLatest());
+    }
 
-        $result = $this->client->getProject();
-        self::assertNull($result->getPersistentStorageReady());
-        $project->setPersistentStorageReady(true);
+    public function testProjectPersistentStorageReady(): void
+    {
+        $projectId = explode('-', (string) getenv('KBC_STORAGE_TOKEN'))[0];
+        $project = (new Project())
+            ->setId($projectId)
+            ->setMlflowUri('/mlflow')
+            ->setMlflowAbsSas('/abs')
+            ->setMlflowServerVersion('1.2.3')
+        ;
+        // init - persistent storage is null (no instance of PersistentStorageReady)
+        self::assertNull($project->getPersistentStorageReady());
+
+        // set true
+        $project->setPersistentStorageReady(new PersistentStorageReady(true));
         $result = $this->manageClient->updateProject($project);
-        self::assertTrue($result->getPersistentStorageReady());
+        self::assertNotNull($result->getPersistentStorageReady());
+        self::assertTrue($result->getPersistentStorageReady()->toBool());
         $isPersistentStorageReady = $this->client->getPersistentStorageReady();
         self::assertTrue($isPersistentStorageReady);
 
-        $project->setPersistentStorageReady(null);
+        // still true
+        $project2 = (new Project())
+            ->setId($projectId)
+            ->setMlflowServerVersion('1.2.4');
+        $result = $this->manageClient->updateProject($project2);
+        self::assertSame('1.2.4', $result->getMlflowServerVersion());
+        self::assertNotNull($result->getPersistentStorageReady());
+        self::assertTrue($result->getPersistentStorageReady()->toBool());
+
+        // set false
+        $project->setPersistentStorageReady(new PersistentStorageReady(false));
         $result = $this->manageClient->updateProject($project);
-        self::assertNull($result->getPersistentStorageReady());
+        self::assertNotNull($result->getPersistentStorageReady());
+        self::assertFalse($result->getPersistentStorageReady()->toBool());
+        $isPersistentStorageReady = $this->client->getPersistentStorageReady();
+        self::assertFalse($isPersistentStorageReady);
+
+        // set null
+        $project->setPersistentStorageReady(new PersistentStorageReady(null));
+        $result = $this->manageClient->updateProject($project);
+        self::assertNotNull($result->getPersistentStorageReady());
+        self::assertNull($result->getPersistentStorageReady()->toBool());
         $isPersistentStorageReady = $this->client->getPersistentStorageReady();
         self::assertNull($isPersistentStorageReady);
     }

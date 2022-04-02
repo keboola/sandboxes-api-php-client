@@ -12,7 +12,7 @@ class Project
     private ?string $mlflowAbsConnectionString = '';
     private ?string $mlflowServerVersion = '';
     private string $mlflowServerVersionLatest = '';
-    private ?bool $persistentStorageReady = null;
+    private ?PersistentStorageReady $persistentStorageReady = null;
 
     private string $createdTimestamp;
     private string $updatedTimestamp;
@@ -28,7 +28,9 @@ class Project
         $project->updatedTimestamp = $in['updatedTimestamp'] ?? '';
         $project->mlflowServerVersion = $in['mlflowServerVersion'] ?? '';
         $project->mlflowServerVersionLatest = $in['mlflowServerVersionLatest'] ?? '';
-        $project->persistentStorageReady = $in['persistentStorageReady'] ?? null;
+        $project->persistentStorageReady = array_key_exists('persistentStorageReady', $in)
+            ? new PersistentStorageReady($in['persistentStorageReady'])
+            : null;
 
         return $project;
     }
@@ -54,7 +56,10 @@ class Project
         }
 
         $result['mlflowServerVersionLatest'] = $this->mlflowServerVersionLatest;
-        $result['persistentStorageReady'] = $this->persistentStorageReady;
+
+        if ($this->persistentStorageReady !== null) {
+            $result['persistentStorageReady'] = $this->persistentStorageReady->toBool();
+        }
 
         if (!empty($this->createdTimestamp)) {
             $result['createdTimestamp'] = $this->createdTimestamp;
@@ -153,13 +158,13 @@ class Project
         return $this->mlflowServerVersionLatest;
     }
 
-    public function setPersistentStorageReady(?bool $value): self
+    public function setPersistentStorageReady(PersistentStorageReady $persistentStorageReady): self
     {
-        $this->persistentStorageReady = $value;
+        $this->persistentStorageReady = $persistentStorageReady;
         return $this;
     }
 
-    public function getPersistentStorageReady(): ?bool
+    public function getPersistentStorageReady(): ?PersistentStorageReady
     {
         return $this->persistentStorageReady;
     }
