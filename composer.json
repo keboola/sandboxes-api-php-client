@@ -16,7 +16,7 @@
     "require": {
         "php": ">=7.4",
         "ext-json": "*",
-        "guzzlehttp/guzzle": "~6.0",
+        "guzzlehttp/guzzle": "~6.0|~7.0",
         "psr/log": "^1.1",
         "symfony/validator": "^4.2 !=4.4.33"
     },
