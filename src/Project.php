@@ -28,7 +28,7 @@ class Project
         $project->updatedTimestamp = $in['updatedTimestamp'] ?? '';
         $project->mlflowServerVersion = $in['mlflowServerVersion'] ?? '';
         $project->mlflowServerVersionLatest = $in['mlflowServerVersionLatest'] ?? '';
-        $project->persistentStorage = array_key_exists('persistentStorage', $in)
+        $project->persistentStorage = isset($in['persistentStorage'])
             ? PersistentStorage::fromArray($in['persistentStorage'])
             : null;
 
