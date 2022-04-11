@@ -12,7 +12,7 @@ class Project
     private ?string $mlflowAbsConnectionString = '';
     private ?string $mlflowServerVersion = '';
     private string $mlflowServerVersionLatest = '';
-    private ?PersistentStorageReady $persistentStorageReady = null;
+    private ?PersistentStorage $persistentStorage = null;
 
     private string $createdTimestamp;
     private string $updatedTimestamp;
@@ -28,8 +28,8 @@ class Project
         $project->updatedTimestamp = $in['updatedTimestamp'] ?? '';
         $project->mlflowServerVersion = $in['mlflowServerVersion'] ?? '';
         $project->mlflowServerVersionLatest = $in['mlflowServerVersionLatest'] ?? '';
-        $project->persistentStorageReady = array_key_exists('persistentStorageReady', $in)
-            ? new PersistentStorageReady($in['persistentStorageReady'])
+        $project->persistentStorage = array_key_exists('persistentStorage', $in)
+            ? PersistentStorage::fromArray($in['persistentStorage'])
             : null;
 
         return $project;
@@ -57,8 +57,8 @@ class Project
 
         $result['mlflowServerVersionLatest'] = $this->mlflowServerVersionLatest;
 
-        if ($this->persistentStorageReady !== null) {
-            $result['persistentStorageReady'] = $this->persistentStorageReady->toBool();
+        if ($this->persistentStorage !== null) {
+            $result['persistentStorage'] = $this->persistentStorage->toArray();
         }
 
         if (!empty($this->createdTimestamp)) {
@@ -158,14 +158,14 @@ class Project
         return $this->mlflowServerVersionLatest;
     }
 
-    public function setPersistentStorageReady(PersistentStorageReady $persistentStorageReady): self
+    public function setPersistentStorage(PersistentStorage $persistentStorage): self
     {
-        $this->persistentStorageReady = $persistentStorageReady;
+        $this->persistentStorage = $persistentStorage;
         return $this;
     }
 
-    public function getPersistentStorageReady(): ?PersistentStorageReady
+    public function getPersistentStorage(): ?PersistentStorage
     {
-        return $this->persistentStorageReady;
+        return $this->persistentStorage;
     }
 }
