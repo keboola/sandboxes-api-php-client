@@ -12,6 +12,7 @@ class Project
     private ?string $mlflowAbsConnectionString = '';
     private ?string $mlflowServerVersion = '';
     private string $mlflowServerVersionLatest = '';
+    private ?PersistentStorage $persistentStorage = null;
 
     private string $createdTimestamp;
     private string $updatedTimestamp;
@@ -27,6 +28,9 @@ class Project
         $project->updatedTimestamp = $in['updatedTimestamp'] ?? '';
         $project->mlflowServerVersion = $in['mlflowServerVersion'] ?? '';
         $project->mlflowServerVersionLatest = $in['mlflowServerVersionLatest'] ?? '';
+        $project->persistentStorage = isset($in['persistentStorage'])
+            ? PersistentStorage::fromArray($in['persistentStorage'])
+            : null;
 
         return $project;
     }
@@ -52,6 +56,10 @@ class Project
         }
 
         $result['mlflowServerVersionLatest'] = $this->mlflowServerVersionLatest;
+
+        if ($this->persistentStorage !== null) {
+            $result['persistentStorage'] = $this->persistentStorage->toArray();
+        }
 
         if (!empty($this->createdTimestamp)) {
             $result['createdTimestamp'] = $this->createdTimestamp;
@@ -145,8 +153,19 @@ class Project
         return $this->mlflowServerVersion;
     }
 
-    public function getMlflowServerVersionLatest(): string
+    public function getMlflowServerVersionLatest(): ?string
     {
         return $this->mlflowServerVersionLatest;
+    }
+
+    public function setPersistentStorage(PersistentStorage $persistentStorage): self
+    {
+        $this->persistentStorage = $persistentStorage;
+        return $this;
+    }
+
+    public function getPersistentStorage(): ?PersistentStorage
+    {
+        return $this->persistentStorage;
     }
 }
