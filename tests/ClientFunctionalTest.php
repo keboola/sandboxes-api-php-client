@@ -370,41 +370,64 @@ class ClientFunctionalTest extends TestCase
         // init - persistent storage is null (no instance of PersistentStorage)
         self::assertNull($project->getPersistentStorage());
 
-        // set true
-        $project->setPersistentStorage((new PersistentStorage())->setReady(true));
+        // setup persistent storage
+        $project->setPersistentStorage(
+            PersistentStorage::create()
+                ->setReady(true)
+                ->setK8sStorageClassName('storage-class')
+        );
         $result = $this->manageClient->updateProject($project);
-        self::assertNotNull($result->getPersistentStorage());
-        self::assertTrue($result->getPersistentStorage()->isReady());
+        $persistentStorage = $result->getPersistentStorage();
+        self::assertNotNull($persistentStorage);
+        self::assertTrue($persistentStorage->isReady());
+        self::assertSame('storage-class', $persistentStorage->getK8sStorageClassName());
+
+        // check current values
         $persistentStorage = $this->client->getPersistentStorage();
         self::assertNotNull($persistentStorage);
         self::assertTrue($persistentStorage->isReady());
+        self::assertSame('storage-class', $persistentStorage->getK8sStorageClassName());
 
-        // still true
+        // still has persistentStorage
         $project2 = (new Project())
             ->setId($projectId)
-            ->setMlflowServerVersion('1.2.4');
+            ->setMlflowServerVersion('1.2.4')
+        ;
         $result = $this->manageClient->updateProject($project2);
         self::assertSame('1.2.4', $result->getMlflowServerVersion());
-        self::assertNotNull($result->getPersistentStorage());
-        self::assertTrue($result->getPersistentStorage()->isReady());
+        $persistentStorage = $result->getPersistentStorage();
+        self::assertNotNull($persistentStorage);
+        self::assertTrue($persistentStorage->isReady());
+        self::assertSame('storage-class', $persistentStorage->getK8sStorageClassName());
 
-        // set false
-        $project->setPersistentStorage((new PersistentStorage())->setReady(false));
-        $result = $this->manageClient->updateProject($project);
-        self::assertNotNull($result->getPersistentStorage());
-        self::assertFalse($result->getPersistentStorage()->isReady());
-        $persistentStorage = $this->client->getPersistentStorage();
+        // set storage not ready
+        $project->setPersistentStorage(
+            PersistentStorage::create()
+                ->setReady(false)
+        );
+        $persistentStorage = $this->manageClient->updateProject($project)->getPersistentStorage();
         self::assertNotNull($persistentStorage);
         self::assertFalse($persistentStorage->isReady());
+        self::assertSame('storage-class', $persistentStorage->getK8sStorageClassName());
 
-        // set null
-        $project->setPersistentStorage((new PersistentStorage())->setReady(null));
-        $result = $this->manageClient->updateProject($project);
-        self::assertNotNull($result->getPersistentStorage());
-        self::assertNull($result->getPersistentStorage()->isReady());
         $persistentStorage = $this->client->getPersistentStorage();
+        self::assertFalse($persistentStorage->isReady());
+        self::assertSame('storage-class', $persistentStorage->getK8sStorageClassName());
+
+        // remove persistent storage
+        $project->setPersistentStorage(
+            PersistentStorage::create()
+                ->setReady(null)
+                ->setK8sStorageClassName(null)
+        );
+        $persistentStorage = $this->manageClient->updateProject($project)->getPersistentStorage();
         self::assertNotNull($persistentStorage);
         self::assertNull($persistentStorage->isReady());
+        self::assertNull($persistentStorage->getK8sStorageClassName());
+
+        $persistentStorage = $this->client->getPersistentStorage();
+        self::assertNull($persistentStorage->isReady());
+        self::assertNull($persistentStorage->getK8sStorageClassName());
     }
 
     public function testMLDeployment(): void
