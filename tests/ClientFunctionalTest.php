@@ -297,10 +297,12 @@ class ClientFunctionalTest extends TestCase
         $project = (new Project())
             ->setId($projectId)
             ->setMlflowUri('/mlflow')
+            ->setMlflowRequiresAuth(true)
             ->setMlflowAbsSas('/abs')
             ->setMlflowServerVersion('1.2.3');
         $result = $this->manageClient->updateProject($project);
         self::assertSame('/mlflow', $result->getMlflowUri());
+        self::assertTrue($project->getMlflowRequiresAuth());
         self::assertSame('/abs', $result->getMlflowAbsSas());
         self::assertSame(
             'BlobEndpoint=https://abs-account.blob.core.windows.net/;SharedAccessSignature=/abs',
@@ -311,6 +313,7 @@ class ClientFunctionalTest extends TestCase
 
         $result = $this->manageClient->getProject($projectId);
         self::assertSame('/mlflow', $result->getMlflowUri());
+        self::assertTrue($project->getMlflowRequiresAuth());
         self::assertSame('/abs', $result->getMlflowAbsSas());
         self::assertSame(
             'BlobEndpoint=https://abs-account.blob.core.windows.net/;SharedAccessSignature=/abs',
@@ -321,6 +324,7 @@ class ClientFunctionalTest extends TestCase
 
         $result = $this->client->getProject();
         self::assertSame('/mlflow', $result->getMlflowUri());
+        self::assertTrue($project->getMlflowRequiresAuth());
         self::assertSame('/abs', $result->getMlflowAbsSas());
         self::assertSame(
             'BlobEndpoint=https://abs-account.blob.core.windows.net/;SharedAccessSignature=/abs',
@@ -332,6 +336,17 @@ class ClientFunctionalTest extends TestCase
         $project->setMlflowUri(null);
         $result = $this->manageClient->updateProject($project);
         self::assertSame('', $result->getMlflowUri());
+        self::assertTrue($project->getMlflowRequiresAuth());
+        self::assertSame('/abs', $result->getMlflowAbsSas());
+        self::assertSame(
+            'BlobEndpoint=https://abs-account.blob.core.windows.net/;SharedAccessSignature=/abs',
+            $result->getMlflowAbsConnectionString()
+        );
+
+        $project->setMlflowRequiresAuth(false);
+        $result = $this->manageClient->updateProject($project);
+        self::assertSame('', $result->getMlflowUri());
+        self::assertFalse($project->getMlflowRequiresAuth());
         self::assertSame('/abs', $result->getMlflowAbsSas());
         self::assertSame(
             'BlobEndpoint=https://abs-account.blob.core.windows.net/;SharedAccessSignature=/abs',
@@ -341,19 +356,23 @@ class ClientFunctionalTest extends TestCase
         $project->setMlflowAbsSas(null);
         $result = $this->manageClient->updateProject($project);
         self::assertSame('', $result->getMlflowUri());
+        self::assertFalse($project->getMlflowRequiresAuth());
         self::assertSame('', $result->getMlflowAbsSas());
         self::assertSame('', $result->getMlflowAbsConnectionString());
 
         $project->setMlflowServerVersion(null);
         $result = $this->manageClient->updateProject($project);
+        self::assertFalse($project->getMlflowRequiresAuth());
         self::assertSame('', $result->getMlflowServerVersion());
         self::assertNotEmpty($result->getMlflowServerVersionLatest());
 
         $result = $this->client->updateProjectServerVersion($projectId, '1.2.4');
+        self::assertFalse($project->getMlflowRequiresAuth());
         self::assertSame('1.2.4', $result->getMlflowServerVersion());
         self::assertNotEmpty($result->getMlflowServerVersionLatest());
 
         $result = $this->client->updateProjectServerVersion($projectId, null);
+        self::assertFalse($project->getMlflowRequiresAuth());
         self::assertSame('', $result->getMlflowServerVersion());
         self::assertNotEmpty($result->getMlflowServerVersionLatest());
     }
