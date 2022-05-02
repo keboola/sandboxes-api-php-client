@@ -8,12 +8,13 @@ class Project
 {
     private string $id;
     private ?string $mlflowUri = '';
+    private ?bool $mlflowRequiresAuth = null;
     private ?string $mlflowAbsSas = '';
     private ?string $mlflowAbsConnectionString = '';
     private ?string $mlflowServerVersion = '';
     private string $mlflowServerVersionLatest = '';
-    private ?PersistentStorage $persistentStorage = null;
 
+    private ?PersistentStorage $persistentStorage = null;
     private string $createdTimestamp;
     private string $updatedTimestamp;
 
@@ -22,6 +23,7 @@ class Project
         $project = new self();
         $project->id = (string) $in['id'];
         $project->mlflowUri = $in['mlflowUri'] ?? '';
+        $project->mlflowRequiresAuth = $in['mlflowRequiresAuth'] ?? null;
         $project->mlflowAbsSas = $in['mlflowAbsSas'] ?? '';
         $project->mlflowAbsConnectionString = $in['mlflowAbsConnectionString'] ?? '';
         $project->createdTimestamp = $in['createdTimestamp'];
@@ -43,6 +45,9 @@ class Project
         }
         if ($this->mlflowUri !== '') {
             $result['mlflowUri'] = $this->mlflowUri;
+        }
+        if ($this->mlflowRequiresAuth !== null) {
+            $result['mlflowRequiresAuth'] = $this->mlflowRequiresAuth;
         }
         if ($this->mlflowAbsSas !== '') {
             $result['mlflowAbsSas'] = $this->mlflowAbsSas;
@@ -102,6 +107,17 @@ class Project
     public function getMlflowUri(): ?string
     {
         return $this->mlflowUri;
+    }
+
+    public function setMlflowRequiresAuth(bool $mlflowRequiresAuth): self
+    {
+        $this->mlflowRequiresAuth = $mlflowRequiresAuth;
+        return $this;
+    }
+
+    public function getMlflowRequiresAuth(): ?bool
+    {
+        return $this->mlflowRequiresAuth;
     }
 
     public function setMlflowAbsSas(?string $mlflowAbsSas): self
