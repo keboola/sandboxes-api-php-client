@@ -62,6 +62,26 @@ class ManageClient extends AbstractClient
         $this->sendRequest(new Request('POST', "manage/{$id}/deactivate", [], '{}'));
     }
 
+    /**
+     * @return iterable<Project>
+     */
+    public function listProjects(?ListProjectsOptions $options): iterable
+    {
+        $query = $options ? $options->toQueryParameters() : [];
+        $nextPageToken = '';
+
+        do {
+            $query['nextPageToken'] = $nextPageToken;
+            $response = $this->sendRequest(new Request('GET', '/manage/projects?'.http_build_query($query)));
+
+            foreach ($response['data'] ?? [] as $projectData) {
+                yield Project::fromArray($projectData);
+            }
+
+            $nextPageToken = $response['nextPageToken'] ?? '';
+        } while (!empty($nextPageToken));
+    }
+
     public function getProject(string $id): Project
     {
         return Project::fromArray(
