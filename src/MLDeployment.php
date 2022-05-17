@@ -13,6 +13,7 @@ class MLDeployment
     private string $modelVersion;
     private string $modelStage;
     private string $url;
+    private string $trackingTokenId;
     private string $error;
     private string $createdTimestamp;
     private string $updatedTimestamp;
@@ -27,6 +28,7 @@ class MLDeployment
             ->setModelVersion($in['modelVersion'] ?? '')
             ->setModelStage($in['modelStage'] ?? '')
             ->setUrl($in['url'] ?? '')
+            ->setTrackingTokenId($in['trackingTokenId'] ?? '')
             ->setError($in['error'] ?? '')
             ->setCreatedTimestamp($in['createdTimestamp'] ?? '')
             ->setUpdatedTimestamp($in['updatedTimestamp'] ?? '');
@@ -49,6 +51,9 @@ class MLDeployment
         }
         if (!empty($this->url)) {
             $result['url'] = $this->url;
+        }
+        if (!empty($this->trackingTokenId)) {
+            $result['trackingTokenId'] = $this->trackingTokenId;
         }
         if (!empty($this->error)) {
             $result['error'] = $this->error;
@@ -124,6 +129,12 @@ class MLDeployment
         return $this;
     }
 
+    public function setTrackingTokenId(string $trackingTokenId): self
+    {
+        $this->trackingTokenId = $trackingTokenId;
+        return $this;
+    }
+
     public function setCreatedTimestamp(string $createdTimestamp): self
     {
         $this->createdTimestamp = $createdTimestamp;
@@ -174,5 +185,10 @@ class MLDeployment
     public function getTokenId(): string
     {
         return $this->tokenId;
+    }
+
+    public function getTrackingTokenId(): string
+    {
+        return $this->trackingTokenId;
     }
 }
