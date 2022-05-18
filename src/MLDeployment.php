@@ -13,10 +13,11 @@ class MLDeployment
     private string $modelVersion;
     private string $modelStage;
     private string $url;
-    private string $trackingTokenId;
     private string $error;
     private string $createdTimestamp;
     private string $updatedTimestamp;
+
+    private ?string $trackingTokenId;
 
     public static function fromArray(array $in): self
     {
@@ -52,7 +53,7 @@ class MLDeployment
         if (!empty($this->url)) {
             $result['url'] = $this->url;
         }
-        if (!empty($this->trackingTokenId)) {
+        if (!is_null($result['trackingTokenId'])) {
             $result['trackingTokenId'] = $this->trackingTokenId;
         }
         if (!empty($this->error)) {
