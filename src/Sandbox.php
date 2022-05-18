@@ -37,6 +37,7 @@ class Sandbox
         self::TYPE_REDSHIFT,
         self::TYPE_SNOWFLAKE,
         self::TYPE_SYNAPSE,
+        self::TYPE_TERADATA,
         self::TYPE_TEST,
     ];
 
