@@ -191,4 +191,10 @@ class MLDeployment
     {
         return $this->trackingTokenId;
     }
+
+    public function clearTackingTokenId(): self
+    {
+        $this->trackingTokenId = '';
+        return $this;
+    }
 }
