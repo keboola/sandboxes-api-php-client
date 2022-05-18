@@ -489,25 +489,25 @@ class ClientFunctionalTest extends TestCase
         $createdDeployment->setError('App Error');
         $createdDeployment->setModelVersion('5');
         $createdDeployment->setModelStage('Staging');
+        $createdDeployment->clearTackingTokenId();
         $updatedDeployment = $this->client->updateMLDeployment($createdDeployment);
         $this->assertEquals('/path/to/model', $updatedDeployment->getUrl());
         $this->assertEquals('App Error', $updatedDeployment->getError());
         $this->assertEquals('5', $updatedDeployment->getModelVersion());
         $this->assertEquals('Staging', $updatedDeployment->getModelStage());
+        $this->assertEquals('', $createdDeployment->getTrackingTokenId());
 
         $getDeployment = $this->client->updateMLDeployment($createdDeployment);
         $this->assertEquals('/path/to/model', $getDeployment->getUrl());
         $this->assertEquals('App Error', $getDeployment->getError());
         $this->assertEquals('5', $getDeployment->getModelVersion());
         $this->assertEquals('Staging', $getDeployment->getModelStage());
+        $this->assertEquals('', $getDeployment->getTrackingTokenId());
 
         $this->client->deleteMLDeployment($createdDeployment->getId());
-        try {
-            $this->client->getMLDeployment($createdDeployment->getId());
-            $this->fail();
-        } catch (ClientException $e) {
-            // Good
-        }
+
+        $this->expectExceptionCode(404);
+        $this->client->getMLDeployment($createdDeployment->getId());
     }
 
     protected function tearDown(): void
