@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Keboola\Sandboxes\Api\Tests;
 
 use Generator;
+use Keboola\Sandboxes\Api\Exception\InvalidArgumentException;
 use Keboola\Sandboxes\Api\MLDeployment;
 use Keboola\Sandboxes\Api\PersistentStorage;
 use PHPUnit\Framework\TestCase;
@@ -26,11 +27,13 @@ class MLDeploymentTest extends TestCase
                 'projectId' => '123',
                 'tokenId' => '123',
             ],
-            ($this->getMinimumDeployment())
+            (new MLDeployment())
+                ->setId('123')
+                ->setProjectId('123')
+                ->setTokenId('123')
                 ->setModelName('')
                 ->setModelVersion('')
                 ->setModelStage('')
-                ->setTrackingTokenId(null)
                 ->setUrl('')
                 ->setError('')
                 ->setCreatedTimestamp('')
@@ -51,7 +54,10 @@ class MLDeploymentTest extends TestCase
                 'createdTimestamp' => '20222-05-27T12:12:12',
                 'updatedTimestamp' => '20222-05-27T12:12:12',
             ],
-            ($this->getMinimumDeployment())
+            (new MLDeployment())
+                ->setId('123')
+                ->setProjectId('123')
+                ->setTokenId('123')
                 ->setModelName('modelName')
                 ->setModelVersion('modelVersion')
                 ->setModelStage('production')
@@ -72,21 +78,43 @@ class MLDeploymentTest extends TestCase
     public function toApiRequestProvider(): Generator
     {
         yield 'empty' => [
-            $this->getMinimumDeployment(),
+            (new MLDeployment())
+                ->setId('123')
+                ->setProjectId('123')
+                ->setTokenId('123'),
             [],
         ];
 
-        yield 'clearedTokenId' => [
-            $this->getMinimumDeployment()->clearTackingTokenId(),
+        yield 'withSomeValues' => [
+            (new MLDeployment())
+                ->setId('123')
+                ->setProjectId('123')
+                ->setTokenId('123')
+                ->setModelName('modelName')
+                ->setModelVersion('modelVersion')
+                ->setModelStage('production')
+                ->setUrl('url')
+                ->setTrackingTokenId('12345')
+                ->setError('error')
+                ->setCreatedTimestamp('20222-05-27T12:12:12')
+                ->setUpdatedTimestamp('20222-05-27T12:12:12'),
             [
-                'trackingTokenId' => '',
+                'modelName' => 'modelName',
+                'modelVersion' => 'modelVersion',
+                'modelStage' => 'production',
+                'trackingTokenId' => '12345',
+                'url' => 'url',
+                'error' => 'error',
             ],
         ];
     }
 
     public function testSetTrackingTokenId(): void
     {
-        $mlDeployment = $this->getMinimumDeployment();
+        $mlDeployment = (new MLDeployment())
+            ->setId('123')
+            ->setProjectId('123')
+            ->setTokenId('123');
         self::assertArrayNotHasKey('trackingTokenId', $mlDeployment->toArray());
 
         $mlDeployment->setTrackingTokenId('token');
@@ -94,10 +122,11 @@ class MLDeploymentTest extends TestCase
 
         $mlDeployment->clearTackingTokenId();
         self::assertEquals('', $mlDeployment->getTrackingTokenId());
-    }
 
-    private function getMinimumDeployment(): MLDeployment
-    {
-        return (new MLDeployment())->setId('123')->setProjectId('123')->setTokenId('123');
+        self::expectException(InvalidArgumentException::class);
+        self::expectExceptionMessage(
+            'Cannot set the trackingTokenId to an empty value, use the clearTrackingTokenId method instead'
+        );
+        $mlDeployment->setTackingTokenId('');
     }
 }
