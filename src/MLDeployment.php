@@ -23,7 +23,7 @@ class MLDeployment
 
     public static function fromArray(array $in): self
     {
-        return (new MLDeployment())
+        $mlDeployment = (new MLDeployment())
             ->setId((string) $in['id'])
             ->setProjectId((string) $in['projectId'])
             ->setTokenId((string) $in['tokenId'])
@@ -31,10 +31,14 @@ class MLDeployment
             ->setModelVersion($in['modelVersion'] ?? '')
             ->setModelStage($in['modelStage'] ?? '')
             ->setUrl($in['url'] ?? '')
-            ->setTrackingTokenId($in['trackingTokenId'] ?? null)
             ->setError($in['error'] ?? '')
             ->setCreatedTimestamp($in['createdTimestamp'] ?? '')
             ->setUpdatedTimestamp($in['updatedTimestamp'] ?? '');
+
+        if (isset($in['trackingTokenId'])) {
+            $mlDeployment->setTrackingTokenId($in['trackingTokenId']);
+        }
+        return $mlDeployment;
     }
 
     public function toArray(): array

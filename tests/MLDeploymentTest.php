@@ -102,8 +102,8 @@ class MLDeploymentTest extends TestCase
                 'modelName' => 'modelName',
                 'modelVersion' => 'modelVersion',
                 'modelStage' => 'production',
-                'trackingTokenId' => '12345',
                 'url' => 'url',
+                'trackingTokenId' => '12345',
                 'error' => 'error',
             ],
         ];
