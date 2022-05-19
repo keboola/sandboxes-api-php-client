@@ -53,7 +53,7 @@ class MLDeployment
         if (!empty($this->url)) {
             $result['url'] = $this->url;
         }
-        if (!is_null($result['trackingTokenId'])) {
+        if (isset($this->trackingTokenId)) {
             $result['trackingTokenId'] = $this->trackingTokenId;
         }
         if (!empty($this->error)) {
@@ -188,7 +188,7 @@ class MLDeployment
         return $this->tokenId;
     }
 
-    public function getTrackingTokenId(): string
+    public function getTrackingTokenId(): ?string
     {
         return $this->trackingTokenId;
     }
