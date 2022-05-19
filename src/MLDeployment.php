@@ -35,7 +35,7 @@ class MLDeployment
             ->setCreatedTimestamp($in['createdTimestamp'] ?? '')
             ->setUpdatedTimestamp($in['updatedTimestamp'] ?? '');
 
-        if (isset($in['trackingTokenId'])) {
+        if (!empty($in['trackingTokenId'])) {
             $mlDeployment->setTrackingTokenId($in['trackingTokenId']);
         }
         return $mlDeployment;
