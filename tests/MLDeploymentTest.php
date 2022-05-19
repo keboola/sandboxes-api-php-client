@@ -127,6 +127,6 @@ class MLDeploymentTest extends TestCase
         self::expectExceptionMessage(
             'Cannot set the trackingTokenId to an empty value, use the clearTrackingTokenId method instead'
         );
-        $mlDeployment->setTackingTokenId('');
+        $mlDeployment->setTrackingTokenId('');
     }
 }
