@@ -29,7 +29,7 @@ jobs:
           -e "AZURE_CLIENT_SECRET=${{ secrets.AZURE_CLIENT_SECRET }}" \
           -e AZURE_TENANT_ID=9b85ee6f-4fb0-4a46-8cb7-4dcc6b262a89 \
           -e COSMOS_DB_ID=sandboxes-api \
-          -e COSMOS_ENDPOINT=https://sandboxes-api-testing.documents.azure.com:443 \
+          -e COSMOS_ENDPOINT=https://ci-sandboxes-api-php-client.documents.azure.com:443 \
           -e "COSMOS_KEY=${{ secrets.COSMOS_KEY }}" \
           -e KEYVAULT_KEY_NAME=sandboxes-api-key \
           -e KEYVAULT_VAULT_NAME=sandboxes-api-ci \
