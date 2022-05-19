@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Keboola\Sandboxes\Api;
 
+use Keboola\Sandboxes\Api\Exception\InvalidArgumentException;
+
 class MLDeployment
 {
     private string $id;
@@ -130,8 +132,13 @@ class MLDeployment
         return $this;
     }
 
-    public function setTrackingTokenId(?string $trackingTokenId): self
+    public function setTrackingTokenId(string $trackingTokenId): self
     {
+        if (empty($trackingTokenId)) {
+            throw new InvalidArgumentException(
+                'Cannot set the trackingTokenId to an empty value, use the clearTrackingTokenId method instead'
+            );
+        }
         $this->trackingTokenId = $trackingTokenId;
         return $this;
     }
