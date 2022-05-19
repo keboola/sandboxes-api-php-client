@@ -502,7 +502,7 @@ class ClientFunctionalTest extends TestCase
         $this->assertEquals('App Error', $getDeployment->getError());
         $this->assertEquals('5', $getDeployment->getModelVersion());
         $this->assertEquals('Staging', $getDeployment->getModelStage());
-        $this->assertEquals('', $getDeployment->getTrackingTokenId());
+        $this->assertArrayNotHasKey('trackingTokenId', $getDeployment->toArray());
 
         $this->client->deleteMLDeployment($createdDeployment->getId());
 
