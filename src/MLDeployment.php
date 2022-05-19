@@ -29,7 +29,7 @@ class MLDeployment
             ->setModelVersion($in['modelVersion'] ?? '')
             ->setModelStage($in['modelStage'] ?? '')
             ->setUrl($in['url'] ?? '')
-            ->setTrackingTokenId($in['trackingTokenId'] ?? '')
+            ->setTrackingTokenId($in['trackingTokenId'] ?? null)
             ->setError($in['error'] ?? '')
             ->setCreatedTimestamp($in['createdTimestamp'] ?? '')
             ->setUpdatedTimestamp($in['updatedTimestamp'] ?? '');
@@ -130,7 +130,7 @@ class MLDeployment
         return $this;
     }
 
-    public function setTrackingTokenId(string $trackingTokenId): self
+    public function setTrackingTokenId(?string $trackingTokenId): self
     {
         $this->trackingTokenId = $trackingTokenId;
         return $this;
