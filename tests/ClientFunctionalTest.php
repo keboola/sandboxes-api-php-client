@@ -454,10 +454,13 @@ class ClientFunctionalTest extends TestCase
         $tokenParts = explode('-', (string) getenv('KBC_STORAGE_TOKEN'));
         $projectId = $tokenParts[0];
         $tokenId = $tokenParts[1];
+        $trackingTokenId = '12345';
         $deployment = (new MLDeployment())
             ->setModelName('mlflow-model')
             ->setModelVersion('4')
-            ->setModelStage('Production');
+            ->setModelStage('Production')
+            ->setTrackingTokenId('12345')
+        ;
         $createdDeployment = $this->client->createMLDeployment($deployment);
         $this->assertNotEmpty($createdDeployment->getId());
         $this->assertNotEmpty($createdDeployment->getCreatedTimestamp());
@@ -466,6 +469,7 @@ class ClientFunctionalTest extends TestCase
         $this->assertEquals('Production', $createdDeployment->getModelStage());
         $this->assertEquals($projectId, $createdDeployment->getProjectId());
         $this->assertEquals($tokenId, $createdDeployment->getTokenId());
+        $this->assertEquals($trackingTokenId, $createdDeployment->getTrackingTokenId());
         $this->assertEmpty($createdDeployment->getUrl());
         $this->assertEmpty($createdDeployment->getError());
 
@@ -473,6 +477,7 @@ class ClientFunctionalTest extends TestCase
         $this->assertEquals('mlflow-model', $getDeployment->getModelName());
         $this->assertEquals('4', $getDeployment->getModelVersion());
         $this->assertEquals('Production', $getDeployment->getModelStage());
+        $this->assertEquals($trackingTokenId, $createdDeployment->getTrackingTokenId());
         $this->assertEmpty($getDeployment->getUrl());
         $this->assertEmpty($getDeployment->getError());
 
@@ -484,25 +489,25 @@ class ClientFunctionalTest extends TestCase
         $createdDeployment->setError('App Error');
         $createdDeployment->setModelVersion('5');
         $createdDeployment->setModelStage('Staging');
+        $createdDeployment->clearTackingTokenId();
         $updatedDeployment = $this->client->updateMLDeployment($createdDeployment);
         $this->assertEquals('/path/to/model', $updatedDeployment->getUrl());
         $this->assertEquals('App Error', $updatedDeployment->getError());
         $this->assertEquals('5', $updatedDeployment->getModelVersion());
         $this->assertEquals('Staging', $updatedDeployment->getModelStage());
+        $this->assertEquals('', $createdDeployment->getTrackingTokenId());
 
         $getDeployment = $this->client->updateMLDeployment($createdDeployment);
         $this->assertEquals('/path/to/model', $getDeployment->getUrl());
         $this->assertEquals('App Error', $getDeployment->getError());
         $this->assertEquals('5', $getDeployment->getModelVersion());
         $this->assertEquals('Staging', $getDeployment->getModelStage());
+        $this->assertArrayNotHasKey('trackingTokenId', $getDeployment->toArray());
 
         $this->client->deleteMLDeployment($createdDeployment->getId());
-        try {
-            $this->client->getMLDeployment($createdDeployment->getId());
-            $this->fail();
-        } catch (ClientException $e) {
-            // Good
-        }
+
+        $this->expectExceptionCode(404);
+        $this->client->getMLDeployment($createdDeployment->getId());
     }
 
     protected function tearDown(): void

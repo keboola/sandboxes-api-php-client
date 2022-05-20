@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Keboola\Sandboxes\Api;
 
+use Keboola\Sandboxes\Api\Exception\InvalidArgumentException;
+
 class MLDeployment
 {
     private string $id;
@@ -17,9 +19,11 @@ class MLDeployment
     private string $createdTimestamp;
     private string $updatedTimestamp;
 
+    private ?string $trackingTokenId;
+
     public static function fromArray(array $in): self
     {
-        return (new MLDeployment())
+        $mlDeployment = (new MLDeployment())
             ->setId((string) $in['id'])
             ->setProjectId((string) $in['projectId'])
             ->setTokenId((string) $in['tokenId'])
@@ -30,6 +34,11 @@ class MLDeployment
             ->setError($in['error'] ?? '')
             ->setCreatedTimestamp($in['createdTimestamp'] ?? '')
             ->setUpdatedTimestamp($in['updatedTimestamp'] ?? '');
+
+        if (!empty($in['trackingTokenId'])) {
+            $mlDeployment->setTrackingTokenId($in['trackingTokenId']);
+        }
+        return $mlDeployment;
     }
 
     public function toArray(): array
@@ -49,6 +58,9 @@ class MLDeployment
         }
         if (!empty($this->url)) {
             $result['url'] = $this->url;
+        }
+        if (isset($this->trackingTokenId)) {
+            $result['trackingTokenId'] = $this->trackingTokenId;
         }
         if (!empty($this->error)) {
             $result['error'] = $this->error;
@@ -124,6 +136,17 @@ class MLDeployment
         return $this;
     }
 
+    public function setTrackingTokenId(string $trackingTokenId): self
+    {
+        if (empty($trackingTokenId)) {
+            throw new InvalidArgumentException(
+                'Cannot set the trackingTokenId to an empty value, use the clearTrackingTokenId method instead'
+            );
+        }
+        $this->trackingTokenId = $trackingTokenId;
+        return $this;
+    }
+
     public function setCreatedTimestamp(string $createdTimestamp): self
     {
         $this->createdTimestamp = $createdTimestamp;
@@ -174,5 +197,16 @@ class MLDeployment
     public function getTokenId(): string
     {
         return $this->tokenId;
+    }
+
+    public function getTrackingTokenId(): ?string
+    {
+        return $this->trackingTokenId;
+    }
+
+    public function clearTackingTokenId(): self
+    {
+        $this->trackingTokenId = '';
+        return $this;
     }
 }
