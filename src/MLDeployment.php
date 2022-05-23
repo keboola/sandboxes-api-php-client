@@ -19,7 +19,7 @@ class MLDeployment
     private string $createdTimestamp;
     private string $updatedTimestamp;
 
-    private ?string $trackingTokenId;
+    private ?string $trackingTokenId = null;
 
     public static function fromArray(array $in): self
     {
