@@ -109,13 +109,15 @@ class MLDeploymentTest extends TestCase
         ];
     }
 
-    public function testSetTrackingTokenId(): void
+    public function testTrackingTokenId(): void
     {
         $mlDeployment = (new MLDeployment())
             ->setId('123')
             ->setProjectId('123')
             ->setTokenId('123');
+
         self::assertArrayNotHasKey('trackingTokenId', $mlDeployment->toArray());
+        self::assertNull($mlDeployment->getTrackingTokenId());
 
         $mlDeployment->setTrackingTokenId('token');
         self::assertEquals('token', $mlDeployment->getTrackingTokenId());
@@ -123,8 +125,8 @@ class MLDeploymentTest extends TestCase
         $mlDeployment->clearTackingTokenId();
         self::assertEquals('', $mlDeployment->getTrackingTokenId());
 
-        self::expectException(InvalidArgumentException::class);
-        self::expectExceptionMessage(
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
             'Cannot set the trackingTokenId to an empty value, use the clearTrackingTokenId method instead'
         );
         $mlDeployment->setTrackingTokenId('');
