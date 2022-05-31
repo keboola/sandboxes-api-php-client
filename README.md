@@ -46,3 +46,7 @@ CI is running in GitHub and requires setup of these secrets:
 - `ACR_PULL_PASSWORD`
 - `KBC_STORAGE_TOKEN` - a Storage token working for connection.keboola.com stack
 - `KBC_MANAGE_TOKEN` - Manage token with `provisioning:manage` scope 
+
+## License
+
+MIT licensed, see [LICENSE](./LICENSE) file.
