@@ -91,7 +91,7 @@ class ManageClient extends AbstractClient
 
     public function updateProject(Project $project): Project
     {
-        $body = json_encode($project->toApiRequest());
+        $body = json_encode((object) $project->toApiRequest());
         $request = new Request('PATCH', "manage/projects/{$project->getId()}", [], $body);
         return Project::fromArray($this->sendRequest($request));
     }
