@@ -16,6 +16,7 @@ class Sandbox
     public const TYPE_PYTHON = 'python';
     public const TYPE_PYTHON_DATABRICKS = 'python-databricks';
     public const TYPE_PYTHON_MLFLOW = 'python-mlflow';
+    public const TYPE_PYTHON_SNOWPARK = 'python-snowpark';
     public const TYPE_R = 'r';
     public const TYPE_REDSHIFT = 'redshift';
     public const TYPE_SNOWFLAKE = 'snowflake';
@@ -33,6 +34,7 @@ class Sandbox
         self::TYPE_PYTHON,
         self::TYPE_PYTHON_DATABRICKS,
         self::TYPE_PYTHON_MLFLOW,
+        self::TYPE_PYTHON_SNOWPARK,
         self::TYPE_R,
         self::TYPE_REDSHIFT,
         self::TYPE_SNOWFLAKE,
@@ -46,6 +48,7 @@ class Sandbox
         self::TYPE_PYTHON,
         self::TYPE_PYTHON_DATABRICKS,
         self::TYPE_PYTHON_MLFLOW,
+        self::TYPE_PYTHON_SNOWPARK,
         self::TYPE_R,
         self::TYPE_TEST,
     ];
@@ -63,6 +66,7 @@ class Sandbox
         self::TYPE_PYTHON,
         self::TYPE_PYTHON_DATABRICKS,
         self::TYPE_PYTHON_MLFLOW,
+        self::TYPE_PYTHON_SNOWPARK,
         self::TYPE_R,
         self::TYPE_TEST,
     ];
@@ -74,6 +78,7 @@ class Sandbox
         self::TYPE_PYTHON,
         self::TYPE_PYTHON_DATABRICKS,
         self::TYPE_PYTHON_MLFLOW,
+        self::TYPE_PYTHON_SNOWPARK,
     ];
 
     public const CONTAINER_SIZES = [
