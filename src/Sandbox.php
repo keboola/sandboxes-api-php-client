@@ -23,7 +23,6 @@ class Sandbox
     public const TYPE_SNOWFLAKE = 'snowflake';
     public const TYPE_SYNAPSE = 'synapse';
     public const TYPE_TERADATA = 'teradata';
-    public const TYPE_BIGQUERY = 'bigquery';
     public const TYPE_TEST = 'test';
 
     public const CONTAINER_SIZE_SMALL = 'small';
