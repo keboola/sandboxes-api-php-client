@@ -76,7 +76,6 @@ class DynamoTestCase extends TestCase
                 ],
             ]);
 
-
             $dynamo->createTable([
                 'TableName' => (string) getenv('DYNAMO_TABLE_PROJECTS'),
                 'AttributeDefinitions' => [
@@ -124,9 +123,7 @@ class DynamoTestCase extends TestCase
                     'WriteCapacityUnits' => 1,
                 ],
             ]);
-
         } catch (DynamoDbException $e) {
         }
     }
-
 }
