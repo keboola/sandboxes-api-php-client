@@ -55,13 +55,13 @@ jobs:
           -e "KBC_STORAGE_TOKEN=${{ secrets.KBC_STORAGE_TOKEN }}" \
           -e "KBC_MANAGE_TOKEN=${{ secrets.KBC_MANAGE_TOKEN }}" \
           -e "KBC_MANAGE_NOTIFY_TOKEN=${{ secrets.KBC_MANAGE_NOTIFY_TOKEN }}" \
-          -e DYNAMO_ENDPOINT=http://localstack:4566
-          -e DYNAMO_TABLE_SANDBOXES=sandboxes
-          -e DYNAMO_TABLE_ML_DEPLOYMENTS=ml-deployments
-          -e DYNAMO_TABLE_PROJECTS=projects
-          -e DYNAMO_TABLE_RUNS=runs
-          -e AWS_ACCESS_KEY_ID=accessKey
-          -e AWS_SECRET_ACCESS_KEY=secretKey
+          -e DYNAMO_ENDPOINT=http://localstack:4566 \
+          -e DYNAMO_TABLE_SANDBOXES=sandboxes \
+          -e DYNAMO_TABLE_ML_DEPLOYMENTS=ml-deployments \
+          -e DYNAMO_TABLE_PROJECTS=projects \
+          -e DYNAMO_TABLE_RUNS=runs \
+          -e AWS_ACCESS_KEY_ID=accessKey \
+          -e AWS_SECRET_ACCESS_KEY=secretKey \
           keboola/sandboxes-api-php-client composer test
       - name: Dump docker logs on failure
         if: failure()
