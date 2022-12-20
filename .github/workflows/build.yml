@@ -14,12 +14,12 @@ jobs:
 
       - uses: azure/docker-login@v1
         with:
-          login-server: keboolapes.azurecr.io
+          login-server: keboola.azurecr.io
           username: ${{ secrets.ACR_PULL_USERNAME }}
           password: ${{ secrets.ACR_PULL_PASSWORD }}
 
       - run: docker pull waisbrot/wait
-      - run: docker pull keboolapes.azurecr.io/sandboxes-api:latest
+      - run: docker pull keboola.azurecr.io/sandboxes-api:production-44de22a31a3c33c88a1a68c647f385da77fa3913
       - run: docker build -t keboola/sandboxes-api-php-client .
 
       - run: |
@@ -37,7 +37,7 @@ jobs:
           -e PROVIDER=azure \
           -e STAGE=dev \
           -e MLFLOW_STORAGE_ACCOUNT_NAME=abs-account \
-          keboolapes.azurecr.io/sandboxes-api yarn start
+          keboola.azurecr.io/sandboxes-api yarn start
       - run: |
           docker run --rm --network host \
           -e TARGETS=localhost:8080 \
