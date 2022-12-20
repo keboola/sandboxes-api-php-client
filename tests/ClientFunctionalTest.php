@@ -19,7 +19,7 @@ use Keboola\StorageApi\Components;
 use Keboola\StorageApi\Options\Components\Configuration;
 use PHPUnit\Framework\TestCase;
 
-class ClientFunctionalTest extends TestCase
+class ClientFunctionalTest extends DynamoTestCase
 {
     protected string $configurationId;
     protected Components $componentsClient;
@@ -28,6 +28,7 @@ class ClientFunctionalTest extends TestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
         $storageClient = new StorageClient([
             'url' => getenv('KBC_URL'),
             'token' => getenv('KBC_STORAGE_TOKEN'),

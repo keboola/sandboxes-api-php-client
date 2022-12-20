@@ -10,15 +10,18 @@ services:
       - ./:/code
       - ./data:/data
     environment:
-      - API_URL=http://sandboxes-api:8080
-      - KBC_URL=https://connection.keboola.com
-      - KBC_STORAGE_TOKEN
-      - KBC_MANAGE_TOKEN
-      - KBC_MANAGE_NOTIFY_TOKEN
-      - DYNAMO_ENDPOINT=http://localstack:4566
-      - DYNAMO_TABLE_SANDBOXES=sandboxes
-      - AWS_ACCESS_KEY_ID=accessKey
-      - AWS_SECRET_ACCESS_KEY=secretKey
+      API_URL: http://sandboxes-api:8080
+      KBC_URL: https://connection.keboola.com
+      KBC_STORAGE_TOKEN:
+      KBC_MANAGE_TOKEN:
+      KBC_MANAGE_NOTIFY_TOKEN:
+      DYNAMO_ENDPOINT: http://localstack:4566
+      DYNAMO_TABLE_SANDBOXES: sandboxes
+      DYNAMO_TABLE_ML_DEPLOYMENTS: ml-deployments
+      DYNAMO_TABLE_PROJECTS: projects
+      DYNAMO_TABLE_RUNS: runs
+      AWS_ACCESS_KEY_ID: accessKey
+      AWS_SECRET_ACCESS_KEY: secretKey
     depends_on:
       - sandboxes-api
 

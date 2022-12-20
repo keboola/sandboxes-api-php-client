@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Keboola\Sandboxes\Api\Tests;
 
-use Aws\DynamoDb\DynamoDbClient;
-use Aws\DynamoDb\Exception\DynamoDbException;
 use Keboola\Sandboxes\Api\Client;
 use Keboola\Sandboxes\Api\ManageClient;
 use Keboola\Sandboxes\Api\Sandbox;
@@ -13,9 +11,8 @@ use Keboola\Sandboxes\Api\SandboxCredentials;
 use Keboola\StorageApi\Client as StorageClient;
 use Keboola\StorageApi\Components;
 use Keboola\StorageApi\Options\Components\Configuration;
-use PHPUnit\Framework\TestCase;
 
-class ClientFunctionalAWSTest extends TestCase
+class ClientFunctionalCredentialsTest extends DynamoTestCase
 {
     protected string $configurationId;
     protected Components $componentsClient;
@@ -24,6 +21,7 @@ class ClientFunctionalAWSTest extends TestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
         $storageClient = new StorageClient([
             'url' => getenv('KBC_URL'),
             'token' => getenv('KBC_STORAGE_TOKEN'),
@@ -42,44 +40,6 @@ class ClientFunctionalAWSTest extends TestCase
         $manageToken = (string) getenv('KBC_MANAGE_TOKEN');
         $this->client = new Client($apiUrl, $storageToken);
         $this->manageClient = new ManageClient($apiUrl, $manageToken);
-
-        $dynamo = new DynamoDbClient([
-            'endpoint' => getenv('DYNAMO_ENDPOINT'),
-            'region' => 'us-east-1',
-            'retries' => 3,
-            'version' => '2012-08-10',
-        ]);
-
-        try {
-            $dynamo->createTable([
-                'TableName' => getenv('DYNAMO_TABLE_SANDBOXES'),
-                'AttributeDefinitions' => [
-                    [
-                        'AttributeName' => 'projectId',
-                        'AttributeType' => 'S',
-                    ],
-                    [
-                        'AttributeName' => 'id',
-                        'AttributeType' => 'S',
-                    ],
-                ],
-                'KeySchema' => [
-                    [
-                        'AttributeName' => 'projectId',
-                        'KeyType' => 'HASH',
-                    ],
-                    [
-                        'AttributeName' => 'id',
-                        'KeyType' => 'RANGE',
-                    ],
-                ],
-                'ProvisionedThroughput' => [
-                    'ReadCapacityUnits' => 1,
-                    'WriteCapacityUnits' => 1,
-                ],
-            ]);
-        } catch (DynamoDbException $e) {
-        }
     }
 
     public function testSandboxWithCredentials(): void
