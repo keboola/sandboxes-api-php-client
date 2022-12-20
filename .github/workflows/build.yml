@@ -34,9 +34,20 @@ jobs:
           -e KEYVAULT_KEY_NAME=sandboxes-api-key \
           -e KEYVAULT_VAULT_NAME=sandboxes-api-ci \
           -e KBC_URL=https://connection.keboola.com \
-          -e PROVIDER=azure \
+          -e PROVIDER=aws \
           -e STAGE=dev \
           -e MLFLOW_STORAGE_ACCOUNT_NAME=abs-account \
+          -e AWS_ACCESS_KEY_ID=accessKey \
+          -e AWS_SECRET_ACCESS_KEY=secretKey \
+          -e REGION="${REGION:-us-east-1}" \
+          -e KMS_ENDPOINT=http://localstack:4566 \
+          -e S3_ENDPOINT=http://localstack:4566 \
+          -e DYNAMO_ENDPOINT=http://localstack:4566 \
+          -e DYNAMO_TABLE_ML_DEPLOYMENTS=ml-deployments \
+          -e DYNAMO_TABLE_PROJECTS=projects \
+          -e DYNAMO_TABLE_RUNS=runs \
+          -e DYNAMO_TABLE_SANDBOXES=sandboxes \
+          -e KMS_KEY_ID=d826600f-acc1-42e7-8817-2d78ebda80e3 \
           keboola.azurecr.io/sandboxes-api:production-44de22a31a3c33c88a1a68c647f385da77fa3913 yarn start
       - run: |
           docker run --rm --network host \
