@@ -12,6 +12,7 @@ use Keboola\Sandboxes\Api\MLDeployment;
 use Keboola\Sandboxes\Api\PersistentStorage;
 use Keboola\Sandboxes\Api\Project;
 use Keboola\Sandboxes\Api\Sandbox;
+use Keboola\Sandboxes\Api\SandboxCredentials;
 use Keboola\Sandboxes\Api\SandboxSizeParameters;
 use Keboola\StorageApi\Client as StorageClient;
 use Keboola\StorageApi\Components;

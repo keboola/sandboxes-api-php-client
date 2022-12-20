@@ -11,6 +11,7 @@ class Sandbox
     public const DEFAULT_EXPIRATION_DAYS = 7;
     protected const REQUIRED_PROPERTIES = ['id', 'projectId', 'tokenId', 'type', 'active', 'createdTimestamp'];
 
+    public const TYPE_BIGQUERY = 'bigquery';
     public const TYPE_EXASOL = 'exasol';
     public const TYPE_JULIA = 'julia';
     public const TYPE_PYTHON = 'python';
@@ -30,6 +31,7 @@ class Sandbox
     public const CONTAINER_SIZE_LARGE = 'large';
 
     public const TYPES = [
+        self::TYPE_BIGQUERY,
         self::TYPE_EXASOL,
         self::TYPE_JULIA,
         self::TYPE_PYTHON,
@@ -56,6 +58,7 @@ class Sandbox
     ];
 
     public const WORKSPACE_TYPES = [
+        self::TYPE_BIGQUERY,
         self::TYPE_EXASOL,
         self::TYPE_REDSHIFT,
         self::TYPE_SNOWFLAKE,
@@ -130,6 +133,8 @@ class Sandbox
     private ?string $persistentStoragePvcName = null;
     private ?string $persistentStorageK8sManifest = null;
 
+    private ?SandboxCredentials $credentials = null;
+
     public static function fromArray(array $in): self
     {
         foreach (self::REQUIRED_PROPERTIES as $property) {
@@ -157,7 +162,6 @@ class Sandbox
                 null
         );
         $sandbox->setUser($in['user'] ?? '');
-        $sandbox->setPassword($in['password'] ?? '');
         $sandbox->setHost($in['host'] ?? '');
         $sandbox->setUrl($in['url'] ?? '');
         $sandbox->setImageVersion($in['imageVersion'] ?? '');
@@ -180,7 +184,27 @@ class Sandbox
         $sandbox->persistentStoragePvcName = $in['persistentStorage']['pvcName'] ?? null;
         $sandbox->persistentStorageK8sManifest = $in['persistentStorage']['k8sManifest'] ?? null;
 
+        self::setPasswordOrCredentials($in, $sandbox);
+
         return $sandbox;
+    }
+
+    private static function setPasswordOrCredentials(array $in, Sandbox $sandbox): void
+    {
+        if (isset($in['password']) && isset($in['credentials'])) {
+            throw new ClientException('Set either "password" or "credentials", but not both!');
+        }
+
+        if (isset($in['password'])) {
+            $sandbox->setPassword($in['password']);
+        }
+        if (isset($in['credentials'])) {
+            $sandbox->setCredentials(SandboxCredentials::fromArray($in['credentials']));
+        }
+
+        if (!isset($in['password']) && !isset($in['credentials'])) {
+            $sandbox->setPassword('');
+        }
     }
 
     public function toArray(): array
@@ -283,6 +307,10 @@ class Sandbox
 
         $result['persistentStorage']['pvcName'] = $this->persistentStoragePvcName;
         $result['persistentStorage']['k8sManifest'] = $this->persistentStorageK8sManifest;
+
+        if ($this->credentials !== null) {
+            $result['credentials'] = $this->credentials->toArray();
+        }
 
         return $result;
     }
@@ -676,6 +704,17 @@ class Sandbox
     public function removePersistentStorageK8sManifest(): Sandbox
     {
         $this->persistentStorageK8sManifest = null;
+        return $this;
+    }
+
+    public function getCredentials(): SandboxCredentials
+    {
+        return $this->credentials;
+    }
+
+    public function setCredentials(SandboxCredentials $credentials): self
+    {
+        $this->credentials = $credentials;
         return $this;
     }
 }

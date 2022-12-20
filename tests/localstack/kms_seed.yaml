@@ -1,0 +1,7 @@
+Keys:
+  Symmetric:
+    Aes:
+      - Metadata:
+          KeyId: d826600f-acc1-42e7-8817-2d78ebda80e3
+        BackingKeys:
+          - bbd1954a2b565f1d7232595b949e25d148d664eaaf09842b9e540eaf23287b34

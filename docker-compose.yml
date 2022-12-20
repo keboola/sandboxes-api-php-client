@@ -15,25 +15,64 @@ services:
       - KBC_STORAGE_TOKEN
       - KBC_MANAGE_TOKEN
       - KBC_MANAGE_NOTIFY_TOKEN
+      - DYNAMO_ENDPOINT=http://localstack:4566
+      - DYNAMO_TABLE_SANDBOXES=sandboxes
+      - AWS_ACCESS_KEY_ID=accessKey
+      - AWS_SECRET_ACCESS_KEY=secretKey
     depends_on:
       - sandboxes-api
 
   sandboxes-api:
-    image: keboola.azurecr.io/sandboxes-api:latest
+    image: keboola.azurecr.io/sandboxes-api:dev-miro-big-85
     command: bash -c "yarn start"
     ports:
       - 8080:8080
     environment:
-      - API_URL=http://sandboxes-api:8080
-      - AZURE_CLIENT_ID
-      - AZURE_CLIENT_SECRET
-      - AZURE_TENANT_ID
-      - COSMOS_DB_ID=sandboxes-api
-      - COSMOS_ENDPOINT
-      - COSMOS_KEY
-      - KBC_URL=https://connection.keboola.com
-      - KEYVAULT_KEY_NAME=sandboxes-api-key
-      - KEYVAULT_VAULT_NAME
-      - PROVIDER=azure
-      - STAGE=dev
-      - MLFLOW_STORAGE_ACCOUNT_NAME=abs-account
+      PROVIDER: aws
+      STAGE: dev
+      API_URL: http://sandboxes-api:8080
+
+      # AWS
+      AWS_ACCESS_KEY_ID: accessKey
+      AWS_SECRET_ACCESS_KEY: secretKey
+      REGION: "${REGION:-us-east-1}"
+      KMS_ENDPOINT: http://localstack:4566
+      S3_ENDPOINT: http://localstack:4566
+      DYNAMO_ENDPOINT: http://localstack:4566
+      DYNAMO_TABLE_ML_DEPLOYMENTS: ml-deployments
+      DYNAMO_TABLE_PROJECTS: projects
+      DYNAMO_TABLE_RUNS: runs
+      DYNAMO_TABLE_SANDBOXES: sandboxes
+      KMS_KEY_ID: d826600f-acc1-42e7-8817-2d78ebda80e3
+
+      # Azure
+      AZURE_CLIENT_ID:
+      AZURE_CLIENT_SECRET:
+      AZURE_TENANT_ID:
+      COSMOS_DB_ID: sandboxes-api
+      COSMOS_ENDPOINT:
+      COSMOS_KEY:
+      KBC_URL: https://connection.keboola.com
+      KEYVAULT_KEY_NAME: sandboxes-api-key
+      KEYVAULT_VAULT_NAME:
+      MLFLOW_STORAGE_ACCOUNT_NAME: abs-account
+    depends_on:
+      - wait
+
+  wait:
+    image: waisbrot/wait
+    environment:
+      TARGETS: localstack:4566
+    depends_on:
+      - localstack
+
+  localstack:
+    image: localstack/localstack
+    ports:
+      - "4566:4566"
+    environment:
+      SERVICES: dynamodb,kms,s3
+      DEBUG: 1
+      KMS_PROVIDER: local-kms
+    volumes:
+      - ./tests/localstack/kms_seed.yaml:/init/seed.yaml
