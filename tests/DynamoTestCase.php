@@ -13,7 +13,7 @@ class DynamoTestCase extends TestCase
     protected function setUp(): void
     {
         $dynamo = new DynamoDbClient([
-            'endpoint' => getenv('DYNAMO_ENDPOINT'),
+            'endpoint' => (string) getenv('DYNAMO_ENDPOINT'),
             'region' => 'us-east-1',
             'retries' => 3,
             'version' => '2012-08-10',
