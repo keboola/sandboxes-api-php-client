@@ -113,7 +113,9 @@ class ClientFunctionalAWSTest extends TestCase
         ;
         $response = $this->client->create($sandbox);
         $this->assertNotEmpty($response->getId());
-        $this->assertSandboxCredentials($response->getCredentials(), $credentialsData);
+        $credentials = $response->getCredentials();
+        self::assertNotNull($credentials);
+        self::assertSandboxCredentials($credentials, $credentialsData);
 
         $sandboxId = $response->getId();
         $sandbox->setId($sandboxId);
@@ -133,7 +135,9 @@ class ClientFunctionalAWSTest extends TestCase
             ],
             $response->getWorkspaceDetails()
         );
-        self::assertSandboxCredentials($response->getCredentials(), $credentialsData);
+        $credentials = $response->getCredentials();
+        self::assertNotNull($credentials);
+        self::assertSandboxCredentials($credentials, $credentialsData);
 
         // 3. Update
         $credentialsData['client_id'] = '123456789';
@@ -143,7 +147,9 @@ class ClientFunctionalAWSTest extends TestCase
         $sandbox->setStagingWorkspaceType('bigquery');
         $this->client->update($sandbox);
         $response = $this->client->get($sandboxId);
-        self::assertSandboxCredentials($response->getCredentials(), $credentialsData);
+        $credentials = $response->getCredentials();
+        self::assertNotNull($credentials);
+        self::assertSandboxCredentials($credentials, $credentialsData);
         self::assertTrue($response->getActive());
         self::assertEquals('768', $response->getStagingWorkspaceId());
         self::assertEquals('bigquery', $response->getStagingWorkspaceType());
@@ -153,7 +159,9 @@ class ClientFunctionalAWSTest extends TestCase
         $sandbox->setCredentials(SandboxCredentials::fromArray($credentialsData));
         $this->manageClient->updateSandbox($sandbox);
         $response = $this->client->get($sandboxId);
-        self::assertSandboxCredentials($response->getCredentials(), $credentialsData);
+        $credentials = $response->getCredentials();
+        self::assertNotNull($credentials);
+        self::assertSandboxCredentials($credentials, $credentialsData);
 
         // 4. List
         $foundInList = false;

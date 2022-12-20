@@ -707,7 +707,7 @@ class Sandbox
         return $this;
     }
 
-    public function getCredentials(): SandboxCredentials
+    public function getCredentials(): ?SandboxCredentials
     {
         return $this->credentials;
     }
