@@ -26,8 +26,8 @@ jobs:
       - uses: azure/docker-login@v1
         with:
           login-server: keboolapes.azurecr.io
-          username: ${{ secrets.ACR_PULL_USERNAME }}
-          password: ${{ secrets.ACR_PULL_PASSWORD }}
+          username: ${{ secrets.ACR_KEBOOLAPES_CLIENT_ID }}
+          password: ${{ secrets.ACR_KEBOOLAPES_CLIENT_SECRET }}
 
       - run: docker pull waisbrot/wait
       - run: docker pull keboolapes.azurecr.io/sandboxes-api:latest
