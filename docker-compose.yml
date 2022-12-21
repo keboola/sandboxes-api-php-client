@@ -26,7 +26,7 @@ services:
       - sandboxes-api
 
   sandboxes-api:
-    image: keboolapes.azurecr.io/sandboxes-api:latest
+    image: keboola.azurecr.io/sandboxes-api:production-44de22a31a3c33c88a1a68c647f385da77fa3913
     command: bash -c "yarn start"
     ports:
       - 8080:8080
