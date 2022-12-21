@@ -196,12 +196,9 @@ class Sandbox
 
         if (isset($in['password'])) {
             $sandbox->setPassword($in['password']);
-        }
-        if (isset($in['credentials'])) {
+        } elseif (isset($in['credentials'])) {
             $sandbox->setCredentials(SandboxCredentials::fromArray($in['credentials']));
-        }
-
-        if (!isset($in['password']) && !isset($in['credentials'])) {
+        } else {
             $sandbox->setPassword('');
         }
     }

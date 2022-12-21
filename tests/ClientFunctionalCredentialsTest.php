@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Keboola\Sandboxes\Api\Tests;
 
 use Keboola\Sandboxes\Api\Client;
+use Keboola\Sandboxes\Api\Exception\ClientException;
 use Keboola\Sandboxes\Api\ManageClient;
 use Keboola\Sandboxes\Api\Sandbox;
 use Keboola\Sandboxes\Api\SandboxCredentials;
@@ -155,5 +156,41 @@ class ClientFunctionalCredentialsTest extends DynamoTestCase
             $data['client_x509_cert_url']
         );
         self::assertNotEmpty($data['private_key']);
+    }
+
+    public function testCreateSandboxWithCredentialsInvalid(): void
+    {
+        // 1. Create
+        $sandbox = (new Sandbox())
+            ->setType('python')
+            ->setConfigurationId($this->configurationId)
+            ->setPhysicalId('physicalId')
+            ->setHost('host')
+            ->setActive(false)
+            ->setWorkspaceDetails(['connection' => [
+                'database' => 'test-database',
+                'schema' => 'test-schema',
+                'warehouse' => 'test-warehouse',
+            ]])
+        ;
+
+        $this->expectException(ClientException::class);
+        $this->expectExceptionMessage('contains a conflict between optional exclusive');
+
+        $sandbox->setPassword('password');
+        $sandbox->setCredentials(SandboxCredentials::fromArray([
+            'type' => 'service_account',
+            'project_id' => '23432',
+            'private_key_id' => '324',
+            'client_email' => '234',
+            'client_id' => '2342',
+            'auth_uri' => 'https://accounts.google.com/o/oauth2/auth',
+            'token_uri' => 'https://oauth2.googleapis.com/token',
+            'auth_provider_x509_cert_url' => 'https://www.googleapis.com/oauth2/v1/certs',
+            'client_x509_cert_url' => 'https://www.googleapis.com/robot/v1/metadata/x509.com',
+            'private_key' => '-----BEGIN PRIVATE KEY-----key-----END PRIVATE KEY-----',
+        ]));
+
+        $this->client->create($sandbox);
     }
 }

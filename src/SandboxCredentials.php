@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Keboola\Sandboxes\Api;
 
+use Keboola\Sandboxes\Api\Exception\InvalidArgumentException;
+
 class SandboxCredentials
 {
     private string $type;
@@ -17,13 +19,23 @@ class SandboxCredentials
     private string $clientCertUrl;
     private string $privateKey;
 
-    public static function create(): self
-    {
-        return new self();
-    }
+    private static array $required = [
+        'type',
+        'project_id',
+        'private_key_id',
+        'client_email',
+        'client_id',
+        'auth_uri',
+        'token_uri',
+        'auth_provider_x509_cert_url',
+        'client_x509_cert_url',
+        'private_key',
+    ];
 
     public static function fromArray(array $data): self
     {
+        self::checkRequiredKeys($data);
+
         $instance = new self();
         $instance->type = $data['type'];
         $instance->projectId = $data['project_id'];
@@ -53,5 +65,15 @@ class SandboxCredentials
             'client_x509_cert_url' => $this->clientCertUrl,
             'private_key' => $this->privateKey,
         ];
+    }
+
+    private static function checkRequiredKeys(array $data): void
+    {
+        $diff = array_diff_key((array) array_combine(self::$required, self::$required), $data);
+        if (!empty($diff)) {
+            throw new InvalidArgumentException(
+                sprintf('Missing credential field(s) "%s"', implode(',', $diff))
+            );
+        }
     }
 }
