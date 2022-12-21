@@ -1,6 +1,5 @@
 name: "Build"
-'on':
-  - push
+on: push
 concurrency: 'ci-${{ github.ref }}'
 env:
   KBC_STORAGE_TOKEN: '${{ secrets.KBC_STORAGE_TOKEN }}'
