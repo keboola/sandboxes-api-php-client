@@ -1,6 +1,6 @@
 name: "Build"
 on: push
-concurrency: 'ci-${{ github.ref }}'
+concurrency: ci-pipeline
 env:
   KBC_STORAGE_TOKEN: '${{ secrets.KBC_STORAGE_TOKEN }}'
   KBC_MANAGE_TOKEN: '${{ secrets.KBC_MANAGE_TOKEN }}'
@@ -25,12 +25,12 @@ jobs:
 
       - uses: azure/docker-login@v1
         with:
-          login-server: keboola.azurecr.io
+          login-server: keboolapes.azurecr.io
           username: ${{ secrets.ACR_PULL_USERNAME }}
           password: ${{ secrets.ACR_PULL_PASSWORD }}
 
       - run: docker pull waisbrot/wait
-      - run: docker pull keboola.azurecr.io/sandboxes-api:production-44de22a31a3c33c88a1a68c647f385da77fa3913
+      - run: docker pull keboolapes.azurecr.io/sandboxes-api:latest
       - run: docker build -t keboola/sandboxes-api-php-client .
 
       - name: Run tests
