@@ -106,7 +106,7 @@ class Sandbox
     private ?SandboxSizeParameters $sizeParameters = null;
 
     private string $user;
-    private string $password;
+    private ?string $password = null;
     private string $host;
     private string $url;
 
