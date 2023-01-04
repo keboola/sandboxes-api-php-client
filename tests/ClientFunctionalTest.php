@@ -12,13 +12,14 @@ use Keboola\Sandboxes\Api\MLDeployment;
 use Keboola\Sandboxes\Api\PersistentStorage;
 use Keboola\Sandboxes\Api\Project;
 use Keboola\Sandboxes\Api\Sandbox;
+use Keboola\Sandboxes\Api\SandboxCredentials;
 use Keboola\Sandboxes\Api\SandboxSizeParameters;
 use Keboola\StorageApi\Client as StorageClient;
 use Keboola\StorageApi\Components;
 use Keboola\StorageApi\Options\Components\Configuration;
 use PHPUnit\Framework\TestCase;
 
-class ClientFunctionalTest extends TestCase
+class ClientFunctionalTest extends DynamoTestCase
 {
     protected string $configurationId;
     protected Components $componentsClient;
@@ -27,6 +28,7 @@ class ClientFunctionalTest extends TestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
         $storageClient = new StorageClient([
             'url' => getenv('KBC_URL'),
             'token' => getenv('KBC_STORAGE_TOKEN'),
