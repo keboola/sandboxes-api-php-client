@@ -88,7 +88,7 @@ class Sandbox
         self::TYPE_PYTHON_DATABRICKS,
         self::TYPE_PYTHON_MLFLOW,
         self::TYPE_PYTHON_SNOWPARK,
-        self::TYPE_STREAMLIT
+        self::TYPE_STREAMLIT,
     ];
 
     public const CONTAINER_SIZES = [
