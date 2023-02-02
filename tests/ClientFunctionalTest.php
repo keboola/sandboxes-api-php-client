@@ -84,7 +84,7 @@ class ClientFunctionalTest extends DynamoTestCase
                 'connection' => [
                     'database' => 'test-database',
                     'schema' => 'test-schema',
-                    'readOnlyStorageAccess' => true
+                    'readOnlyStorageAccess' => true,
                 ],
             ],
             $response->getWorkspaceDetails()
