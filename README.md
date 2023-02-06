@@ -1,7 +1,7 @@
 # Sandboxes API PHP client by Keboola
 [![Latest Stable Version](https://poser.pugx.org/keboola/sandboxes-api-php-client/v/stable.svg)](https://packagist.org/packages/keboola/sandboxes-api-php-client) [![License](https://poser.pugx.org/keboola/sandboxes-api-php-client/license.svg)](https://packagist.org/packages/keboola/sandboxes-api-php-client) [![Total Downloads](https://poser.pugx.org/keboola/sandboxes-api-php-client/downloads.svg)](https://packagist.org/packages/keboola/sandboxes-api-php-client) ![Build](https://github.com/keboola/sandboxes-api-php-client/workflows/Build/badge.svg)
 
-<https://sandboxes.docs.apiary.io>
+<https://sandboxes.keboola.com/documentation>
 
 ## Installation
 
