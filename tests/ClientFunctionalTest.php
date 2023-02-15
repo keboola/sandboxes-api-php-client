@@ -62,6 +62,7 @@ class ClientFunctionalTest extends DynamoTestCase
             ->setWorkspaceDetails(['connection' => [
                 'database' => 'test-database',
                 'schema' => 'test-schema',
+                'readOnlyStorageAccess' => true,
             ]])
             ->setDatabricksSparkVersion('Spark-1')
             ->setDatabricksNodeType('Node-2')
@@ -80,7 +81,11 @@ class ClientFunctionalTest extends DynamoTestCase
         $this->assertFalse($response->getActive());
         $this->assertEquals(
             [
-                'connection' => ['database' => 'test-database', 'schema' => 'test-schema'],
+                'connection' => [
+                    'database' => 'test-database',
+                    'schema' => 'test-schema',
+                    'readOnlyStorageAccess' => true,
+                ],
             ],
             $response->getWorkspaceDetails()
         );
