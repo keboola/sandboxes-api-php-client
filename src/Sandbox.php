@@ -24,6 +24,7 @@ class Sandbox
     public const TYPE_SYNAPSE = 'synapse';
     public const TYPE_TERADATA = 'teradata';
     public const TYPE_TEST = 'test';
+    public const TYPE_STREAMLIT = 'streamlit';
 
     public const CONTAINER_SIZE_SMALL = 'small';
     public const CONTAINER_SIZE_MEDIUM = 'medium';
@@ -44,6 +45,7 @@ class Sandbox
         self::TYPE_TERADATA,
         self::TYPE_BIGQUERY,
         self::TYPE_TEST,
+        self::TYPE_STREAMLIT,
     ];
 
     public const CONTAINER_TYPES = [
@@ -54,6 +56,7 @@ class Sandbox
         self::TYPE_PYTHON_SNOWPARK,
         self::TYPE_R,
         self::TYPE_TEST,
+        self::TYPE_STREAMLIT,
     ];
 
     public const WORKSPACE_TYPES = [
@@ -74,6 +77,7 @@ class Sandbox
         self::TYPE_PYTHON_SNOWPARK,
         self::TYPE_R,
         self::TYPE_TEST,
+        self::TYPE_STREAMLIT,
     ];
 
     /**
@@ -84,6 +88,7 @@ class Sandbox
         self::TYPE_PYTHON_DATABRICKS,
         self::TYPE_PYTHON_MLFLOW,
         self::TYPE_PYTHON_SNOWPARK,
+        self::TYPE_STREAMLIT,
     ];
 
     public const CONTAINER_SIZES = [
