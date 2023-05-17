@@ -48,6 +48,19 @@ class Sandbox
         self::TYPE_STREAMLIT,
     ];
 
+    public const JUPYTER_TYPES = [
+        self::TYPE_JULIA,
+        self::TYPE_PYTHON,
+        self::TYPE_PYTHON_DATABRICKS,
+        self::TYPE_PYTHON_MLFLOW,
+        self::TYPE_PYTHON_SNOWPARK,
+        self::TYPE_R,
+    ];
+
+    public const DATA_APP_TYPES = [
+        self::TYPE_STREAMLIT,
+    ];
+
     public const CONTAINER_TYPES = [
         self::TYPE_JULIA,
         self::TYPE_PYTHON,
@@ -55,8 +68,8 @@ class Sandbox
         self::TYPE_PYTHON_MLFLOW,
         self::TYPE_PYTHON_SNOWPARK,
         self::TYPE_R,
-        self::TYPE_TEST,
         self::TYPE_STREAMLIT,
+        self::TYPE_TEST,
     ];
 
     public const WORKSPACE_TYPES = [
