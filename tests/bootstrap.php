@@ -32,6 +32,15 @@ $storageClient = new StorageClient([
 ]);
 
 try {
+    /** @var array{
+     *    'description': string,
+     *    'id': string,
+     *    'owner': array{
+     *      'name': string,
+     *      'id': string
+     *    }
+     * } $tokenInfo
+     */
     $tokenInfo = $storageClient->verifyToken();
 } catch (ClientException $e) {
     throw new RuntimeException(sprintf(
