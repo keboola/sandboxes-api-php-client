@@ -43,7 +43,7 @@
         }
     },
     "scripts": {
-        "tests": "phpunit --bootstrap tests/bootstrap.php --fail-on-warning --stop-on-failure tests --verbose --debug",
+        "tests": "phpunit --bootstrap tests/bootstrap.php --fail-on-warning --stop-on-failure tests",
         "phpstan": "phpstan analyse ./src ./tests --level=max --memory-limit=-1 --no-progress -c phpstan.neon",
         "phpcs": "phpcs -n --ignore=vendor --extensions=php .",
         "phpcbf": "phpcbf -n --ignore=vendor --extensions=php .",

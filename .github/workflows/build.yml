@@ -1,12 +1,12 @@
 name: "Build"
-on: [push, workflow_dispatch]
+on: push
 concurrency: ci-pipeline
 env:
   KBC_STORAGE_TOKEN: '${{ secrets.KBC_STORAGE_TOKEN }}'
   KBC_MANAGE_TOKEN: '${{ secrets.KBC_MANAGE_TOKEN }}'
   KBC_MANAGE_NOTIFY_TOKEN: '${{ secrets.KBC_MANAGE_NOTIFY_TOKEN }}'
 
-  # Azure - grrrhhh
+  # Azure
   AZURE_CLIENT_ID: 233328da-9afe-423b-82c1-915d8c539f71
   AZURE_CLIENT_SECRET: '${{ secrets.AZURE_CLIENT_SECRET }}'
   AZURE_TENANT_ID: 9b85ee6f-4fb0-4a46-8cb7-4dcc6b262a89
