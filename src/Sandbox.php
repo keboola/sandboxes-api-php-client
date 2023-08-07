@@ -26,6 +26,8 @@ class Sandbox
     public const TYPE_TEST = 'test';
     public const TYPE_STREAMLIT = 'streamlit';
 
+    public const CONTAINER_SIZE_MICRO = 'micro';
+    public const CONTAINER_SIZE_TINY = 'tiny';
     public const CONTAINER_SIZE_SMALL = 'small';
     public const CONTAINER_SIZE_MEDIUM = 'medium';
     public const CONTAINER_SIZE_LARGE = 'large';
@@ -105,6 +107,8 @@ class Sandbox
     ];
 
     public const CONTAINER_SIZES = [
+        self::CONTAINER_SIZE_MICRO,
+        self::CONTAINER_SIZE_TINY,
         self::CONTAINER_SIZE_SMALL,
         self::CONTAINER_SIZE_MEDIUM,
         self::CONTAINER_SIZE_LARGE,
