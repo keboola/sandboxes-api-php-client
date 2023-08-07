@@ -1,8 +1,5 @@
 name: "Build"
-on:
-  push:
-  workflow_dispatch:
-
+on: [push, workflow_dispatch]
 concurrency: ci-pipeline
 env:
   KBC_STORAGE_TOKEN: '${{ secrets.KBC_STORAGE_TOKEN }}'
