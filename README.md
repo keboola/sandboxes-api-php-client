@@ -42,8 +42,6 @@ Read more in [Composer documentation](http://getcomposer.org/doc/01-basic-usage.
 ## CI
 
 CI is running in GitHub and requires setup of these secrets:
-- `ACR_PULL_USERNAME` - docker credentials for Azure service principal allowed pulling `keboola.azurecr.io/sandboxes-api` (see <https://github.com/keboola/sandboxes#acr-access-from-travis>)
-- `ACR_PULL_PASSWORD`
 - `KBC_STORAGE_TOKEN` - a Storage token working for connection.keboola.com stack
 - `KBC_MANAGE_TOKEN` - Manage token with `provisioning:manage` scope 
 
