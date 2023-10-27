@@ -52,4 +52,37 @@ class ManageClientUnitTest extends TestCase
         ));
         self::assertSame('{}', (string) $request->getBody());
     }
+
+    public function testDeleteSandbox(): void
+    {
+        $requestsLog = [];
+
+        $mockedResponses = [
+            new Response(200),
+        ];
+
+        $handlerStack = HandlerStack::create(new MockHandler($mockedResponses));
+        $handlerStack->push(Middleware::history($requestsLog));
+
+        $client = new ManageClient('http://sandboxes-api', 'token', [
+            'handler' => $handlerStack,
+        ]);
+
+        $client->deleteSandbox('sandbox-123');
+
+        self::assertCount(1, $requestsLog);
+
+        $request = $requestsLog[0]['request'];
+        self::assertInstanceOf(Request::class, $request);
+
+        self::assertSame('DELETE', $request->getMethod());
+        self::assertSame('http://sandboxes-api/manage/sandbox-123', Uri::composeComponents(
+            $request->getUri()->getScheme(),
+            $request->getUri()->getHost(),
+            $request->getUri()->getPath(),
+            $request->getUri()->getQuery(),
+            $request->getUri()->getFragment()
+        ));
+        self::assertEmpty((string) $request->getBody());
+    }
 }
