@@ -57,6 +57,12 @@ class ManageClient extends AbstractClient
         return Sandbox::fromArray($this->sendRequest($request));
     }
 
+    public function deleteSandbox(string $sandboxId): void
+    {
+        $request = new Request('DELETE', sprintf('manage/%s', $sandboxId));
+        $this->sendRequest($request);
+    }
+
     public function deactivate(string $id): void
     {
         $this->sendRequest(new Request('POST', "manage/{$id}/deactivate", [], '{}'));
