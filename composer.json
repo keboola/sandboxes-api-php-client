@@ -18,7 +18,7 @@
         "ext-json": "*",
         "guzzlehttp/guzzle": "~6.0|~7.0",
         "psr/log": "^1.1|^2.0|^3.0",
-        "symfony/validator": "^4.2 !=4.4.33|^5.4|^6.0"
+        "symfony/validator": "^6.0|^7.0"
     },
     "require-dev": {
         "keboola/coding-standard": "^15.0",
