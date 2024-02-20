@@ -1,39 +1,19 @@
-FROM php:7.4-cli
+ARG PHP_VERSION=8.2
+FROM php:${PHP_VERSION}-cli
 
-ARG COMPOSER_FLAGS="--prefer-dist --no-interaction"
-ARG DEBIAN_FRONTEND=noninteractive
 ENV COMPOSER_ALLOW_SUPERUSER 1
-ENV COMPOSER_PROCESS_TIMEOUT 3600
+ENV XDEBUG_MODE=coverage
 
-WORKDIR /code/
+WORKDIR /code
 
-COPY docker/composer-install.sh /tmp/composer-install.sh
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y \
         git \
-        locales \
         unzip \
-	&& rm -r /var/lib/apt/lists/* \
-	&& sed -i 's/^# *\(en_US.UTF-8\)/\1/' /etc/locale.gen \
-	&& locale-gen \
-	&& chmod +x /tmp/composer-install.sh \
-	&& /tmp/composer-install.sh
+   --no-install-recommends && rm -r /var/lib/apt/lists/*
 
-RUN pecl channel-update pecl.php.net \
-    && pecl config-set php_ini /usr/local/etc/php.ini \
-    && yes | pecl install xdebug-2.9.8 \
-    && docker-php-ext-enable xdebug
+COPY docker/php.ini /usr/local/etc/php/php.ini
 
-ENV LANGUAGE=en_US.UTF-8
-ENV LANG=en_US.UTF-8
-ENV LC_ALL=en_US.UTF-8
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer
 
-## Composer - deps always cached unless changed
-# First copy only composer files
-COPY composer.* /code/
-# Download dependencies, but don't run scripts or init autoloaders as the app is missing
-RUN composer install $COMPOSER_FLAGS --no-scripts --no-autoloader
-# copy rest of the app
-COPY . /code/
-# run normal composer - all deps are cached already
-RUN composer install $COMPOSER_FLAGS
+RUN pecl install xdebug \
+ && docker-php-ext-enable xdebug
