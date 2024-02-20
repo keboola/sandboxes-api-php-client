@@ -68,7 +68,7 @@ abstract class AbstractClient
             $retries,
             RequestInterface $request,
             ?ResponseInterface $response = null,
-            $error = null
+            $error = null,
         ) use ($maxRetries) {
             if ($retries >= $maxRetries) {
                 return false;
@@ -86,7 +86,7 @@ abstract class AbstractClient
     {
         // Initialize handlers (start with those supplied in constructor)
         if (isset($options['handler']) && $options['handler'] instanceof HandlerStack) {
-            $handlerStack = HandlerStack::create($options['handler']);
+            $handlerStack = HandlerStack::create($options['handler']); // @phpstan-ignore-line
         } else {
             $handlerStack = HandlerStack::create();
         }
@@ -102,13 +102,13 @@ abstract class AbstractClient
                     $requestUpdated = $requestUpdated->withHeader($key, $value);
                 }
                 return $requestUpdated;
-            }
+            },
         ));
         // Set client logger
         if (isset($options['logger']) && $options['logger'] instanceof LoggerInterface) {
             $handlerStack->push(Middleware::log(
                 $options['logger'],
-                new MessageFormatter('[sandboxes-api] {method} {uri} : {code} {res_header_Content-Length}')
+                new MessageFormatter('[sandboxes-api] {method} {uri} : {code} {res_header_Content-Length}'),
             ));
         }
         // finally, create the instance
@@ -138,7 +138,7 @@ abstract class AbstractClient
             throw new ServerException(
                 'Unable to parse response body into JSON: ' . $e->getMessage(),
                 $e->getCode(),
-                $e
+                $e,
             );
         }
     }

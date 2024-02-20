@@ -180,7 +180,7 @@ class Sandbox
         $sandbox->setSizeParameters(
             isset($in['sizeParameters']) ?
                 SandboxSizeParameters::fromArray($in['sizeParameters']) :
-                null
+                null,
         );
         $sandbox->setUser($in['user'] ?? '');
         $sandbox->setHost($in['host'] ?? '');

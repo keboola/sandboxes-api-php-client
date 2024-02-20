@@ -12,7 +12,7 @@ class Client extends AbstractClient
     public function __construct(
         string $apiUrl,
         string $storageToken,
-        ?array $options = []
+        ?array $options = [],
     ) {
         if (!isset($options['headers'])) {
             $options['headers'] = [];
@@ -76,7 +76,7 @@ class Client extends AbstractClient
     public function getProject(): Project
     {
         return Project::fromArray(
-            $this->sendRequest(new Request('GET', 'projects/current'))
+            $this->sendRequest(new Request('GET', 'projects/current')),
         );
     }
 
@@ -90,9 +90,9 @@ class Client extends AbstractClient
                     [],
                     json_encode([
                         'mlflowServerVersion' => $serverVersion,
-                    ])
-                )
-            )
+                    ]),
+                ),
+            ),
         );
     }
 
@@ -120,7 +120,7 @@ class Client extends AbstractClient
     public function getMLDeployment(string $id): MLDeployment
     {
         return MLDeployment::fromArray(
-            $this->sendRequest(new Request('GET', "ml/deployments/{$id}"))
+            $this->sendRequest(new Request('GET', "ml/deployments/{$id}")),
         );
     }
 

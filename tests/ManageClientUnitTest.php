@@ -48,7 +48,7 @@ class ManageClientUnitTest extends TestCase
             $request->getUri()->getHost(),
             $request->getUri()->getPath(),
             $request->getUri()->getQuery(),
-            $request->getUri()->getFragment()
+            $request->getUri()->getFragment(),
         ));
         self::assertSame('{}', (string) $request->getBody());
     }
@@ -81,7 +81,7 @@ class ManageClientUnitTest extends TestCase
             $request->getUri()->getHost(),
             $request->getUri()->getPath(),
             $request->getUri()->getQuery(),
-            $request->getUri()->getFragment()
+            $request->getUri()->getFragment(),
         ));
         self::assertEmpty((string) $request->getBody());
     }

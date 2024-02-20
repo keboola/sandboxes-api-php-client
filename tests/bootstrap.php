@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Dotenv\Dotenv;
 use Keboola\ManageApi\Client as ManageClient;
 use Keboola\Sandboxes\Api\Exception\ClientException;
 use Keboola\StorageApi\Client as StorageClient;
@@ -21,7 +22,7 @@ set_error_handler(function (int $severity, string $message, string $filename, in
     return true;
 });
 
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+$dotenv = Dotenv::createImmutable(__DIR__ . '/..');
 if (file_exists(__DIR__ . '/../.env')) {
     $dotenv->load();
 }
@@ -52,7 +53,7 @@ foreach ($tokenEnvs as $tokenEnv) {
         throw new RuntimeException(sprintf(
             'Failed to verify "%s", check ENV variables: %s',
             $tokenEnv,
-            $e->getMessage()
+            $e->getMessage(),
         ), 0, $e);
     }
 
@@ -62,7 +63,7 @@ foreach ($tokenEnvs as $tokenEnv) {
         $tokenInfo['id'],
         $tokenInfo['owner']['name'],
         $tokenInfo['owner']['id'],
-        $storageClient->getApiUrl()
+        $storageClient->getApiUrl(),
     );
 }
 
@@ -92,7 +93,7 @@ foreach ($tokenEnvs as $tokenEnv) {
         throw new RuntimeException(sprintf(
             'Failed to verify "%s", check ENV variables: %s',
             $tokenEnv,
-            $e->getMessage()
+            $e->getMessage(),
         ), 0, $e);
     }
 
@@ -102,7 +103,7 @@ foreach ($tokenEnvs as $tokenEnv) {
         $tokenInfo['id'],
         $tokenInfo['creator']['name'],
         $tokenInfo['creator']['id'],
-        $storageClient->getApiUrl()
+        $storageClient->getApiUrl(),
     );
 }
 

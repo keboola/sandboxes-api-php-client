@@ -127,7 +127,7 @@ class MLDeploymentTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'Cannot set the trackingTokenId to an empty value, use the clearTrackingTokenId method instead'
+            'Cannot set the trackingTokenId to an empty value, use the clearTrackingTokenId method instead',
         );
         $mlDeployment->setTrackingTokenId('');
     }

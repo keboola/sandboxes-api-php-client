@@ -33,7 +33,7 @@ class ClientFunctionalCredentialsTest extends DynamoTestCase
             (new Configuration())
                 ->setComponentId('transformation')
                 ->setConfigurationId($this->configurationId)
-                ->setName($this->configurationId)
+                ->setName($this->configurationId),
         );
 
         $apiUrl = (string) getenv('API_URL');
@@ -94,7 +94,7 @@ class ClientFunctionalCredentialsTest extends DynamoTestCase
                     'warehouse' => 'test-warehouse',
                 ],
             ],
-            $response->getWorkspaceDetails()
+            $response->getWorkspaceDetails(),
         );
         $credentials = $response->getCredentials();
         self::assertNotNull($credentials);
@@ -149,11 +149,11 @@ class ClientFunctionalCredentialsTest extends DynamoTestCase
         self::assertEquals($expected['token_uri'], $data['token_uri']);
         self::assertEquals(
             $expected['auth_provider_x509_cert_url'],
-            $data['auth_provider_x509_cert_url']
+            $data['auth_provider_x509_cert_url'],
         );
         self::assertEquals(
             $expected['client_x509_cert_url'],
-            $data['client_x509_cert_url']
+            $data['client_x509_cert_url'],
         );
         self::assertNotEmpty($data['private_key']);
     }

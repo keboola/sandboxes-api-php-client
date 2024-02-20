@@ -47,7 +47,7 @@ class ManageClientTest extends TestCase
         $manageClient = new ManageClient(
             (string) getenv('API_URL'),
             'manage-token',
-            ['handler' => $guzzleHandler]
+            ['handler' => $guzzleHandler],
         );
 
         $sandboxes = $manageClient->listProjectSandboxes('project1');
@@ -122,7 +122,7 @@ class ManageClientTest extends TestCase
         $manageClient = new ManageClient(
             (string) getenv('API_URL'),
             'manage-token',
-            ['handler' => $guzzleHandler]
+            ['handler' => $guzzleHandler],
         );
 
         $projects = $manageClient->listProjects(ListProjectsOptions::create()->setHasPersistentStorage(true));
