@@ -46,7 +46,7 @@ class ClientUnitTest extends TestCase
             '',
             $request->getUri()->getPath(),
             $request->getUri()->getQuery(),
-            ''
+            '',
         ));
     }
 

@@ -19,7 +19,7 @@ class PersistentStorage
         return self::create()
             ->setReady($values['ready'] ?? null)
             ->setK8sStorageClassName(
-                array_key_exists('k8sStorageClassName', $values) ? $values['k8sStorageClassName'] : ''
+                array_key_exists('k8sStorageClassName', $values) ? $values['k8sStorageClassName'] : '',
             )
         ;
     }

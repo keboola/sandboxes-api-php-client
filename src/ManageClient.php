@@ -12,7 +12,7 @@ class ManageClient extends AbstractClient
     public function __construct(
         string $apiUrl,
         string $token,
-        ?array $options = []
+        ?array $options = [],
     ) {
         if (!isset($options['headers'])) {
             $options['headers'] = [];
@@ -30,7 +30,7 @@ class ManageClient extends AbstractClient
     {
         $response = $this->sendRequest(new Request(
             'GET',
-            sprintf('manage/projects/%s/sandboxes', urlencode($projectId))
+            sprintf('manage/projects/%s/sandboxes', urlencode($projectId)),
         ));
 
         return array_map(fn (array $s) => Sandbox::fromArray($s), $response);
@@ -46,7 +46,7 @@ class ManageClient extends AbstractClient
     public function get(string $id): Sandbox
     {
         return Sandbox::fromArray(
-            $this->sendRequest(new Request('GET', "manage/{$id}"))
+            $this->sendRequest(new Request('GET', "manage/{$id}")),
         );
     }
 
@@ -91,7 +91,7 @@ class ManageClient extends AbstractClient
     public function getProject(string $id): Project
     {
         return Project::fromArray(
-            $this->sendRequest(new Request('GET', "manage/projects/{$id}"))
+            $this->sendRequest(new Request('GET', "manage/projects/{$id}")),
         );
     }
 
@@ -109,8 +109,8 @@ class ManageClient extends AbstractClient
                 'POST',
                 'notify/branch-deleted',
                 [],
-                json_encode(['branchId' => $branchId], JSON_THROW_ON_ERROR)
-            )
+                json_encode(['branchId' => $branchId], JSON_THROW_ON_ERROR),
+            ),
         );
     }
 }

@@ -180,7 +180,7 @@ class Sandbox
         $sandbox->setSizeParameters(
             isset($in['sizeParameters']) ?
                 SandboxSizeParameters::fromArray($in['sizeParameters']) :
-                null
+                null,
         );
         $sandbox->setUser($in['user'] ?? '');
         $sandbox->setHost($in['host'] ?? '');
@@ -451,9 +451,9 @@ class Sandbox
         return $this;
     }
 
-    public function getConfigurationId(): ?string
+    public function getConfigurationId(): string
     {
-        return $this->user;
+        return $this->configurationId;
     }
 
     /**

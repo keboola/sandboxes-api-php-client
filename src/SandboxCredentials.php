@@ -72,7 +72,7 @@ class SandboxCredentials
         $diff = array_diff_key((array) array_combine(self::$required, self::$required), $data);
         if (!empty($diff)) {
             throw new InvalidArgumentException(
-                sprintf('Missing credential field(s) "%s"', implode(',', $diff))
+                sprintf('Missing credential field(s) "%s"', implode(',', $diff)),
             );
         }
     }

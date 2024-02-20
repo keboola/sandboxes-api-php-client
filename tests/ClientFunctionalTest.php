@@ -39,7 +39,7 @@ class ClientFunctionalTest extends DynamoTestCase
             (new Configuration())
                 ->setComponentId('transformation')
                 ->setConfigurationId($this->configurationId)
-                ->setName($this->configurationId)
+                ->setName($this->configurationId),
         );
 
         $apiUrl = (string) getenv('API_URL');
@@ -87,7 +87,7 @@ class ClientFunctionalTest extends DynamoTestCase
                     'readOnlyStorageAccess' => true,
                 ],
             ],
-            $response->getWorkspaceDetails()
+            $response->getWorkspaceDetails(),
         );
         $this->assertEquals('Spark-1', $response->getDatabricksSparkVersion());
         $this->assertEquals('Node-2', $response->getDatabricksNodeType());
@@ -207,24 +207,24 @@ class ClientFunctionalTest extends DynamoTestCase
             (new Sandbox())
                 ->setActive(true)
                 ->setType('python')
-                ->setBranchId('1234')
+                ->setBranchId('1234'),
         );
 
         $noBranchResponse = $this->client->list();
         self::assertNotContains(
             $createdSandbox->getId(),
-            array_map(fn(Sandbox $s) => $s->getId(), $noBranchResponse)
+            array_map(fn(Sandbox $s) => $s->getId(), $noBranchResponse),
         );
 
         $branchResponse = $this->client->list(ListOptions::create()->setBranchId('1234'));
         self::assertContains(
             $createdSandbox->getId(),
-            array_map(fn(Sandbox $s) => $s->getId(), $branchResponse)
+            array_map(fn(Sandbox $s) => $s->getId(), $branchResponse),
         );
 
         $notifyClient = new ManageClient(
             (string) getenv('API_URL'),
-            (string) getenv('KBC_MANAGE_NOTIFY_TOKEN')
+            (string) getenv('KBC_MANAGE_NOTIFY_TOKEN'),
         );
         $notifyClient->notifyBranchDeleted('1234');
         // sleeping here because this request is asyncronous so we wait for the records to be deleted
@@ -232,7 +232,7 @@ class ClientFunctionalTest extends DynamoTestCase
         $branchResponse = $this->client->list(ListOptions::create()->setBranchId('1234'));
         self::assertNotContains(
             $createdSandbox->getId(),
-            array_map(fn(Sandbox $s) => $s->getId(), $branchResponse)
+            array_map(fn(Sandbox $s) => $s->getId(), $branchResponse),
         );
     }
 
@@ -313,7 +313,7 @@ class ClientFunctionalTest extends DynamoTestCase
         self::assertSame('/abs', $result->getMlflowAbsSas());
         self::assertSame(
             'BlobEndpoint=https://abs-account.blob.core.windows.net/;SharedAccessSignature=/abs',
-            $result->getMlflowAbsConnectionString()
+            $result->getMlflowAbsConnectionString(),
         );
         self::assertSame('1.2.3', $result->getMlflowServerVersion());
         self::assertNotEmpty($result->getMlflowServerVersionLatest());
@@ -324,7 +324,7 @@ class ClientFunctionalTest extends DynamoTestCase
         self::assertSame('/abs', $result->getMlflowAbsSas());
         self::assertSame(
             'BlobEndpoint=https://abs-account.blob.core.windows.net/;SharedAccessSignature=/abs',
-            $result->getMlflowAbsConnectionString()
+            $result->getMlflowAbsConnectionString(),
         );
         self::assertSame('1.2.3', $result->getMlflowServerVersion());
         self::assertNotEmpty($result->getMlflowServerVersionLatest());
@@ -335,7 +335,7 @@ class ClientFunctionalTest extends DynamoTestCase
         self::assertSame('/abs', $result->getMlflowAbsSas());
         self::assertSame(
             'BlobEndpoint=https://abs-account.blob.core.windows.net/;SharedAccessSignature=/abs',
-            $result->getMlflowAbsConnectionString()
+            $result->getMlflowAbsConnectionString(),
         );
         self::assertSame('1.2.3', $result->getMlflowServerVersion());
         self::assertNotEmpty($result->getMlflowServerVersionLatest());
@@ -347,7 +347,7 @@ class ClientFunctionalTest extends DynamoTestCase
         self::assertSame('/abs', $result->getMlflowAbsSas());
         self::assertSame(
             'BlobEndpoint=https://abs-account.blob.core.windows.net/;SharedAccessSignature=/abs',
-            $result->getMlflowAbsConnectionString()
+            $result->getMlflowAbsConnectionString(),
         );
 
         $project->setMlflowRequiresAuth(false);
@@ -357,7 +357,7 @@ class ClientFunctionalTest extends DynamoTestCase
         self::assertSame('/abs', $result->getMlflowAbsSas());
         self::assertSame(
             'BlobEndpoint=https://abs-account.blob.core.windows.net/;SharedAccessSignature=/abs',
-            $result->getMlflowAbsConnectionString()
+            $result->getMlflowAbsConnectionString(),
         );
 
         $project->setMlflowAbsSas(null);
@@ -400,7 +400,7 @@ class ClientFunctionalTest extends DynamoTestCase
         $project->setPersistentStorage(
             PersistentStorage::create()
                 ->setReady(true)
-                ->setK8sStorageClassName('storage-class')
+                ->setK8sStorageClassName('storage-class'),
         );
         $result = $this->manageClient->updateProject($project);
         $persistentStorage = $result->getPersistentStorage();
@@ -429,7 +429,7 @@ class ClientFunctionalTest extends DynamoTestCase
         // set storage not ready
         $project->setPersistentStorage(
             PersistentStorage::create()
-                ->setReady(false)
+                ->setReady(false),
         );
         $persistentStorage = $this->manageClient->updateProject($project)->getPersistentStorage();
         self::assertNotNull($persistentStorage);
@@ -444,7 +444,7 @@ class ClientFunctionalTest extends DynamoTestCase
         $project->setPersistentStorage(
             PersistentStorage::create()
                 ->setReady(null)
-                ->setK8sStorageClassName(null)
+                ->setK8sStorageClassName(null),
         );
         $persistentStorage = $this->manageClient->updateProject($project)->getPersistentStorage();
         self::assertNotNull($persistentStorage);

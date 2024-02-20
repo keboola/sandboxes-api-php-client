@@ -34,7 +34,7 @@ class SandboxCredentialsTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
             'Missing credential field(s) "type,project_id,private_key_id,client_email,token_uri,' .
-            'auth_provider_x509_cert_url,client_x509_cert_url,private_key"'
+            'auth_provider_x509_cert_url,client_x509_cert_url,private_key"',
         );
         SandboxCredentials::fromArray([
             'something' => 'weird',

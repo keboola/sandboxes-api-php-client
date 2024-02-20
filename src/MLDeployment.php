@@ -140,7 +140,7 @@ class MLDeployment
     {
         if (empty($trackingTokenId)) {
             throw new InvalidArgumentException(
-                'Cannot set the trackingTokenId to an empty value, use the clearTrackingTokenId method instead'
+                'Cannot set the trackingTokenId to an empty value, use the clearTrackingTokenId method instead',
             );
         }
         $this->trackingTokenId = $trackingTokenId;
