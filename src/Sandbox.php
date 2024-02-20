@@ -451,9 +451,9 @@ class Sandbox
         return $this;
     }
 
-    public function getConfigurationId(): ?string
+    public function getConfigurationId(): string
     {
-        return $this->user;
+        return $this->configurationId;
     }
 
     /**
