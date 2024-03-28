@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Keboola\Sandboxes\Api;
 
+use DateInterval;
+use DateTime;
 use Keboola\Sandboxes\Api\Exception\ClientException;
 
 class Sandbox
@@ -734,5 +736,18 @@ class Sandbox
     {
         $this->credentials = $credentials;
         return $this;
+    }
+
+    public function isExpired(): bool
+    {
+        $now = new DateTime();
+        if (!empty($this->getExpirationTimestamp())) {
+            return (new DateTime($this->getExpirationTimestamp())) < $now;
+        }
+        $lastActivityTimestamp = (string) ($this->getLastAutosaveTimestamp() ?: $this->getCreatedTimestamp());
+        $lastActivity = new DateTime($lastActivityTimestamp);
+        $expirationAfterHours = $this->getExpirationAfterHours() ?: 1;
+        $lastActivity->add(new DateInterval("PT{$expirationAfterHours}H"));
+        return $lastActivity < $now;
     }
 }

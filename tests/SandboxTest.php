@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keboola\Sandboxes\Api\Tests;
 
+use DateTime;
 use DateTimeImmutable;
 use Keboola\Sandboxes\Api\Sandbox;
 use Keboola\Sandboxes\Api\SandboxSizeParameters;
@@ -105,5 +106,70 @@ class SandboxTest extends TestCase
         ]);
         $nullPassword = $sandbox->getPassword();
         self::assertEmpty($nullPassword);
+    }
+
+    public function testIsExpired(): void
+    {
+        // expired
+        $sandbox = new Sandbox();
+        $sandbox->setExpirationTimestamp((new DateTime('-1 second'))->format('c'));
+        self::assertTrue($sandbox->isExpired());
+
+        $sandbox = new Sandbox();
+        $sandbox->setExpirationTimestamp('');
+        $sandbox->setExpirationAfterHours(1);
+        $sandbox->setLastAutosaveTimestamp((new DateTime('-1 hour'))->format('c'));
+        self::assertTrue($sandbox->isExpired());
+
+        $sandbox = new Sandbox();
+        $sandbox->setExpirationTimestamp('');
+        $sandbox->setExpirationAfterHours(2);
+        $sandbox->setLastAutosaveTimestamp((new DateTime('-2 hour'))->format('c'));
+        self::assertTrue($sandbox->isExpired());
+
+        $sandbox = new Sandbox();
+        $sandbox->setExpirationTimestamp('');
+        $sandbox->setLastAutosaveTimestamp('');
+        $sandbox->setExpirationAfterHours(1);
+        $sandbox->setCreatedTimestamp((new DateTime('-1 hour'))->format('c'));
+        self::assertTrue($sandbox->isExpired());
+
+        $sandbox = new Sandbox();
+        $sandbox->setExpirationTimestamp('');
+        $sandbox->setLastAutosaveTimestamp('');
+        $sandbox->setExpirationAfterHours(2);
+        $sandbox->setCreatedTimestamp((new DateTime('-2 hour'))->format('c'));
+        self::assertTrue($sandbox->isExpired());
+
+        // non-expired
+        $sandbox = new Sandbox();
+        $sandbox->setExpirationTimestamp((new DateTime('+1 second'))->format('c'));
+        self::assertFalse($sandbox->isExpired());
+
+        $sandbox = new Sandbox();
+        $sandbox->setExpirationTimestamp('');
+        $sandbox->setExpirationAfterHours(1);
+        $sandbox->setLastAutosaveTimestamp((new DateTime('+1 hour'))->format('c'));
+        self::assertFalse($sandbox->isExpired());
+
+        $sandbox = new Sandbox();
+        $sandbox->setExpirationTimestamp('');
+        $sandbox->setExpirationAfterHours(2);
+        $sandbox->setLastAutosaveTimestamp((new DateTime('+2 hour'))->format('c'));
+        self::assertFalse($sandbox->isExpired());
+
+        $sandbox = new Sandbox();
+        $sandbox->setExpirationTimestamp('');
+        $sandbox->setLastAutosaveTimestamp('');
+        $sandbox->setExpirationAfterHours(1);
+        $sandbox->setCreatedTimestamp((new DateTime('+1 hour'))->format('c'));
+        self::assertFalse($sandbox->isExpired());
+
+        $sandbox = new Sandbox();
+        $sandbox->setExpirationTimestamp('');
+        $sandbox->setLastAutosaveTimestamp('');
+        $sandbox->setExpirationAfterHours(2);
+        $sandbox->setCreatedTimestamp((new DateTime('+2 hour'))->format('c'));
+        self::assertFalse($sandbox->isExpired());
     }
 }
