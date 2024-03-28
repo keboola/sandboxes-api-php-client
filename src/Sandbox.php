@@ -735,4 +735,9 @@ class Sandbox
         $this->credentials = $credentials;
         return $this;
     }
+
+    public function usesProxy(): bool
+    {
+        return !empty($this->getUrl()) && preg_match('/^https:\/\/[^.]+\.hub\./ui', $this->getUrl()) === 1;
+    }
 }
