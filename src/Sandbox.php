@@ -750,4 +750,9 @@ class Sandbox
         $lastActivity->add(new DateInterval("PT{$expirationAfterHours}H"));
         return $lastActivity < $now;
     }
+
+    public function usesProxy(): bool
+    {
+        return !empty($this->getUrl()) && preg_match('/^https:\/\/[^.]+\.hub\./ui', $this->getUrl()) === 1;
+    }
 }
