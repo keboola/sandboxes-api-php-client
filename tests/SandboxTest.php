@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Keboola\Sandboxes\Api\Tests;
 
 use DateTimeImmutable;
+use Generator;
 use Keboola\Sandboxes\Api\Sandbox;
 use Keboola\Sandboxes\Api\SandboxSizeParameters;
 use PHPUnit\Framework\TestCase;
@@ -105,5 +106,34 @@ class SandboxTest extends TestCase
         ]);
         $nullPassword = $sandbox->getPassword();
         self::assertEmpty($nullPassword);
+    }
+
+    public function usesProxyDataProvider(): Generator
+    {
+        yield 'without url' => [
+            'url' => '',
+            'expectedResult' => false,
+        ];
+
+        yield 'without proxy' => [
+            'url' => 'https://sandbox.keboola.com/',
+            'expectedResult' => false,
+        ];
+
+        yield 'with proxy' => [
+            'url' => 'https://123.hub.connection.keboola.com',
+            'expectedResult' => true,
+        ];
+    }
+
+    /**
+     * @dataProvider usesProxyDataProvider
+     */
+    public function testUsesProxy(string $url, bool $expectedResult): void
+    {
+        self::assertSame(
+            $expectedResult,
+            (new Sandbox())->setUrl($url)->usesProxy(),
+        );
     }
 }
