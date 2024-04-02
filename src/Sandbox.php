@@ -532,7 +532,7 @@ class Sandbox
         return $this;
     }
 
-    public function getExpirationAfterHours(): ?int
+    public function getExpirationAfterHours(): int
     {
         return $this->expirationAfterHours;
     }
