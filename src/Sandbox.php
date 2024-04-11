@@ -740,4 +740,18 @@ class Sandbox
     {
         return !empty($this->getUrl()) && preg_match('/^https:\/\/[^.]+\.hub\./ui', $this->getUrl()) === 1;
     }
+
+    public function getJupyterApiUrl(): ?string
+    {
+        if (!in_array($this->getType(), self::JUPYTER_TYPES)) {
+            return null;
+        }
+
+        // Remove '/lab` suffix from sandbox url
+        $url = preg_replace('/\/lab$/', '', (string) $this->getUrl());
+        if (empty($url) or empty($this->getPassword())) {
+            return null;
+        }
+        return $url;
+    }
 }
