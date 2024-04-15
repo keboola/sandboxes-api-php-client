@@ -136,4 +136,98 @@ class SandboxTest extends TestCase
             (new Sandbox())->setUrl($url)->usesProxy(),
         );
     }
+
+    public function getJupyterApiUrlReturnsNullIfUrlOrPasswordIsMissingDataProvider(): Generator
+    {
+        yield 'URL is empty' => [
+            'url' => '',
+            'password' => 'password',
+        ];
+        yield 'Password is empty' => [
+            'url' => 'https://sandbox.hub.com/lab',
+            'password' => '',
+        ];
+        yield 'Password is null' => [
+            'url' => 'https://sandbox.hub.com/lab',
+            'password' => null,
+        ];
+    }
+
+    /**
+     * @dataProvider getJupyterApiUrlReturnsNullIfUrlOrPasswordIsMissingDataProvider
+     */
+    public function testGetJupyterApiUrlReturnsNullIfUrlOrPasswordIsMissing(
+        ?string $url,
+        ?string $password,
+    ): void {
+        $sandbox = new Sandbox();
+        $sandbox->setType('python');
+
+        if ($url !== null) {
+            $sandbox->setUrl($url);
+        }
+        if ($password !== null) {
+            $sandbox->setPassword($password);
+        }
+
+        self::assertNull($sandbox->getJupyterApiUrl());
+    }
+
+    public function getJupyterApiUrlReturnsUrlForJupyterTypeSandboxDataProvider(): Generator
+    {
+        yield 'julia' => ['julia'];
+        yield 'python' => ['python'];
+        yield 'python-databricks' => ['python-databricks'];
+        yield 'python-mlflow' => ['python-mlflow'];
+        yield 'python-snowpark' => ['python-snowpark'];
+        yield 'r' => ['r'];
+    }
+
+    /**
+     * @dataProvider getJupyterApiUrlReturnsUrlForJupyterTypeSandboxDataProvider
+     */
+    public function testGetJupyterApiUrlReturnsUrlForJupyterTypeSandbox(
+        string $type,
+    ): void {
+        $sandbox = new Sandbox();
+        $sandbox->setPassword('password');
+        $sandbox->setType($type);
+        $sandbox->setUrl('https://sandbox.hub.com/dummy');
+
+        self::assertSame('https://sandbox.hub.com/dummy', $sandbox->getJupyterApiUrl());
+
+        // Tests if '/lab` suffix will be removed from sandbox url
+        $sandbox = new Sandbox();
+        $sandbox->setPassword('password');
+        $sandbox->setType($type);
+        $sandbox->setUrl('https://sandbox.hub.com/lab');
+
+        self::assertSame('https://sandbox.hub.com', $sandbox->getJupyterApiUrl());
+    }
+
+    public function getJupyterApiUrlReturnsNullForNonJupyterTypeSandboxDataProvider(): Generator
+    {
+        yield 'bigquery' => ['bigquery'];
+        yield 'exasol' => ['exasol'];
+        yield 'redshift' => ['redshift'];
+        yield 'snowflake' => ['snowflake'];
+        yield 'synapse' => ['synapse'];
+        yield 'teradata' => ['teradata'];
+        yield 'test' => ['test'];
+        yield 'streamlit' => ['streamlit'];
+    }
+
+    /**
+     * @dataProvider getJupyterApiUrlReturnsNullForNonJupyterTypeSandboxDataProvider
+     */
+    public function testGetJupyterApiUrlReturnsNullForNonJupyterTypeSandbox(
+        string $type,
+    ): void {
+        $sandbox = new Sandbox();
+        $sandbox->setUrl('https://sandbox.hub.com/lab');
+        $sandbox->setPassword('password');
+        $sandbox->setType($type);
+
+        self::assertNull($sandbox->getJupyterApiUrl());
+    }
 }
