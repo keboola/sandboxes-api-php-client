@@ -749,7 +749,7 @@ class Sandbox
 
         // Remove '/lab` suffix from sandbox url
         $url = preg_replace('/\/lab$/', '', (string) $this->getUrl());
-        if (empty($url) or empty($this->getPassword())) {
+        if (empty($url) || empty($this->getPassword())) {
             return null;
         }
         return $url;
