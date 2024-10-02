@@ -35,6 +35,7 @@ class SandboxTest extends TestCase
             'packages' => ['foo', 'bar'],
             'expirationTimestamp' => '2024-02-02 18:00:00',
             'expirationAfterHours' => 1,
+            'autoSuspendAfterSeconds' => 2,
             'user' => 'user',
             'password' => 'password',
             'host' => 'host',
@@ -75,6 +76,7 @@ class SandboxTest extends TestCase
         self::assertSame('2024-02-02 14:00:00', $sandbox->getUpdatedTimestamp());
         self::assertSame('2024-02-02 18:00:00', $sandbox->getExpirationTimestamp());
         self::assertSame(1, $sandbox->getExpirationAfterHours());
+        self::assertSame(2, $sandbox->getAutoSuspendAfterSeconds());
         self::assertSame('2024-02-02 16:00:00', $sandbox->getDeletedTimestamp());
         self::assertSame('staging-workspace-id', $sandbox->getStagingWorkspaceId());
         self::assertSame('staging-workspace-type', $sandbox->getStagingWorkspaceType());

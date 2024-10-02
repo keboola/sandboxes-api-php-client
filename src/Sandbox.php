@@ -144,6 +144,7 @@ class Sandbox
     private string $expirationTimestamp;
     private string $lastAutosaveTimestamp;
     private int $expirationAfterHours;
+    private int $autoSuspendAfterSeconds;
     private string $deletedTimestamp;
 
     private string $databricksSparkVersion;
@@ -195,6 +196,7 @@ class Sandbox
         $sandbox->setExpirationTimestamp($in['expirationTimestamp'] ?? '');
         $sandbox->setLastAutosaveTimestamp($in['lastAutosaveTimestamp'] ?? '');
         $sandbox->setExpirationAfterHours($in['expirationAfterHours'] ?? 0);
+        $sandbox->setAutoSuspendAfterSeconds($in['autoSuspendAfterSeconds'] ?? 0);
         $sandbox->setDeletedTimestamp($in['deletedTimestamp'] ?? '');
 
         $sandbox->setDatabricksSparkVersion($in['databricks']['sparkVersion'] ?? '');
@@ -294,6 +296,9 @@ class Sandbox
         }
         if (!empty($this->expirationAfterHours)) {
             $result['expirationAfterHours'] = $this->expirationAfterHours;
+        }
+        if (!empty($this->autoSuspendAfterSeconds)) {
+            $result['autoSuspendAfterSeconds'] = $this->autoSuspendAfterSeconds;
         }
         if (!empty($this->lastAutosaveTimestamp)) {
             $result['lastAutosaveTimestamp'] = $this->lastAutosaveTimestamp;
@@ -535,6 +540,16 @@ class Sandbox
     public function getExpirationAfterHours(): int
     {
         return $this->expirationAfterHours;
+    }
+
+    public function setAutoSuspendAfterSeconds(int $autoSuspendAfterSeconds): void
+    {
+        $this->autoSuspendAfterSeconds = $autoSuspendAfterSeconds;
+    }
+
+    public function getAutoSuspendAfterSeconds(): int
+    {
+        return $this->autoSuspendAfterSeconds;
     }
 
     public function setDeletedTimestamp(string $deletedTimestamp): self
