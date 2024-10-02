@@ -35,8 +35,8 @@ jobs:
 
       - name: Run tests
         run: |
-          docker-compose run tests composer install
-          docker-compose run tests composer ci
+          docker compose run tests composer install
+          docker compose run tests composer ci
       - name: Dump docker logs on failure
         if: failure()
-        run: docker-compose logs
+        run: docker compose logs
