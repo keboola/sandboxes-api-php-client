@@ -36,6 +36,21 @@ class ManageClient extends AbstractClient
         return array_map(fn (array $s) => Sandbox::fromArray($s), $response);
     }
 
+    /**
+     * @return Sandbox[]
+     */
+    public function listAll(): iterable
+    {
+        $response = $this->sendRequestWithPagination(new Request(
+            'GET',
+            'manage/list',
+        ));
+
+        foreach ($response as $sandboxData) {
+            yield Sandbox::fromArray($sandboxData);
+        }
+    }
+
     public function listExpired(): array
     {
         return array_map(function ($s) {

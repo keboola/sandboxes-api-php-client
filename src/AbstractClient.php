@@ -12,6 +12,7 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\MessageFormatter;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Uri;
 use JsonException;
 use Keboola\Sandboxes\Api\Exception\ClientException;
 use Keboola\Sandboxes\Api\Exception\ServerException;
@@ -141,5 +142,42 @@ abstract class AbstractClient
                 $e,
             );
         }
+    }
+
+    protected function sendRequestWithPagination(Request $request): iterable
+    {
+        $nextPageLink = (string) $request->getUri();
+
+        do {
+            try {
+                $request = $request->withUri(new Uri($nextPageLink));
+                $response = $this->client->send($request);
+            } catch (GuzzleException $e) {
+                if ($e->getCode() < 500) {
+                    throw new ClientException($e->getMessage(), $e->getCode(), $e);
+                }
+                throw new ServerException($e->getMessage(), $e->getCode(), $e);
+            }
+
+            $body = $response->getBody()->getContents();
+            if (!strlen($body)) {
+                return;
+            }
+
+            try {
+                $data = (array) json_decode($body, true, self::JSON_DEPTH, JSON_THROW_ON_ERROR);
+                foreach ($data as $item) {
+                    yield $item;
+                }
+            } catch (JsonException $e) {
+                throw new ServerException(
+                    'Unable to parse response body into JSON: ' . $e->getMessage(),
+                    $e->getCode(),
+                    $e,
+                );
+            }
+
+            $nextPageLink = $response->getHeaderLine('Link') ?: null;
+        } while ($nextPageLink !== null);
     }
 }
