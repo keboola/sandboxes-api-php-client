@@ -116,16 +116,4 @@ class ManageClient extends AbstractClient
         $request = new Request('PATCH', "manage/projects/{$project->getId()}", [], $body);
         return Project::fromArray($this->sendRequest($request));
     }
-
-    public function notifyBranchDeleted(string $branchId): void
-    {
-        $this->sendRequest(
-            new Request(
-                'POST',
-                'notify/branch-deleted',
-                [],
-                json_encode(['branchId' => $branchId], JSON_THROW_ON_ERROR),
-            ),
-        );
-    }
 }
