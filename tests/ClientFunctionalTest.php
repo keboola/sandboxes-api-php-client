@@ -221,19 +221,6 @@ class ClientFunctionalTest extends DynamoTestCase
             $createdSandbox->getId(),
             array_map(fn(Sandbox $s) => $s->getId(), $branchResponse),
         );
-
-        $notifyClient = new ManageClient(
-            (string) getenv('API_URL'),
-            (string) getenv('KBC_MANAGE_NOTIFY_TOKEN'),
-        );
-        $notifyClient->notifyBranchDeleted('1234');
-        // sleeping here because this request is asyncronous so we wait for the records to be deleted
-        sleep(3);
-        $branchResponse = $this->client->list(ListOptions::create()->setBranchId('1234'));
-        self::assertNotContains(
-            $createdSandbox->getId(),
-            array_map(fn(Sandbox $s) => $s->getId(), $branchResponse),
-        );
     }
 
     public function testCreateSandboxWithSize(): void

@@ -9,6 +9,7 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use Keboola\Sandboxes\Api\ListProjectsOptions;
 use Keboola\Sandboxes\Api\ManageClient;
+use Keboola\Sandboxes\Api\Sandbox;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -131,5 +132,69 @@ class ManageClientTest extends TestCase
         self::assertSame('111', $projects[0]->getId());
         self::assertSame('222', $projects[1]->getId());
         self::assertSame('333', $projects[2]->getId());
+    }
+
+    public function testListAllSandboxes(): void
+    {
+        $guzzleHandler = HandlerStack::create(new MockHandler([
+            function (RequestInterface $request): ResponseInterface {
+                self::assertSame('GET', $request->getMethod());
+                self::assertSame('manage-token', $request->getHeaderLine('X-KBC-ManageApiToken'));
+                self::assertSame('/manage/list', $request->getUri()->getPath());
+                self::assertSame('', $request->getUri()->getQuery());
+
+                return new Response(200, [
+                    'Link' => 'http://example.com/manage/list?nextPageToken=foo',
+                ], (string) json_encode([
+                    [
+                        'id' => '1',
+                        'projectId' => '123',
+                        'tokenId' => '456',
+                        'type' => Sandbox::TYPE_PYTHON,
+                        'active' => true,
+                        'createdTimestamp' => '2024-01-01T12:00:00Z',
+                    ],
+                    [
+                        'id' => '2',
+                        'projectId' => '124',
+                        'tokenId' => '456',
+                        'type' => Sandbox::TYPE_PYTHON,
+                        'active' => true,
+                        'createdTimestamp' => '2024-01-01T12:00:00Z',
+                    ],
+                ], JSON_THROW_ON_ERROR));
+            },
+
+            function (RequestInterface $request): ResponseInterface {
+                self::assertSame('GET', $request->getMethod());
+                self::assertSame('manage-token', $request->getHeaderLine('X-KBC-ManageApiToken'));
+                self::assertSame('/manage/list', $request->getUri()->getPath());
+                self::assertSame('nextPageToken=foo', $request->getUri()->getQuery());
+
+                return new Response(200, [], (string) json_encode([
+                    [
+                        'id' => '3',
+                        'projectId' => '123',
+                        'tokenId' => '456',
+                        'type' => Sandbox::TYPE_PYTHON,
+                        'active' => true,
+                        'createdTimestamp' => '2024-01-01T12:00:00Z',
+                    ],
+                ], JSON_THROW_ON_ERROR));
+            },
+        ]));
+
+        $manageClient = new ManageClient(
+            (string) getenv('API_URL'),
+            'manage-token',
+            ['handler' => $guzzleHandler],
+        );
+
+        $sandboxes = $manageClient->listAll();
+        $sandboxes = [...$sandboxes];
+        self::assertCount(3, $sandboxes);
+        self::assertSame('1', $sandboxes[0]->getId());
+        self::assertSame('2', $sandboxes[1]->getId());
+        self::assertSame('3', $sandboxes[2]->getId());
     }
 }

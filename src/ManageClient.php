@@ -36,6 +36,21 @@ class ManageClient extends AbstractClient
         return array_map(fn (array $s) => Sandbox::fromArray($s), $response);
     }
 
+    /**
+     * @return Sandbox[]
+     */
+    public function listAll(): iterable
+    {
+        $response = $this->sendRequestWithPagination(new Request(
+            'GET',
+            'manage/list',
+        ));
+
+        foreach ($response as $sandboxData) {
+            yield Sandbox::fromArray($sandboxData);
+        }
+    }
+
     public function listExpired(): array
     {
         return array_map(function ($s) {
@@ -100,17 +115,5 @@ class ManageClient extends AbstractClient
         $body = json_encode((object) $project->toApiRequest());
         $request = new Request('PATCH', "manage/projects/{$project->getId()}", [], $body);
         return Project::fromArray($this->sendRequest($request));
-    }
-
-    public function notifyBranchDeleted(string $branchId): void
-    {
-        $this->sendRequest(
-            new Request(
-                'POST',
-                'notify/branch-deleted',
-                [],
-                json_encode(['branchId' => $branchId], JSON_THROW_ON_ERROR),
-            ),
-        );
     }
 }
