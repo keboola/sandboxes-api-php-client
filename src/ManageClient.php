@@ -72,15 +72,36 @@ class ManageClient extends AbstractClient
         return Sandbox::fromArray($this->sendRequest($request));
     }
 
-    public function deleteSandbox(string $sandboxId): void
+    public function deleteSandbox(string $sandboxId, bool $skipBillingReport = false): void
     {
-        $request = new Request('DELETE', sprintf('manage/%s', $sandboxId));
+        $query = [];
+
+        if ($skipBillingReport) {
+            $query['skipBillingReport'] = 'true';
+        }
+
+        $request = new Request(
+            'DELETE',
+            sprintf('manage/%s?%s', $sandboxId, http_build_query($query)),
+        );
+
         $this->sendRequest($request);
     }
 
-    public function deactivate(string $id): void
+    public function deactivate(string $id, bool $skipBillingReport = false): void
     {
-        $this->sendRequest(new Request('POST', "manage/{$id}/deactivate", [], '{}'));
+        $query = [];
+
+        if ($skipBillingReport) {
+            $query['skipBillingReport'] = 'true';
+        }
+
+        $this->sendRequest(new Request(
+            'POST',
+            sprintf('manage/%s/deactivate?%s', $id, http_build_query($query)),
+            [],
+            '{}',
+        ));
     }
 
     /**

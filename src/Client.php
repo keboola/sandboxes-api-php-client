@@ -35,9 +35,20 @@ class Client extends AbstractClient
         return Sandbox::fromArray($this->sendRequest($request));
     }
 
-    public function deactivate(string $id): Sandbox
+    public function deactivate(string $id, bool $skipBillingReport = false): Sandbox
     {
-        $request = new Request('POST', "sandboxes/{$id}/deactivate", [], '{}');
+        $query = [];
+
+        if ($skipBillingReport) {
+            $query['skipBillingReport'] = 'true';
+        }
+
+        $request = new Request(
+            'POST',
+            sprintf('sandboxes/%s/deactivate?%s', $id, http_build_query($query)),
+            [],
+            '{}',
+        );
         return Sandbox::fromArray($this->sendRequest($request));
     }
 
@@ -47,9 +58,19 @@ class Client extends AbstractClient
         return Sandbox::fromArray($this->sendRequest($request));
     }
 
-    public function delete(string $id): Sandbox
+    public function delete(string $id, bool $skipBillingReport = false): Sandbox
     {
-        $request = new Request('DELETE', "sandboxes/{$id}");
+        $query = [];
+
+        if ($skipBillingReport) {
+            $query['skipBillingReport'] = 'true';
+        }
+
+        $request = new Request(
+            'DELETE',
+            sprintf('sandboxes/%s?%s', $id, http_build_query($query)),
+        );
+
         return Sandbox::fromArray($this->sendRequest($request));
     }
 
