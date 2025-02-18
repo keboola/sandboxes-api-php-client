@@ -5,19 +5,15 @@ declare(strict_types=1);
 namespace Keboola\Sandboxes\Api\Tests;
 
 use Keboola\Sandboxes\Api\Client;
-use Keboola\Sandboxes\Api\Exception\ClientException;
 use Keboola\Sandboxes\Api\ListOptions;
 use Keboola\Sandboxes\Api\ManageClient;
-use Keboola\Sandboxes\Api\MLDeployment;
 use Keboola\Sandboxes\Api\PersistentStorage;
 use Keboola\Sandboxes\Api\Project;
 use Keboola\Sandboxes\Api\Sandbox;
-use Keboola\Sandboxes\Api\SandboxCredentials;
 use Keboola\Sandboxes\Api\SandboxSizeParameters;
 use Keboola\StorageApi\Client as StorageClient;
 use Keboola\StorageApi\Components;
 use Keboola\StorageApi\Options\Components\Configuration;
-use PHPUnit\Framework\TestCase;
 
 class ClientFunctionalTest extends DynamoTestCase
 {
@@ -285,100 +281,11 @@ class ClientFunctionalTest extends DynamoTestCase
         self::assertNull($response->getPersistentStorageK8sManifest());
     }
 
-    public function testProject(): void
-    {
-        $projectId = explode('-', (string) getenv('KBC_STORAGE_TOKEN'))[0];
-        $project = (new Project())
-            ->setId($projectId)
-            ->setMlflowUri('/mlflow')
-            ->setMlflowRequiresAuth(true)
-            ->setMlflowAbsSas('/abs')
-            ->setMlflowServerVersion('1.2.3');
-        $result = $this->manageClient->updateProject($project);
-        self::assertSame('/mlflow', $result->getMlflowUri());
-        self::assertTrue($project->getMlflowRequiresAuth());
-        self::assertSame('/abs', $result->getMlflowAbsSas());
-        self::assertSame(
-            'BlobEndpoint=https://abs-account.blob.core.windows.net/;SharedAccessSignature=/abs',
-            $result->getMlflowAbsConnectionString(),
-        );
-        self::assertSame('1.2.3', $result->getMlflowServerVersion());
-        self::assertNotEmpty($result->getMlflowServerVersionLatest());
-
-        $result = $this->manageClient->getProject($projectId);
-        self::assertSame('/mlflow', $result->getMlflowUri());
-        self::assertTrue($project->getMlflowRequiresAuth());
-        self::assertSame('/abs', $result->getMlflowAbsSas());
-        self::assertSame(
-            'BlobEndpoint=https://abs-account.blob.core.windows.net/;SharedAccessSignature=/abs',
-            $result->getMlflowAbsConnectionString(),
-        );
-        self::assertSame('1.2.3', $result->getMlflowServerVersion());
-        self::assertNotEmpty($result->getMlflowServerVersionLatest());
-
-        $result = $this->client->getProject();
-        self::assertSame('/mlflow', $result->getMlflowUri());
-        self::assertTrue($project->getMlflowRequiresAuth());
-        self::assertSame('/abs', $result->getMlflowAbsSas());
-        self::assertSame(
-            'BlobEndpoint=https://abs-account.blob.core.windows.net/;SharedAccessSignature=/abs',
-            $result->getMlflowAbsConnectionString(),
-        );
-        self::assertSame('1.2.3', $result->getMlflowServerVersion());
-        self::assertNotEmpty($result->getMlflowServerVersionLatest());
-
-        $project->setMlflowUri(null);
-        $result = $this->manageClient->updateProject($project);
-        self::assertSame('', $result->getMlflowUri());
-        self::assertTrue($project->getMlflowRequiresAuth());
-        self::assertSame('/abs', $result->getMlflowAbsSas());
-        self::assertSame(
-            'BlobEndpoint=https://abs-account.blob.core.windows.net/;SharedAccessSignature=/abs',
-            $result->getMlflowAbsConnectionString(),
-        );
-
-        $project->setMlflowRequiresAuth(false);
-        $result = $this->manageClient->updateProject($project);
-        self::assertSame('', $result->getMlflowUri());
-        self::assertFalse($project->getMlflowRequiresAuth());
-        self::assertSame('/abs', $result->getMlflowAbsSas());
-        self::assertSame(
-            'BlobEndpoint=https://abs-account.blob.core.windows.net/;SharedAccessSignature=/abs',
-            $result->getMlflowAbsConnectionString(),
-        );
-
-        $project->setMlflowAbsSas(null);
-        $result = $this->manageClient->updateProject($project);
-        self::assertSame('', $result->getMlflowUri());
-        self::assertFalse($project->getMlflowRequiresAuth());
-        self::assertSame('', $result->getMlflowAbsSas());
-        self::assertSame('', $result->getMlflowAbsConnectionString());
-
-        $project->setMlflowServerVersion(null);
-        $result = $this->manageClient->updateProject($project);
-        self::assertFalse($project->getMlflowRequiresAuth());
-        self::assertSame('', $result->getMlflowServerVersion());
-        self::assertNotEmpty($result->getMlflowServerVersionLatest());
-
-        $result = $this->client->updateProjectServerVersion($projectId, '1.2.4');
-        self::assertFalse($project->getMlflowRequiresAuth());
-        self::assertSame('1.2.4', $result->getMlflowServerVersion());
-        self::assertNotEmpty($result->getMlflowServerVersionLatest());
-
-        $result = $this->client->updateProjectServerVersion($projectId, null);
-        self::assertFalse($project->getMlflowRequiresAuth());
-        self::assertSame('', $result->getMlflowServerVersion());
-        self::assertNotEmpty($result->getMlflowServerVersionLatest());
-    }
-
     public function testProjectPersistentStorage(): void
     {
         $projectId = explode('-', (string) getenv('KBC_STORAGE_TOKEN'))[0];
         $project = (new Project())
             ->setId($projectId)
-            ->setMlflowUri('/mlflow')
-            ->setMlflowAbsSas('/abs')
-            ->setMlflowServerVersion('1.2.3')
         ;
         // init - persistent storage is null (no instance of PersistentStorage)
         self::assertNull($project->getPersistentStorage());
@@ -404,10 +311,8 @@ class ClientFunctionalTest extends DynamoTestCase
         // still has persistentStorage
         $project2 = (new Project())
             ->setId($projectId)
-            ->setMlflowServerVersion('1.2.4')
         ;
         $result = $this->manageClient->updateProject($project2);
-        self::assertSame('1.2.4', $result->getMlflowServerVersion());
         $persistentStorage = $result->getPersistentStorage();
         self::assertNotNull($persistentStorage);
         self::assertTrue($persistentStorage->isReady());
@@ -441,67 +346,6 @@ class ClientFunctionalTest extends DynamoTestCase
         $persistentStorage = $this->client->getPersistentStorage();
         self::assertNull($persistentStorage->isReady());
         self::assertNull($persistentStorage->getK8sStorageClassName());
-    }
-
-    public function testMLDeployment(): void
-    {
-        $tokenParts = explode('-', (string) getenv('KBC_STORAGE_TOKEN'));
-        $projectId = $tokenParts[0];
-        $tokenId = $tokenParts[1];
-        $trackingTokenId = '12345';
-        $deployment = (new MLDeployment())
-            ->setModelName('mlflow-model')
-            ->setModelVersion('4')
-            ->setModelStage('Production')
-            ->setTrackingTokenId('12345')
-        ;
-        $createdDeployment = $this->client->createMLDeployment($deployment);
-        $this->assertNotEmpty($createdDeployment->getId());
-        $this->assertNotEmpty($createdDeployment->getCreatedTimestamp());
-        $this->assertEquals('mlflow-model', $createdDeployment->getModelName());
-        $this->assertEquals('4', $createdDeployment->getModelVersion());
-        $this->assertEquals('Production', $createdDeployment->getModelStage());
-        $this->assertEquals($projectId, $createdDeployment->getProjectId());
-        $this->assertEquals($tokenId, $createdDeployment->getTokenId());
-        $this->assertEquals($trackingTokenId, $createdDeployment->getTrackingTokenId());
-        $this->assertEmpty($createdDeployment->getUrl());
-        $this->assertEmpty($createdDeployment->getError());
-
-        $getDeployment = $this->client->getMLDeployment($createdDeployment->getId());
-        $this->assertEquals('mlflow-model', $getDeployment->getModelName());
-        $this->assertEquals('4', $getDeployment->getModelVersion());
-        $this->assertEquals('Production', $getDeployment->getModelStage());
-        $this->assertEquals($trackingTokenId, $createdDeployment->getTrackingTokenId());
-        $this->assertEmpty($getDeployment->getUrl());
-        $this->assertEmpty($getDeployment->getError());
-
-        $listDeployments = $this->client->listMLDeployments();
-        $this->assertGreaterThan(0, $listDeployments);
-        $this->assertInstanceOf(MLDeployment::class, $listDeployments[0]);
-
-        $createdDeployment->setUrl('/path/to/model');
-        $createdDeployment->setError('App Error');
-        $createdDeployment->setModelVersion('5');
-        $createdDeployment->setModelStage('Staging');
-        $createdDeployment->clearTackingTokenId();
-        $updatedDeployment = $this->client->updateMLDeployment($createdDeployment);
-        $this->assertEquals('/path/to/model', $updatedDeployment->getUrl());
-        $this->assertEquals('App Error', $updatedDeployment->getError());
-        $this->assertEquals('5', $updatedDeployment->getModelVersion());
-        $this->assertEquals('Staging', $updatedDeployment->getModelStage());
-        $this->assertEquals('', $createdDeployment->getTrackingTokenId());
-
-        $getDeployment = $this->client->updateMLDeployment($createdDeployment);
-        $this->assertEquals('/path/to/model', $getDeployment->getUrl());
-        $this->assertEquals('App Error', $getDeployment->getError());
-        $this->assertEquals('5', $getDeployment->getModelVersion());
-        $this->assertEquals('Staging', $getDeployment->getModelStage());
-        $this->assertArrayNotHasKey('trackingTokenId', $getDeployment->toArray());
-
-        $this->client->deleteMLDeployment($createdDeployment->getId());
-
-        $this->expectExceptionCode(404);
-        $this->client->getMLDeployment($createdDeployment->getId());
     }
 
     protected function tearDown(): void
