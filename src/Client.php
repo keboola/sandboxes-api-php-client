@@ -101,55 +101,6 @@ class Client extends AbstractClient
         );
     }
 
-    public function updateProjectServerVersion(string $projectId, ?string $serverVersion): Project
-    {
-        return Project::fromArray(
-            $this->sendRequest(
-                new Request(
-                    'PATCH',
-                    sprintf('projects/%s/serverVersion', $projectId),
-                    [],
-                    json_encode([
-                        'mlflowServerVersion' => $serverVersion,
-                    ]),
-                ),
-            ),
-        );
-    }
-
-    public function listMLDeployments(): array
-    {
-        return array_map(function ($d) {
-            return MLDeployment::fromArray($d);
-        }, $this->sendRequest(new Request('GET', 'ml/deployments')));
-    }
-
-    public function createMLDeployment(MLDeployment $deployment): MLDeployment
-    {
-        $jobData = json_encode($deployment->toApiRequest());
-        $request = new Request('POST', 'ml/deployments', [], $jobData);
-        return MLDeployment::fromArray($this->sendRequest($request));
-    }
-
-    public function updateMLDeployment(MLDeployment $deployment): MLDeployment
-    {
-        $jobData = json_encode($deployment->toApiRequest());
-        $request = new Request('PATCH', "ml/deployments/{$deployment->getId()}", [], $jobData);
-        return MLDeployment::fromArray($this->sendRequest($request));
-    }
-
-    public function getMLDeployment(string $id): MLDeployment
-    {
-        return MLDeployment::fromArray(
-            $this->sendRequest(new Request('GET', "ml/deployments/{$id}")),
-        );
-    }
-
-    public function deleteMLDeployment(string $id): void
-    {
-        $this->sendRequest(new Request('DELETE', "ml/deployments/{$id}"));
-    }
-
     public function getPersistentStorage(): PersistentStorage
     {
         $result = $this->sendRequest(new Request('GET', 'projects/current/persistentStorage'));

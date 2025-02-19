@@ -58,7 +58,6 @@ services:
       KBC_URL: https://connection.keboola.com
       KEYVAULT_KEY_NAME: sandboxes-api-key
       KEYVAULT_VAULT_NAME:
-      MLFLOW_STORAGE_ACCOUNT_NAME: abs-account
     depends_on:
       - wait
 
