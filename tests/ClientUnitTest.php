@@ -184,4 +184,55 @@ class ClientUnitTest extends TestCase
         ));
         self::assertSame('', (string) $request->getBody());
     }
+
+    public function testUpdateAutosaveTimestamp(): void
+    {
+        $requestsLog = [];
+        $sandboxId = '123';
+        $timestamp = '2025-01-18T10:30:00+00:00';
+        $responseData = [
+            'id' => $sandboxId,
+            'projectId' => 'project-id',
+            'tokenId' => 'token-id',
+            'type' => 'python',
+            'active' => true,
+            'createdTimestamp' => '2021-01-01T00:00:00+00:00',
+            'lastAutosaveTimestamp' => $timestamp,
+        ];
+
+        $mockedResponses = [
+            new Response(200, [], (string) json_encode($responseData)),
+        ];
+
+        $handlerStack = HandlerStack::create(new MockHandler($mockedResponses));
+        $handlerStack->push(Middleware::history($requestsLog));
+
+        $client = new Client((string) getenv('API_URL'), (string) getenv('KBC_STORAGE_TOKEN'), [
+            'handler' => $handlerStack,
+        ]);
+
+        $result = $client->updateAutosaveTimestamp($sandboxId, $timestamp);
+
+        self::assertEquals(Sandbox::fromArray($responseData), $result);
+        self::assertEquals($timestamp, $result->getLastAutosaveTimestamp());
+
+        self::assertCount(1, $requestsLog);
+
+        $request = $requestsLog[0]['request'];
+        self::assertInstanceOf(Request::class, $request);
+
+        self::assertSame('PATCH', $request->getMethod());
+        self::assertSame('/sandboxes/123', Uri::composeComponents(
+            '',
+            '',
+            $request->getUri()->getPath(),
+            $request->getUri()->getQuery(),
+            '',
+        ));
+
+        $requestBody = json_decode((string) $request->getBody(), true);
+        self::assertIsArray($requestBody);
+        self::assertArrayHasKey('lastAutosaveTimestamp', $requestBody);
+        self::assertSame($timestamp, $requestBody['lastAutosaveTimestamp']);
+    }
 }
