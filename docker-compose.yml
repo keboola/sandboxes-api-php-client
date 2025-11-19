@@ -14,7 +14,6 @@ services:
       KBC_URL: https://connection.keboola.com
       KBC_STORAGE_TOKEN:
       KBC_MANAGE_TOKEN:
-      KBC_MANAGE_NOTIFY_TOKEN:
       DYNAMO_ENDPOINT: http://localstack:4566
       DYNAMO_TABLE_SANDBOXES: sandboxes
       DYNAMO_TABLE_ML_DEPLOYMENTS: ml-deployments

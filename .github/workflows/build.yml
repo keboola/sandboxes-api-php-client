@@ -4,7 +4,6 @@ concurrency: ci-pipeline
 env:
   KBC_STORAGE_TOKEN: '${{ secrets.KBC_STORAGE_TOKEN }}'
   KBC_MANAGE_TOKEN: '${{ secrets.KBC_MANAGE_TOKEN }}'
-  KBC_MANAGE_NOTIFY_TOKEN: '${{ secrets.KBC_MANAGE_NOTIFY_TOKEN }}'
 
   # Azure
   AZURE_CLIENT_ID: 233328da-9afe-423b-82c1-915d8c539f71

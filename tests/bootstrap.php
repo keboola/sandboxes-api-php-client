@@ -26,7 +26,7 @@ $dotenv = Dotenv::createImmutable(__DIR__ . '/..');
 if (file_exists(__DIR__ . '/../.env')) {
     $dotenv->load();
 }
-$dotenv->required(['API_URL', 'KBC_MANAGE_TOKEN', 'KBC_MANAGE_NOTIFY_TOKEN', 'KBC_STORAGE_TOKEN', 'KBC_URL']);
+$dotenv->required(['API_URL', 'KBC_MANAGE_TOKEN', 'KBC_STORAGE_TOKEN', 'KBC_URL']);
 
 $tokenEnvs = [
     'KBC_STORAGE_TOKEN',
@@ -69,7 +69,6 @@ foreach ($tokenEnvs as $tokenEnv) {
 
 $tokenEnvs = [
     'KBC_MANAGE_TOKEN',
-    'KBC_MANAGE_NOTIFY_TOKEN',
 ];
 
 foreach ($tokenEnvs as $tokenEnv) {

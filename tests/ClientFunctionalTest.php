@@ -348,6 +348,30 @@ class ClientFunctionalTest extends DynamoTestCase
         self::assertNull($persistentStorage->getK8sStorageClassName());
     }
 
+    public function testUpdateAutosaveTimestamp(): void
+    {
+        // 1. Create sandbox
+        $sandbox = (new Sandbox())
+            ->setType('python')
+            ->setActive(true);
+
+        $createdSandbox = $this->client->create($sandbox);
+        $sandboxId = $createdSandbox->getId();
+        $this->assertNotEmpty($sandboxId);
+
+        // 2. Update autosave timestamp
+        $timestamp = date('c');
+        $updatedSandbox = $this->client->updateAutosaveTimestamp($sandboxId, $timestamp);
+        $this->assertSame($timestamp, $updatedSandbox->getLastAutosaveTimestamp());
+
+        // 3. Verify persistence by getting the sandbox again
+        $retrievedSandbox = $this->client->get($sandboxId);
+        $this->assertSame($timestamp, $retrievedSandbox->getLastAutosaveTimestamp());
+
+        // 4. Clean up
+        $this->client->delete($sandboxId);
+    }
+
     protected function tearDown(): void
     {
         $this->componentsClient->deleteConfiguration('transformation', $this->configurationId);

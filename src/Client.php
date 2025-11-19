@@ -35,6 +35,13 @@ class Client extends AbstractClient
         return Sandbox::fromArray($this->sendRequest($request));
     }
 
+    public function updateAutosaveTimestamp(string $id, string $timestamp): Sandbox
+    {
+        $jobData = json_encode(['lastAutosaveTimestamp' => $timestamp]);
+        $request = new Request('PATCH', "sandboxes/{$id}", [], $jobData);
+        return Sandbox::fromArray($this->sendRequest($request));
+    }
+
     public function deactivate(string $id, bool $skipBillingReport = false): Sandbox
     {
         $query = [];
