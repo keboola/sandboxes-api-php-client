@@ -113,7 +113,12 @@ abstract class AbstractClient
             ));
         }
         // finally, create the instance
-        return new GuzzleClient(['base_uri' => $options['apiUrl'], 'handler' => $handlerStack]);
+        return new GuzzleClient([
+            'base_uri' => $options['apiUrl'],
+            'handler' => $handlerStack,
+            'connect_timeout' => 10,
+            'timeout' => 120,
+        ]);
     }
 
     protected function sendRequest(Request $request): array
