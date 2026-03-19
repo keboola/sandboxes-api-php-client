@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace Keboola\Sandboxes\Api;
 
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
+use JsonException;
+use Keboola\Sandboxes\Api\Exception\ClientException;
+use Keboola\Sandboxes\Api\Exception\ServerException;
 use function GuzzleHttp\json_encode;
 
 class ManageClient extends AbstractClient
@@ -23,17 +27,57 @@ class ManageClient extends AbstractClient
 
     /**
      * @return Sandbox[]
-     *
-     * @TODO pagination
      */
     public function listProjectSandboxes(string $projectId): array
     {
-        $response = $this->sendRequest(new Request(
-            'GET',
-            sprintf('manage/projects/%s/sandboxes', urlencode($projectId)),
-        ));
+        $baseUrl = sprintf('manage/projects/%s/sandboxes', urlencode($projectId));
+        $nextPageToken = null;
+        $sandboxes = [];
 
-        return array_map(fn (array $s) => Sandbox::fromArray($s), $response);
+        do {
+            $url = $nextPageToken !== null
+                ? $baseUrl . '?' . http_build_query(['nextPageToken' => $nextPageToken])
+                : $baseUrl;
+
+            try {
+                $response = $this->client->send(new Request('GET', $url));
+            } catch (GuzzleException $e) {
+                if ($e->getCode() < 500) {
+                    throw new ClientException($e->getMessage(), $e->getCode(), $e);
+                }
+                throw new ServerException($e->getMessage(), $e->getCode(), $e);
+            }
+
+            $body = $response->getBody()->getContents();
+            if (!strlen($body)) {
+                break;
+            }
+
+            try {
+                $data = (array) json_decode($body, true, 512, JSON_THROW_ON_ERROR);
+            } catch (JsonException $e) {
+                throw new ServerException(
+                    'Unable to parse response body into JSON: ' . $e->getMessage(),
+                    $e->getCode(),
+                    $e,
+                );
+            }
+
+            foreach ($data as $sandboxData) {
+                $sandboxes[] = Sandbox::fromArray((array) $sandboxData);
+            }
+
+            $nextPageToken = null;
+            // The Link header URL points to the wrong endpoint due to a bug in sandboxes-api,
+            // so we extract only the nextPageToken from it and reconstruct the correct URL ourselves.
+            $linkHeader = $response->getHeaderLine('Link');
+            if ($linkHeader) {
+                parse_str((string) parse_url($linkHeader, PHP_URL_QUERY), $query);
+                $nextPageToken = $query['nextPageToken'] ?? null;
+            }
+        } while ($nextPageToken !== null);
+
+        return $sandboxes;
     }
 
     /**
